@@ -1,4 +1,4 @@
-using GameToolkit.Runtime.Systems.UpdateManaged;
+using GameToolkit.Runtime.Systems.UpdateManagement;
 using GameToolkit.Runtime.Utils.Tools.ServicesLocator;
 using UnityEngine;
 
@@ -27,15 +27,20 @@ namespace GameToolkit.Runtime.Utils.Tools.StatesMachine
     public abstract class StatefulEntity : MonoBehaviour, IManagedObject
     {
         protected StateMachine stateMachine;
+        protected Transform tr;
         IUpdateServices updateServices;
 
-        protected virtual void OnEnable()
+        protected virtual void Awake()
+        {
+            stateMachine = new StateMachine();
+            tr = transform;
+        }
+
+        protected virtual void Start()
         {
             ServiceLocator.Global.Get(out updateServices);
             updateServices.Register(this);
         }
-
-        protected virtual void Awake() => stateMachine = new StateMachine();
 
         protected virtual void FixedUpdate() => stateMachine.FixedUpdate(Time.deltaTime);
 
