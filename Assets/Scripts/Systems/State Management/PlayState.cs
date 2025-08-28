@@ -1,3 +1,4 @@
+using GameToolkit.Runtime.Systems.Input;
 using GameToolkit.Runtime.Utils.Helpers;
 using GameToolkit.Runtime.Utils.Tools.StatesMachine;
 using UnityEngine;
@@ -6,14 +7,16 @@ namespace GameToolkit.Runtime.Systems.StateManagement
 {
     public class PlayState : IState
     {
-        StateManager stateManager;
+        InputManager inputManager;
 
-        public PlayState(StateManager stateManager) => this.stateManager = stateManager;
+        public PlayState(InputManager inputManager) => this.inputManager = inputManager;
 
         public void OnEnter()
         {
-            Time.timeScale = 1f;
             Logging.Log("Enter In Play State");
+            Time.timeScale = 1f;
+            Cursor.lockState = CursorLockMode.Locked;
+            inputManager.EnablePlayerMap();
         }
     }
 }

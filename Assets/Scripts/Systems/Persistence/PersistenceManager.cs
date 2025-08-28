@@ -14,12 +14,19 @@ namespace GameToolkit.Runtime.Systems.Persistence
 
         void Awake()
         {
-            DontDestroyOnLoad(gameObject);
-            ServiceLocator.Global.Register<IPersistenceServices>(this);
+            Setup();
             dataService = new FileDataService(new JsonSerializer());
         }
 
+        void Setup()
+        {
+            DontDestroyOnLoad(gameObject);
+            ServiceLocator.Global.Register<IPersistenceServices>(this);
+        }
+
+#pragma warning disable UDR0005 // Domain Reload Analyzer
         void OnEnable() => SceneManager.sceneLoaded += OnSceneLoaded;
+#pragma warning restore UDR0005 // Domain Reload Analyzer
 
         void Start() => NewGame();
 

@@ -1,10 +1,24 @@
 {
   "dependencies": {
+    "com.eflatun.scenereference": "git+https://github.com/starikcetin/Eflatun.SceneReference.git#4.1.1",
     "com.unity.addressables": "2.7.2",
+    "com.unity.ai.navigation": "2.0.8",
+    "com.unity.behavior": "1.0.12",
+    "com.unity.cinemachine": "3.1.4",
     "com.unity.ide.visualstudio": "2.0.23",
     "com.unity.inputsystem": "1.14.2",
+    "com.unity.localization": "1.5.7",
+    "com.unity.memoryprofiler": "1.1.8",
+    "com.unity.performance.profile-analyzer": "1.2.3",
+    "com.unity.polybrush": "1.2.0",
+    "com.unity.probuilder": "6.0.7",
+    "com.unity.project-auditor": "1.0.1",
+    "com.unity.recorder": "5.1.2",
     "com.unity.render-pipelines.universal": "17.2.0",
+    "com.unity.visualeffectgraph": "17.2.0",
+    "com.witalosk.unistats": "https://github.com/witalosk/UniStats.git?path=Packages/com.witalosk.unistats",
     "com.unity.modules.audio": "1.0.0",
-    "com.eflatun.scenereference": "git+https://github.com/starikcetin/Eflatun.SceneReference.git#4.1.1"
+    "com.annulusgames.alchemy": "https://github.com/annulusgames/Alchemy.git?path=/Alchemy/Assets/Alchemy",
+    "com.annulusgames.lit-motion": "https://github.com/annulusgames/LitMotion.git?path=src/LitMotion/Assets/LitMotion"
   }
 }

@@ -36,7 +36,7 @@ namespace GameToolkit.Runtime.Utils.Tools.StatesMachine
             tr = transform;
         }
 
-        protected virtual void Start()
+        protected virtual void OnEnable()
         {
             ServiceLocator.Global.Get(out updateServices);
             updateServices.Register(this);

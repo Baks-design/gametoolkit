@@ -1,6 +1,7 @@
 using GameToolkit.Runtime.Systems.UpdateManagement;
 using GameToolkit.Runtime.Utils.Helpers;
 using GameToolkit.Runtime.Utils.Tools.ServicesLocator;
+using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,7 +19,7 @@ namespace GameToolkit.Runtime.Systems.SceneManagement
         Canvas loadingCanvas;
 
         [SerializeField]
-        Camera loadingCamera;
+        CinemachineCamera loadingCamera;
 
         [SerializeField]
         SceneGroup[] sceneGroups;
@@ -30,12 +31,17 @@ namespace GameToolkit.Runtime.Systems.SceneManagement
         protected override void Awake()
         {
             base.Awake();
-            DontDestroyOnLoad(this);
-            ServiceLocator.Global.Register<ISceneLoaderServices>(this);
+            Setup();
 
             manager.OnSceneLoaded += sceneName => Logging.Log($"Loaded: {sceneName}");
             manager.OnSceneUnloaded += sceneName => Logging.Log($"Unloaded: {sceneName}");
             manager.OnSceneGroupLoaded += () => Logging.Log("Scene group loaded");
+        }
+
+        void Setup()
+        {
+            DontDestroyOnLoad(this);
+            ServiceLocator.Global.Register<ISceneLoaderServices>(this);
         }
 
         async void Start() => await LoadSceneGroup(0);

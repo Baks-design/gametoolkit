@@ -10,7 +10,9 @@ namespace GameToolkit.Runtime.Utils.Tools.StatesMachine
 {
     internal static class TimerBootstrapper
     {
+#pragma warning disable UDR0002 // Domain Reload Analyzer
         static PlayerLoopSystem timerSystem;
+#pragma warning restore UDR0002 // Domain Reload Analyzer
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
         internal static void Initialize()

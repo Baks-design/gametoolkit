@@ -1,3 +1,4 @@
+using GameToolkit.Runtime.Systems.Input;
 using GameToolkit.Runtime.Utils.Helpers;
 using GameToolkit.Runtime.Utils.Tools.StatesMachine;
 using UnityEngine;
@@ -6,14 +7,16 @@ namespace GameToolkit.Runtime.Systems.StateManagement
 {
     public class PauseState : IState
     {
-        StateManager stateManager;
+        InputManager inputManager;
 
-        public PauseState(StateManager stateManager) => this.stateManager = stateManager;
+        public PauseState(InputManager inputManager) => this.inputManager = inputManager;
 
         public void OnEnter()
         {
-            Time.timeScale = 0f;
             Logging.Log("Enter In Pause State");
+            Time.timeScale = 0f;
+            Cursor.lockState = CursorLockMode.None;
+            inputManager.EnableUIMap();
         }
     }
 }

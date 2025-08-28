@@ -38,8 +38,8 @@ namespace GameToolkit.Runtime.Systems.Input
 
         public void EnableUIMap()
         {
-            inputActions.Player.Disable();
             inputActions.UI.Enable();
+            inputActions.Player.Disable();
         }
     }
 }
