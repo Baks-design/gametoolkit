@@ -12,9 +12,9 @@ namespace GameToolkit.Runtime.Systems.StateManagement
         [SerializeField]
         InputManager inputManager;
         EventBinding<ChangeStateEvent> changeEventBinding;
+        bool IsPlaying = true;
 
         public IState CurrentState => stateMachine.CurrentState;
-        public bool IsPlaying { get; private set; } = true;
 
         protected override void Awake()
         {
@@ -58,7 +58,5 @@ namespace GameToolkit.Runtime.Systems.StateManagement
             base.OnDisable();
             EventBus<ChangeStateEvent>.Deregister(changeEventBinding);
         }
-
-        public void ChangeState(IState state) => stateMachine.SetState(state);
     }
 }

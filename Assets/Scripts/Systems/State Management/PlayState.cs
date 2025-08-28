@@ -7,7 +7,7 @@ namespace GameToolkit.Runtime.Systems.StateManagement
 {
     public class PlayState : IState
     {
-        InputManager inputManager;
+        readonly InputManager inputManager;
 
         public PlayState(InputManager inputManager) => this.inputManager = inputManager;
 

@@ -24,7 +24,12 @@ namespace GameToolkit.Runtime.Utils.Tools.StatesMachine
     ///     stateMachine.SetState(state);
     /// </code>
     /// </example>
-    public abstract class StatefulEntity : MonoBehaviour, IManagedObject
+    public abstract class StatefulEntity
+        : MonoBehaviour,
+            IManagedObject,
+            IFixedUpdatable,
+            IUpdatable,
+            ILateUpdatable
     {
         protected StateMachine stateMachine;
         protected Transform tr;
@@ -42,11 +47,13 @@ namespace GameToolkit.Runtime.Utils.Tools.StatesMachine
             updateServices.Register(this);
         }
 
-        protected virtual void FixedUpdate() => stateMachine.FixedUpdate(Time.deltaTime);
+        public virtual void ProcessFixedUpdate(float deltaTime) =>
+            stateMachine.FixedUpdate(Time.deltaTime);
 
-        protected virtual void Update() => stateMachine.Update(Time.deltaTime);
+        public virtual void ProcessUpdate(float deltaTime) => stateMachine.Update(Time.deltaTime);
 
-        protected virtual void LatedUpdate() => stateMachine.LateUpdate(Time.deltaTime);
+        public virtual void ProcessLateUpdate(float deltaTime) =>
+            stateMachine.LateUpdate(Time.deltaTime);
 
         protected virtual void OnDisable() => updateServices.Unregister(this);
 

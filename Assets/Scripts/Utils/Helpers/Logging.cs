@@ -22,5 +22,12 @@ namespace GameToolkit.Runtime.Utils.Helpers
         [Diagnostics.Conditional("ENABLE_LOG")]
         public static void LogException(Exception exception, Object context = null) =>
             Debug.LogException(exception, context);
+
+        [Diagnostics.Conditional("ENABLE_LOG")]
+        public static void LogErrorFormat(string format, params object[] args) =>
+            Debug.LogErrorFormat(format, args);
+
+        [Diagnostics.Conditional("ENABLE_LOG")]
+        public static void Assert(bool condition) => Debug.Assert(condition);
     }
 }

@@ -7,7 +7,7 @@ namespace GameToolkit.Runtime.Systems.StateManagement
 {
     public class PauseState : IState
     {
-        InputManager inputManager;
+        readonly InputManager inputManager;
 
         public PauseState(InputManager inputManager) => this.inputManager = inputManager;
 

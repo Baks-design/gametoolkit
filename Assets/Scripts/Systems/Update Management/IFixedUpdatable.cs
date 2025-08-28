@@ -2,6 +2,6 @@ namespace GameToolkit.Runtime.Systems.UpdateManagement
 {
     public interface IFixedUpdatable
     {
-        void ProcessFixedUpdate(float deltaTime);
+        virtual void ProcessFixedUpdate(float deltaTime) { }
     }
 }
