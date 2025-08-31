@@ -16,13 +16,14 @@ namespace GameToolkit.Runtime.Systems.Persistence
             this.data = data;
             this.data.Id = Id;
 
-            tr.SetPositionAndRotation(data.position, data.rotation);
+            Transform.SetPositionAndRotation(data.position, data.rotation);
         }
 
-        public void ProcessUpdate(float deltaTime)
+        public override void ProcessUpdate(float deltaTime)
         {
-            data.position = tr.position;
-            data.rotation = tr.rotation;
+            base.ProcessUpdate(deltaTime);
+            data.position = Transform.position;
+            data.rotation = Transform.rotation;
         }
     }
 }

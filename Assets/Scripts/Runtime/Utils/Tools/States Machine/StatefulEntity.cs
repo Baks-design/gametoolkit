@@ -24,38 +24,23 @@ namespace GameToolkit.Runtime.Utils.Tools.StatesMachine
     ///     stateMachine.SetState(state);
     /// </code>
     /// </example>
-    public abstract class StatefulEntity
-        : MonoBehaviour,
-            IManagedObject,
-            IFixedUpdatable,
-            IUpdatable,
-            ILateUpdatable
+    public abstract class StatefulEntity : CustomMonoBehaviour
     {
         protected StateMachine stateMachine;
-        protected Transform tr;
-        IUpdateServices updateServices;
 
-        protected virtual void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             stateMachine = new StateMachine();
-            tr = transform;
         }
 
-        protected virtual void OnEnable()
-        {
-            ServiceLocator.Global.Get(out updateServices);
-            updateServices.Register(this);
-        }
-
-        public virtual void ProcessFixedUpdate(float deltaTime) =>
+        public override void ProcessFixedUpdate(float deltaTime) =>
             stateMachine.FixedUpdate(Time.deltaTime);
 
-        public virtual void ProcessUpdate(float deltaTime) => stateMachine.Update(Time.deltaTime);
+        public override void ProcessUpdate(float deltaTime) => stateMachine.Update(Time.deltaTime);
 
-        public virtual void ProcessLateUpdate(float deltaTime) =>
+        public override void ProcessLateUpdate(float deltaTime) =>
             stateMachine.LateUpdate(Time.deltaTime);
-
-        protected virtual void OnDisable() => updateServices.Unregister(this);
 
         protected void At<T>(IState from, IState to, T condition) =>
             stateMachine.AddTransition(from, to, condition);

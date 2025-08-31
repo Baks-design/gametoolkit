@@ -2,6 +2,6 @@ namespace GameToolkit.Runtime.Systems.UpdateManagement
 {
     public interface ILateUpdatable
     {
-        virtual void ProcessLateUpdate(float deltaTime) { }
+        public virtual void ProcessLateUpdate(float deltaTime) { }
     }
 }

@@ -24,8 +24,8 @@ namespace GameToolkit.Runtime.Behaviours.Player
         public float surfaceFriction = 1f;
         public float gravityFactor = 1f;
         public float walkFactor = 1f;
-        public float verticalAxis = 0f;
-        public float horizontalAxis = 0f;
+        public float verticalAxis;
+        public float horizontalAxis;
         public bool wishJump = false;
         public bool crouching = false;
         public bool sprinting = false;

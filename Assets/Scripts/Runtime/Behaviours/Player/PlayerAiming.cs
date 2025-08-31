@@ -1,8 +1,10 @@
-﻿using UnityEngine;
+﻿using GameToolkit.Runtime.Systems.UpdateManagement;
+using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace GameToolkit.Runtime.Behaviours.Player
 {
-    public class PlayerAiming : MonoBehaviour
+    public class PlayerAiming : CustomMonoBehaviour
     {
         [Header("References")]
         public Transform bodyTransform;
@@ -16,16 +18,14 @@ namespace GameToolkit.Runtime.Behaviours.Player
         public float minYRotation = -90f;
         public float maxYRotation = 90f;
 
-        //The real rotation of the camera without recoil
-        Vector3 realRotation;
-
         [Header("Aimpunch")]
         [Tooltip(
-            "bigger number makes the response more damped, smaller is less damped, currently the system will overshoot, with larger damping values it won't"
+            "Bigger number makes the response more damped, smaller is less damped."
+                + "Currently the system will overshoot, with larger damping values it won't"
         )]
         public float punchDamping = 9f;
 
-        [Tooltip("bigger number increases the speed at which the view corrects")]
+        [Tooltip("Bigger number increases the speed at which the view corrects")]
         public float punchSpringConstant = 65f;
 
         [HideInInspector]
@@ -34,74 +34,84 @@ namespace GameToolkit.Runtime.Behaviours.Player
         [HideInInspector]
         public Vector2 punchAngleVel;
 
-        void Start()
+        Vector3 realRotation;
+        const float MouseInputScale = 20f;
+        const float ZRotationResetSpeed = 3f;
+        const float Epsilon = 0.001f;
+
+        public override void ProcessLateUpdate(float deltaTime)
         {
-            // Lock the mouse
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
+            base.ProcessLateUpdate(deltaTime);
+            if (ShouldSkipUpdate())
+                return;
+            DecayPunchAngle(deltaTime);
+            HandleMouseInput(deltaTime);
+            ApplyRotations();
         }
 
-        void Update()
+        bool ShouldSkipUpdate() => Mathf.Abs(Time.timeScale) <= 0f;
+
+        void HandleMouseInput(float deltaTime)
         {
-            // Fix pausing
-            if (Mathf.Abs(Time.timeScale) <= 0f)
-                return;
+            var xMovement = UpdateLookInput().x * horizontalSensitivity * sensitivityMultiplier;
+            var yMovement = -UpdateLookInput().y * verticalSensitivity * sensitivityMultiplier;
+            UpdateRealRotation(xMovement, yMovement, deltaTime);
+        }
 
-            DecayPunchAngle();
+        Vector2 UpdateLookInput() => Mouse.current.delta.ReadDefaultValue();
 
-            // Input
-            var xMovement =
-                Input.GetAxisRaw("Mouse X") * horizontalSensitivity * sensitivityMultiplier;
-            var yMovement =
-                -Input.GetAxisRaw("Mouse Y") * verticalSensitivity * sensitivityMultiplier;
+        void UpdateRealRotation(float xMovement, float yMovement, float deltaTime)
+        {
+            realRotation.x = Mathf.Clamp(realRotation.x + yMovement, minYRotation, maxYRotation);
+            realRotation.y += xMovement;
+            realRotation.z = Mathf.Lerp(realRotation.z, 0f, deltaTime * ZRotationResetSpeed);
+        }
 
-            // Calculate real rotation from input
-            realRotation = new Vector3(
-                Mathf.Clamp(realRotation.x + yMovement, minYRotation, maxYRotation),
-                realRotation.y + xMovement,
-                realRotation.z
-            );
-            realRotation.z = Mathf.Lerp(realRotation.z, 0f, Time.deltaTime * 3f);
+        void ApplyRotations()
+        {
+            ApplyBodyRotation();
+            ApplyCameraRotation();
+        }
 
-            //Apply real rotation to body
-            bodyTransform.eulerAngles = Vector3.Scale(realRotation, new Vector3(0f, 1f, 0f));
+        void ApplyBodyRotation() => bodyTransform.eulerAngles = new Vector3(0f, realRotation.y, 0f);
 
-            //Apply rotation and recoil
+        void ApplyCameraRotation()
+        {
             var cameraEulerPunchApplied = realRotation;
             cameraEulerPunchApplied.x += punchAngle.x;
             cameraEulerPunchApplied.y += punchAngle.y;
-
-            transform.eulerAngles = cameraEulerPunchApplied;
+            Transform.eulerAngles = cameraEulerPunchApplied;
         }
 
         public void ViewPunch(Vector2 punchAmount)
         {
-            //Remove previous recoil
             punchAngle = Vector2.zero;
-            //Recoil go up
-            punchAngleVel -= punchAmount * 20f;
+            punchAngleVel -= punchAmount * MouseInputScale;
         }
 
-        void DecayPunchAngle()
+        void DecayPunchAngle(float deltaTime)
         {
-            if (punchAngle.sqrMagnitude > 0.001f || punchAngleVel.sqrMagnitude > 0.001f)
-            {
-                punchAngle += punchAngleVel * Time.deltaTime;
-                var damping = 1f - (punchDamping * Time.deltaTime);
-
-                if (damping < 0f)
-                    damping = 0f;
-
-                punchAngleVel *= damping;
-
-                var springForceMagnitude = punchSpringConstant * Time.deltaTime;
-                punchAngleVel -= punchAngle * springForceMagnitude;
-            }
+            if (punchAngle.sqrMagnitude > Epsilon || punchAngleVel.sqrMagnitude > Epsilon)
+                UpdatePunchDynamics(deltaTime);
             else
-            {
-                punchAngle = Vector2.zero;
-                punchAngleVel = Vector2.zero;
-            }
+                ResetPunch();
+        }
+
+        void UpdatePunchDynamics(float deltaTime)
+        {
+            punchAngle += punchAngleVel * deltaTime;
+
+            var damping = Mathf.Max(1f - (punchDamping * deltaTime), 0f);
+            punchAngleVel *= damping;
+
+            var springForceMagnitude = punchSpringConstant * deltaTime;
+            punchAngleVel -= punchAngle * springForceMagnitude;
+        }
+
+        void ResetPunch()
+        {
+            punchAngle = Vector2.zero;
+            punchAngleVel = Vector2.zero;
         }
     }
 }

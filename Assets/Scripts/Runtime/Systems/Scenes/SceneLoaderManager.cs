@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 namespace GameToolkit.Runtime.Systems.SceneManagement
 {
-    public class SceneLoaderManager : CustomMonoBehaviour, IUpdatable, ISceneLoaderServices
+    public class SceneLoaderManager : CustomMonoBehaviour, ISceneLoaderServices
     {
         [SerializeField]
         Image loadingBar;
@@ -46,7 +46,7 @@ namespace GameToolkit.Runtime.Systems.SceneManagement
 
         async void Start() => await LoadSceneGroup(0);
 
-        public void ProcessUpdate(float deltaTime)
+        public override void ProcessUpdate(float deltaTime)
         {
             if (!isLoading)
                 return;

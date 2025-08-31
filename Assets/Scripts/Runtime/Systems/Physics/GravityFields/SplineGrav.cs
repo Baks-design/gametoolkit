@@ -23,7 +23,7 @@ namespace GameToolkit.Runtime.Systems.Physics
 
         [Header("Gravity Fields")]
         [SerializeField]
-        float gravIntensity = 30;
+        float gravIntensity = 30f;
 
         [SerializeField]
         int priority = 0;
@@ -62,7 +62,7 @@ namespace GameToolkit.Runtime.Systems.Physics
 
             //Calculate vector from player to the closest point and send it over
             var pointAtNearest =
-                -1
+                -1f
                 * gravIntensity
                 * (other.transform.position - nearestPointOnSpline.position).normalized;
             var gravPackageToSend = new GravPackageStruct(pointAtNearest, priority);

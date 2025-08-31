@@ -3,18 +3,32 @@ using UnityEngine;
 
 namespace GameToolkit.Runtime.Systems.UpdateManagement
 {
-    public abstract class CustomMonoBehaviour : MonoBehaviour, IManagedObject
+    public abstract class CustomMonoBehaviour
+        : MonoBehaviour,
+            IManagedObject,
+            IFixedUpdatable,
+            IUpdatable,
+            ILateUpdatable
     {
-        protected Transform tr;
         IUpdateServices updateServices;
 
-        protected virtual void Awake() => tr = transform;
+        protected Transform Transform { get; private set; }
+
+        protected virtual void Awake() => Transform = transform;
 
         protected virtual void OnEnable()
         {
             if (ServiceLocator.Global.TryGet(out updateServices))
                 updateServices.Register(this);
         }
+
+        protected virtual void Start() { }
+
+        public virtual void ProcessFixedUpdate(float deltaTime) { }
+
+        public virtual void ProcessUpdate(float deltaTime) { }
+
+        public virtual void ProcessLateUpdate(float deltaTime) { }
 
         protected virtual void OnDisable()
         {

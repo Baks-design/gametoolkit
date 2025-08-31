@@ -5,7 +5,7 @@ namespace GameToolkit.Runtime.Systems.Input
 {
     public class InputManager : MonoBehaviour, IInputServices
     {
-        InputSystem_Actions inputActions = new();
+        InputSystem_Actions inputActions;
 
         public PlayerInputMap PlayerInputMap { get; set; }
         public UIInputMap UIInputMap { get; set; }
@@ -25,6 +25,7 @@ namespace GameToolkit.Runtime.Systems.Input
 
         void SetupCallbacks()
         {
+            inputActions = new InputSystem_Actions();
             PlayerInputMap = new PlayerInputMap(inputActions);
             UIInputMap = new UIInputMap(inputActions);
         }

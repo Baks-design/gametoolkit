@@ -14,30 +14,11 @@ namespace GameToolkit.Runtime.Systems.StateManagement
         EventBinding<ChangeStateEvent> changeEventBinding;
         bool IsPlaying = true;
 
-        public IState CurrentState => stateMachine.CurrentState;
-
         protected override void Awake()
         {
             base.Awake();
-            Setup();
-            StateMachineSetup();
-        }
-
-        void Setup()
-        {
             DontDestroyOnLoad(gameObject);
             ServiceLocator.Global.Register<IStateServices>(this);
-        }
-
-        void StateMachineSetup()
-        {
-            var playState = new PlayState(inputManager);
-            var pauseState = new PauseState(inputManager);
-
-            At(pauseState, playState, IsPlaying);
-            At(playState, pauseState, !IsPlaying);
-
-            stateMachine.SetState(playState);
         }
 
         protected override void OnEnable()
@@ -51,6 +32,17 @@ namespace GameToolkit.Runtime.Systems.StateManagement
         {
             Logging.Log($"Current State: {changeStateEvent.IsPlaying}");
             IsPlaying = changeStateEvent.IsPlaying;
+        }
+
+        protected override void Start()
+        {
+            var playState = new PlayState(inputManager);
+            var pauseState = new PauseState(inputManager);
+
+            At(pauseState, playState, IsPlaying);
+            At(playState, pauseState, !IsPlaying);
+
+            stateMachine.SetState(playState);
         }
 
         protected override void OnDisable()

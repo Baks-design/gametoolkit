@@ -15,5 +15,15 @@ namespace GameToolkit.Runtime.Systems.Input
             if (context.performed)
                 OnOpenMenu?.Invoke();
         }
+
+        public void OnMove(CallbackContext context) { }
+
+        public void OnLook(CallbackContext context) { }
+
+        public void OnCrouch(CallbackContext context) { }
+
+        public void OnJump(CallbackContext context) { }
+
+        public void OnSprint(CallbackContext context) { }
     }
 }
