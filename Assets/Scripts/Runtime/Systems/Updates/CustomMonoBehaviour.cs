@@ -10,19 +10,18 @@ namespace GameToolkit.Runtime.Systems.UpdateManagement
             IUpdatable,
             ILateUpdatable
     {
+        protected Transform Transform;
         IUpdateServices updateServices;
 
-        protected Transform Transform { get; private set; }
-
         protected virtual void Awake() => Transform = transform;
+
+        protected virtual void Start() { }
 
         protected virtual void OnEnable()
         {
             if (ServiceLocator.Global.TryGet(out updateServices))
                 updateServices.Register(this);
         }
-
-        protected virtual void Start() { }
 
         public virtual void ProcessFixedUpdate(float deltaTime) { }
 

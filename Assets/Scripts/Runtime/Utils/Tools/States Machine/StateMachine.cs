@@ -9,8 +9,6 @@ namespace GameToolkit.Runtime.Utils.Tools.StatesMachine
         readonly Dictionary<Type, StateNode> nodes = new();
         readonly HashSet<Transition> anyTransitions = new();
 
-        public IState CurrentState => currentNode.State;
-
         public void FixedUpdate(float deltaTime) => currentNode.State?.FixedUpdate(deltaTime);
 
         public void Update(float deltaTime)

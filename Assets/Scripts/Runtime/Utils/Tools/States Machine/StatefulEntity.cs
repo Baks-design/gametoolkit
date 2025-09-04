@@ -4,43 +4,45 @@ using UnityEngine;
 
 namespace GameToolkit.Runtime.Utils.Tools.StatesMachine
 {
-    /// <summary>
-    /// Awake or Start can be used to declare all states and transitions.
-    /// </summary>
-    /// <example>
-    /// <code>
-    /// protected override void Awake() {
-    ///     base.Awake();
-    ///
-    ///     var state = new State1(this);
-    ///     var anotherState = new State2(this);
-    ///
-    ///     At(state, anotherState, () => true);
-    ///     At(state, anotherState, myFunc);
-    ///     At(state, anotherState, myPredicate);
-    ///
-    ///     Any(anotherState, () => true);
-    ///
-    ///     stateMachine.SetState(state);
-    /// </code>
-    /// </example>
-    public abstract class StatefulEntity : CustomMonoBehaviour
+    public abstract class StatefulEntity
+        : MonoBehaviour,
+            IManagedObject,
+            IFixedUpdatable,
+            IUpdatable,
+            ILateUpdatable
     {
+        protected Transform Transform;
         protected StateMachine stateMachine;
+        IUpdateServices updateServices;
 
-        protected override void Awake()
+        protected virtual void Awake()
         {
-            base.Awake();
+            Transform = transform;
             stateMachine = new StateMachine();
         }
 
-        public override void ProcessFixedUpdate(float deltaTime) =>
-            stateMachine.FixedUpdate(Time.deltaTime);
+        protected virtual void OnEnable()
+        {
+            if (ServiceLocator.Global.TryGet(out updateServices))
+                updateServices.Register(this);
+        }
 
-        public override void ProcessUpdate(float deltaTime) => stateMachine.Update(Time.deltaTime);
+        protected virtual void Start() { }
 
-        public override void ProcessLateUpdate(float deltaTime) =>
-            stateMachine.LateUpdate(Time.deltaTime);
+        public virtual void ProcessFixedUpdate(float deltaTime) =>
+            stateMachine.FixedUpdate(deltaTime);
+
+        public virtual void ProcessUpdate(float deltaTime) => stateMachine.Update(deltaTime);
+
+        public virtual void ProcessLateUpdate(float deltaTime) =>
+            stateMachine.LateUpdate(deltaTime);
+
+        protected virtual void OnDisable()
+        {
+            if (updateServices == null)
+                return;
+            updateServices.Unregister(this);
+        }
 
         protected void At<T>(IState from, IState to, T condition) =>
             stateMachine.AddTransition(from, to, condition);

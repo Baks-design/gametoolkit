@@ -32,10 +32,7 @@ namespace GameToolkit.Runtime.Systems.SceneManagement
         {
             base.Awake();
             Setup();
-
-            manager.OnSceneLoaded += sceneName => Logging.Log($"Loaded: {sceneName}");
-            manager.OnSceneUnloaded += sceneName => Logging.Log($"Unloaded: {sceneName}");
-            manager.OnSceneGroupLoaded += () => Logging.Log("Scene group loaded");
+            Logger();
         }
 
         void Setup()
@@ -44,22 +41,17 @@ namespace GameToolkit.Runtime.Systems.SceneManagement
             ServiceLocator.Global.Register<ISceneLoaderServices>(this);
         }
 
-        async void Start() => await LoadSceneGroup(0);
-
-        public override void ProcessUpdate(float deltaTime)
+        void Logger()
         {
-            if (!isLoading)
-                return;
+            manager.OnSceneLoaded += sceneName => Logging.Log($"Loaded: {sceneName}");
+            manager.OnSceneUnloaded += sceneName => Logging.Log($"Unloaded: {sceneName}");
+            manager.OnSceneGroupLoaded += () => Logging.Log("Scene group loaded");
+        }
 
-            var currentFillAmount = loadingBar.fillAmount;
-            var progressDifference = Mathf.Abs(currentFillAmount - targetProgress);
-            var dynamicFillSpeed = progressDifference * fillSpeed;
-
-            loadingBar.fillAmount = Mathf.Lerp(
-                currentFillAmount,
-                targetProgress,
-                deltaTime * dynamicFillSpeed
-            );
+        protected override async void Start()
+        {
+            base.Start();
+            await LoadSceneGroup(0);
         }
 
         public async Awaitable LoadSceneGroup(int index)
@@ -86,6 +78,24 @@ namespace GameToolkit.Runtime.Systems.SceneManagement
             isLoading = enable;
             loadingCanvas.gameObject.SetActive(enable);
             loadingCamera.gameObject.SetActive(enable);
+        }
+
+        public override void ProcessUpdate(float deltaTime)
+        {
+            base.ProcessUpdate(deltaTime);
+
+            if (!isLoading)
+                return;
+
+            var currentFillAmount = loadingBar.fillAmount;
+            var progressDifference = Mathf.Abs(currentFillAmount - targetProgress);
+            var dynamicFillSpeed = progressDifference * fillSpeed;
+
+            loadingBar.fillAmount = Mathf.Lerp(
+                currentFillAmount,
+                targetProgress,
+                deltaTime * dynamicFillSpeed
+            );
         }
     }
 }

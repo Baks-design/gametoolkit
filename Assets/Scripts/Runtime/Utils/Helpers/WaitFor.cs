@@ -31,8 +31,6 @@ namespace GameToolkit.Runtime.Utils.Helpers
 
         public static WaitWhile GetWaitWhile(Func<bool> condition)
         {
-            Checking.AgainstNull(condition, nameof(condition));
-
             if (!waitWhileCache.TryGetValue(condition, out var waitWhile))
             {
                 waitWhile = new WaitWhile(condition);

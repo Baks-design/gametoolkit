@@ -65,7 +65,7 @@ namespace GameToolkit.Runtime.Systems.SceneManagement
             while (!operationGroup.IsDone || !handleGroup.IsDone)
             {
                 progress?.Report((operationGroup.Progress + handleGroup.Progress) / 2f);
-                await Awaitable.WaitForSecondsAsync(3f);
+                await Awaitable.WaitForSecondsAsync(1f);
             }
 
             var activeScene = SceneManager.GetSceneByName(
@@ -131,7 +131,7 @@ namespace GameToolkit.Runtime.Systems.SceneManagement
 
             // Wait until all AsyncOperations in the group are done
             while (!operationGroup.IsDone)
-                await Awaitable.WaitForSecondsAsync(3f); // delay to avoid tight loop
+                await Awaitable.WaitForSecondsAsync(1f); // delay to avoid tight loop
 
             // Optional: UnloadUnusedAssets - unloads all unused assets from memory
             await Resources.UnloadUnusedAssets();

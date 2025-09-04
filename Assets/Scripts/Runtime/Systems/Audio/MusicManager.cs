@@ -24,24 +24,14 @@ namespace GameToolkit.Runtime.Systems.Audio
 
         void Awake()
         {
-            ServiceLocator.Global.Register<IMusicServices>(this);
-            DontDestroyOnLoad(gameObject);
-            Guard();
+            Setup();
             FillSongs();
         }
 
-        void Guard()
+        void Setup()
         {
-            Checking.AgainstNull(
-                initialPlaylist,
-                nameof(initialPlaylist),
-                "initialPlaylist is empty"
-            );
-            Checking.AgainstNullUnityObject(
-                musicMixerGroup,
-                nameof(musicMixerGroup),
-                "musicMixerGroup is not assign"
-            );
+            ServiceLocator.Global.Register<IMusicServices>(this);
+            DontDestroyOnLoad(gameObject);
         }
 
         void FillSongs()

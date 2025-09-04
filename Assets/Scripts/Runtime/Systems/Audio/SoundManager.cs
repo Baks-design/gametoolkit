@@ -31,7 +31,6 @@ namespace GameToolkit.Runtime.Systems.Audio
         void Awake()
         {
             Setup();
-            Checks();
             InitializePool();
         }
 
@@ -40,13 +39,6 @@ namespace GameToolkit.Runtime.Systems.Audio
             ServiceLocator.Global.Register<ISoundServices>(this);
             DontDestroyOnLoad(gameObject);
         }
-
-        void Checks() =>
-            Checking.AgainstNull(
-                soundEmitterPrefab,
-                nameof(soundEmitterPrefab),
-                "soundEmitterPrefab is empty"
-            );
 
         void InitializePool() =>
             soundEmitterPool = new ObjectPool<SoundEmitter>(

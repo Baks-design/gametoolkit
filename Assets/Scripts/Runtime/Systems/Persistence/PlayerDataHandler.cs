@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace GameToolkit.Runtime.Systems.Persistence
 {
-    public class PlayerDataHandler : CustomMonoBehaviour, IUpdatable, IBind<PlayerData>
+    public class PlayerDataHandler : CustomMonoBehaviour, IBind<PlayerData>
     {
         [SerializeField]
         PlayerData data;
@@ -15,7 +15,6 @@ namespace GameToolkit.Runtime.Systems.Persistence
         {
             this.data = data;
             this.data.Id = Id;
-
             Transform.SetPositionAndRotation(data.position, data.rotation);
         }
 

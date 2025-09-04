@@ -46,7 +46,7 @@ namespace GameToolkit.Runtime.Systems.Persistence
                 return Empty;
 
             return new SerializableGuid(
-                Convert.ToUInt32(hexString.Substring(0, 8), 16),
+                Convert.ToUInt32(hexString[..8], 16),
                 Convert.ToUInt32(hexString.Substring(8, 8), 16),
                 Convert.ToUInt32(hexString.Substring(16, 8), 16),
                 Convert.ToUInt32(hexString.Substring(24, 8), 16)
@@ -70,7 +70,8 @@ namespace GameToolkit.Runtime.Systems.Persistence
 
         public static implicit operator SerializableGuid(Guid guid) => new(guid);
 
-        public override bool Equals(object obj) => obj is SerializableGuid guid && Equals(guid);
+        public override readonly bool Equals(object obj) =>
+            obj is SerializableGuid guid && Equals(guid);
 
         public readonly bool Equals(SerializableGuid other) =>
             Part1 == other.Part1
