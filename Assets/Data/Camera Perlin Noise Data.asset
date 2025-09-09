@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d01c1cdfc541fa4cbd8290ebfe770d7, type: 3}
   m_Name: Camera Perlin Noise Data
   m_EditorClassIdentifier: Assembly-CSharp::GameToolkit.Runtime.Behaviours.Player.PerlinNoiseData
-  TransformTarget: 0
-  Amplitude: 0
-  Frequency: 0
+  TransformTarget: 2
+  Amplitude: 1
+  Frequency: 1

@@ -1,22 +1,41 @@
-using GameToolkit.Runtime.Systems.Input;
 using GameToolkit.Runtime.Utils.Helpers;
 using GameToolkit.Runtime.Utils.Tools.EventBus;
 using GameToolkit.Runtime.Utils.Tools.ServicesLocator;
-using UnityEngine;
+using GameToolkit.Runtime.Utils.Tools.StatesMachine;
 
 namespace GameToolkit.Runtime.Systems.StateManagement
 {
-    public class StateManager : MonoBehaviour, IStateServices
+    public class StateManager : StatefulEntity, IStateServices
     {
         EventBinding<ChangeStateEvent> changeEventBinding;
 
-        void Awake()
+        public bool IsGameRunning { get; private set; }
+
+        protected override void Awake()
+        {
+            base.Awake();
+            SetupManager();
+            SetupStateMachine();
+        }
+
+        void SetupManager()
         {
             DontDestroyOnLoad(gameObject);
             ServiceLocator.Global.Register<IStateServices>(this);
         }
 
-        void OnEnable()
+        void SetupStateMachine()
+        {
+            var gameplayState = new GameplayState();
+            var pauseState = new PauseState();
+
+            At(gameplayState, pauseState, !IsGameRunning);
+            At(pauseState, gameplayState, IsGameRunning);
+
+            stateMachine.SetState(gameplayState);
+        }
+
+        protected override void OnEnable()
         {
             changeEventBinding = new EventBinding<ChangeStateEvent>(HandleStateEvent);
             EventBus<ChangeStateEvent>.Register(changeEventBinding);
@@ -25,11 +44,10 @@ namespace GameToolkit.Runtime.Systems.StateManagement
         void HandleStateEvent(ChangeStateEvent changeStateEvent)
         {
             Logging.Log($"Current State: {changeStateEvent.IsPlaying}");
+            IsGameRunning = changeStateEvent.IsPlaying;
         }
 
-        void OnDisable()
-        {
+        protected override void OnDisable() =>
             EventBus<ChangeStateEvent>.Deregister(changeEventBinding);
-        }
     }
 }

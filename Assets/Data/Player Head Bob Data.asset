@@ -9,9 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: fa6ceccef93f6c24bb8652332ec9c054, type: 3}
   m_Name: Player Head Bob Data
-  m_EditorClassIdentifier: Assembly-CSharp:GameToolkit.Runtime.Behaviours.Player:HeadBobData
+  m_EditorClassIdentifier: Assembly-CSharp::GameToolkit.Runtime.Behaviours.Player.HeadBobData
   xCurve:
     serializedVersion: 2
     m_Curve: []

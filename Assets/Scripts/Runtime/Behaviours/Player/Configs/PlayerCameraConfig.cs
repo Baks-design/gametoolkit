@@ -9,8 +9,6 @@ namespace GameToolkit.Runtime.Behaviours.Player
         [Header("Look Settings")]
         public Vector2 Sensitivity = Vector2.zero;
         public Vector2 SmoothAmount = Vector2.zero;
-
-        [Range(-90f, 90f)]
         public Vector2 LookAngleMinMax = Vector2.zero;
 
         [Header("Breathing Settings")]

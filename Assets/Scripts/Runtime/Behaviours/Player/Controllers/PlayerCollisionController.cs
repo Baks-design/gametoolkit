@@ -1,3 +1,5 @@
+using Alchemy.Inspector;
+using GameToolkit.Runtime.Systems.Input;
 using GameToolkit.Runtime.Systems.UpdateManagement;
 using UnityEngine;
 
@@ -11,32 +13,26 @@ namespace GameToolkit.Runtime.Behaviours.Player
         [SerializeField]
         PlayerCollisionConfig collisionConfig;
 
-        [HideInInspector, SerializeField]
-        PlayerMovementConfig movementConfig;
-
+        [SerializeField, ReadOnly]
         PlayerCollisionData collisionData;
-        PlayerMovementData movementData;
-        PlayerInputData inputData;
+
+        readonly PlayerMovementData movementData = new();
 
         protected override void Awake()
         {
-            base.Awake();
-            SetupComponents();
-        }
-
-        void SetupComponents()
-        {
             controller.center = new Vector3(0f, controller.height / 2f + controller.skinWidth, 0f);
-            collisionData.InitCenter = controller.center;
-            collisionData.InitHeight = controller.height;
-            collisionData.OnGrounded = true;
-            collisionData.PreviouslyGrounded = true;
-            collisionData.FinalRayLength = collisionConfig.RayLength + controller.center.y;
+            collisionData = new PlayerCollisionData
+            {
+                InitCenter = controller.center,
+                InitHeight = controller.height,
+                OnGrounded = true,
+                PreviouslyGrounded = true,
+                FinalRayLength = collisionConfig.RayLength + controller.center.y
+            };
         }
 
         public override void ProcessUpdate(float deltaTime)
         {
-            base.ProcessUpdate(deltaTime);
             CheckIfGrounded();
             CheckIfWall();
             CheckIfRoof();
@@ -46,7 +42,7 @@ namespace GameToolkit.Runtime.Behaviours.Player
         void CheckIfGrounded()
         {
             var hitGround = Physics.SphereCast(
-                transform.position + controller.center,
+                controller.transform.position + controller.center,
                 collisionConfig.RaySphereRadius,
                 Vector3.down,
                 out var hitInfo,
@@ -61,11 +57,11 @@ namespace GameToolkit.Runtime.Behaviours.Player
 
         void CheckIfWall()
         {
-            if (!inputData.HasMoveInput || movementData.FinalMoveDirection.sqrMagnitude <= 0f)
+            if (!InputManager.HasMovement || movementData.FinalMoveDirection.sqrMagnitude <= 0f)
                 return;
 
             var hitWall = Physics.SphereCast(
-                Transform.position + controller.center,
+                controller.transform.position + controller.center,
                 collisionConfig.RayObstacleSphereRadius,
                 movementData.FinalMoveDirection,
                 out var wallInfo,
@@ -80,7 +76,7 @@ namespace GameToolkit.Runtime.Behaviours.Player
         void CheckIfRoof()
         {
             var hitRoof = Physics.SphereCast(
-                Transform.position,
+                controller.transform.position,
                 collisionData.RoofRaySphereRadius,
                 Vector3.up,
                 out var _,

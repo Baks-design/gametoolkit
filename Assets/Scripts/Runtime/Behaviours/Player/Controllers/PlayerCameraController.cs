@@ -1,3 +1,4 @@
+using Alchemy.Inspector;
 using GameToolkit.Runtime.Systems.UpdateManagement;
 using GameToolkit.Runtime.Utils.Helpers;
 using Unity.Cinemachine;
@@ -14,32 +15,30 @@ namespace GameToolkit.Runtime.Behaviours.Player
         Transform yawTransform;
 
         [SerializeField]
-        Transform camTransform;
-
-        [SerializeField]
         CinemachineCamera cam;
 
         [SerializeField]
         PlayerCameraConfig cameraConfig;
 
+        [SerializeField, ReadOnly]
+        PlayerCameraData cameraData;
+
         CameraZoom cameraZoom;
         CameraSwaying cameraSwaying;
-        CameraBreathing cameraBreathing;
         CameraRotation cameraRotation;
+        CameraBreathing cameraBreathing;
 
         protected override void Awake()
         {
-            base.Awake();
-            GameSystem.SetCursor(true);
-            InitalizeComponents();
-        }
-
-        void InitalizeComponents()
-        {
             cameraRotation = new CameraRotation(yawTransform, pitchTransform, cameraConfig);
-            cameraBreathing = new CameraBreathing(camTransform, cameraConfig);
-            cameraSwaying = new CameraSwaying(camTransform, cameraConfig);
-            cameraZoom = new CameraZoom(this, cam, cameraConfig);
+            cameraBreathing = new CameraBreathing(
+                cam.transform,
+                cameraConfig,
+                new PlayerMovementData(),
+                cameraData
+            );
+            cameraSwaying = new CameraSwaying(cam.transform, cameraConfig);
+            cameraZoom = new CameraZoom(this, cam, cameraConfig, cameraData);
         }
 
         public override void ProcessLateUpdate(float deltaTime)
@@ -47,7 +46,7 @@ namespace GameToolkit.Runtime.Behaviours.Player
             base.ProcessLateUpdate(deltaTime);
             cameraRotation.RotationHandler(deltaTime);
             cameraBreathing.UpdateBreathing(deltaTime);
-            cameraZoom.ZoomHandler(deltaTime);
+            cameraZoom.HandleZoom(deltaTime);
         }
 
         public void HandleSway(Vector3 inputVector, float rawXInput, float deltaTime) =>

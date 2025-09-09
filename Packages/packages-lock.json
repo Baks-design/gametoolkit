@@ -35,13 +35,6 @@
       "dependencies": {},
       "hash": "312131b3c5c8e9b2450b07a03f249bb3e21dcbcf"
     },
-    "com.smkplus.custom-toolbar": {
-      "version": "https://github.com/smkplus/CustomToolbar.git#master",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {},
-      "hash": "c42b0f4497a2b463490b59be9026cb63b1b884f9"
-    },
     "com.unity.addressables": {
       "version": "2.7.2",
       "depth": 0,

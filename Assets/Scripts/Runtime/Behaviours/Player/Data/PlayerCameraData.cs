@@ -1,8 +1,10 @@
+using System;
 using UnityEngine;
 
 namespace GameToolkit.Runtime.Behaviours.Player
 {
-    public struct PlayerCameraData
+    [Serializable]
+    public class PlayerCameraData
     {
         public bool IsZooming;
         public Vector3 Noise;

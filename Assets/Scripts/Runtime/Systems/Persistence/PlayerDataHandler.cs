@@ -20,7 +20,6 @@ namespace GameToolkit.Runtime.Systems.Persistence
 
         public override void ProcessUpdate(float deltaTime)
         {
-            base.ProcessUpdate(deltaTime);
             data.position = Transform.position;
             data.rotation = Transform.rotation;
         }

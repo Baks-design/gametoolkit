@@ -1,8 +1,10 @@
+using System;
 using UnityEngine;
 
 namespace GameToolkit.Runtime.Behaviours.Player
 {
-    public struct PlayerCollisionData
+    [Serializable]
+    public class PlayerCollisionData
     {
         public Vector3 InitCenter;
         public float InitHeight;

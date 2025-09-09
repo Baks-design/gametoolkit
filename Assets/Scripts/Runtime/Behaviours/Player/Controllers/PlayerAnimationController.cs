@@ -1,17 +1,11 @@
 using GameToolkit.Runtime.Systems.UpdateManagement;
-using UnityEngine;
 
 namespace GameToolkit.Runtime.Behaviours.Player
 {
     public class PlayerAnimationController : CustomMonoBehaviour
     {
-        [SerializeField]
-        Animator animator;
-
         public override void ProcessUpdate(float deltaTime)
         {
-            base.ProcessUpdate(deltaTime);
-
             UpdateMoving();
             UpdateJump();
             UpdateCrouch();

@@ -1,13 +1,13 @@
+using Alchemy.Inspector;
 using GameToolkit.Runtime.Utils.Tools.StatesMachine;
 using UnityEngine;
 
 namespace GameToolkit.Runtime.Behaviours.Player
 {
-    [RequireComponent(typeof(CharacterController))]
-    public class PlayerMovementController : StatefulEntity
+    public class PlayerMovementController : StatefulEntity //TODO: Adjust Handlers
     {
         [SerializeField]
-        Transform targetRotation;
+        Transform yawTransform;
 
         [SerializeField]
         CharacterController controller;
@@ -16,13 +16,22 @@ namespace GameToolkit.Runtime.Behaviours.Player
         PlayerCameraController cameraController;
 
         [SerializeField]
-        HeadBobData headBobConfig;
-
-        [SerializeField]
         PlayerMovementConfig movementConfig;
 
-        PlayerCollisionData collisionData;
-        PlayerMovement playerMovement;
+        [SerializeField, InlineEditor]
+        HeadBobData headBobConfig;
+
+        [SerializeField, ReadOnly]
+        PlayerMovementData movementData;
+
+        CameraHandler cameraHandler;
+        CrouchHandler crouchHandler;
+        DirectionHandler directionHandler;
+        JumpHandler jumpHandler;
+        LandingHandler landingHandler;
+        VelocityHandler velocityHandler;
+        RunnningHandler runnningHandler;
+        readonly PlayerCollisionData collisionData = new();
 
         protected override void Awake()
         {
@@ -31,21 +40,87 @@ namespace GameToolkit.Runtime.Behaviours.Player
             SetupStateMachine();
         }
 
-        void InitializeClasses() =>
-            playerMovement = new PlayerMovement(
+        void InitializeClasses()
+        {
+            cameraHandler = new CameraHandler(
                 controller,
-                targetRotation,
                 movementConfig,
-                headBobConfig,
-                cameraController
+                collisionData,
+                new HeadBobHandler(headBobConfig, movementData, movementConfig),
+                movementData,
+                cameraController,
+                yawTransform
             );
+            crouchHandler = new CrouchHandler(
+                this,
+                controller,
+                yawTransform,
+                movementConfig,
+                collisionData,
+                movementData
+            );
+            directionHandler = new DirectionHandler(
+                controller,
+                movementConfig,
+                collisionData,
+                movementData
+            );
+            jumpHandler = new JumpHandler(controller, collisionData, movementData, movementConfig);
+            landingHandler = new LandingHandler(
+                this,
+                yawTransform,
+                collisionData,
+                movementData,
+                movementConfig
+            );
+            velocityHandler = new VelocityHandler(
+                controller,
+                yawTransform,
+                movementConfig,
+                collisionData,
+                movementData
+            );
+            runnningHandler = new RunnningHandler(controller, movementConfig, movementData);
+        }
 
         void SetupStateMachine()
         {
-            var groundedState = new PlayerGroundedState(playerMovement);
-            var airborneState = new PlayerAirborneState(playerMovement);
-            var underwaterState = new PlayerUnderwaterState(playerMovement);
-            var climbingState = new PlayerClimbingState(playerMovement);
+            var groundedState = new PlayerGroundedState(
+                cameraHandler,
+                crouchHandler,
+                directionHandler,
+                jumpHandler,
+                landingHandler,
+                velocityHandler,
+                runnningHandler
+            );
+            var airborneState = new PlayerAirborneState(
+                cameraHandler,
+                crouchHandler,
+                directionHandler,
+                jumpHandler,
+                landingHandler,
+                velocityHandler,
+                runnningHandler
+            );
+            var underwaterState = new PlayerUnderwaterState(
+                cameraHandler,
+                crouchHandler,
+                directionHandler,
+                jumpHandler,
+                landingHandler,
+                velocityHandler,
+                runnningHandler
+            );
+            var climbingState = new PlayerClimbingState(
+                cameraHandler,
+                crouchHandler,
+                directionHandler,
+                jumpHandler,
+                landingHandler,
+                velocityHandler,
+                runnningHandler
+            );
 
             At(groundedState, airborneState, !controller.isGrounded);
             At(groundedState, climbingState, collisionData.OnClimbing);

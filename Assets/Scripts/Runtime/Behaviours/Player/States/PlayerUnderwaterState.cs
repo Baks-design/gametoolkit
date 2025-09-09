@@ -1,22 +1,48 @@
+using GameToolkit.Runtime.Utils.Helpers;
 using GameToolkit.Runtime.Utils.Tools.StatesMachine;
 
 namespace GameToolkit.Runtime.Behaviours.Player
 {
     public class PlayerUnderwaterState : IState
     {
-        readonly PlayerMovement playerMovement;
+        readonly CameraHandler cameraHandler;
+        readonly CrouchHandler crouchHandler;
+        readonly DirectionHandler directionHandler;
+        readonly JumpHandler jumpHandler;
+        readonly LandingHandler landingHandler;
+        readonly VelocityHandler velocityHandler;
+        readonly RunnningHandler runnningHandler;
 
-        public PlayerUnderwaterState(PlayerMovement playerMovement) =>
-            this.playerMovement = playerMovement;
+        public PlayerUnderwaterState(
+            CameraHandler cameraHandler,
+            CrouchHandler crouchHandler,
+            DirectionHandler directionHandler,
+            JumpHandler jumpHandler,
+            LandingHandler landingHandler,
+            VelocityHandler velocityHandler,
+            RunnningHandler runnningHandler
+        )
+        {
+            this.cameraHandler = cameraHandler;
+            this.crouchHandler = crouchHandler;
+            this.directionHandler = directionHandler;
+            this.jumpHandler = jumpHandler;
+            this.landingHandler = landingHandler;
+            this.velocityHandler = velocityHandler;
+            this.runnningHandler = runnningHandler;
+        }
 
-        public void OnEnter() { }
+        public void OnEnter() => Logging.Log("Enter in Underwater State");
 
-        public void FixedUpdate(float deltaTime) { }
+        public void Update(float deltaTime)
+        {
+            //Logging.Log($"Current State:{Underwater State}");
+            //Logging.Log($"Delta Time:{deltaTime}");
+        }
 
-        public void Update(float deltaTime) { }
-
-        public void LateUpdate(float deltaTime) { }
-
-        public void OnExit() { }
+        public void FixedUpdate(float deltaTime)
+        {
+            //Write proper implementation
+        }
     }
 }

@@ -43,16 +43,12 @@ namespace GameToolkit.Runtime.Systems.SceneManagement
 
         void Logger()
         {
-            manager.OnSceneLoaded += sceneName => Logging.Log($"Loaded: {sceneName}");
-            manager.OnSceneUnloaded += sceneName => Logging.Log($"Unloaded: {sceneName}");
-            manager.OnSceneGroupLoaded += () => Logging.Log("Scene group loaded");
+            //manager.OnSceneLoaded += sceneName => Logging.Log($"Loaded: {sceneName}");
+            //manager.OnSceneUnloaded += sceneName => Logging.Log($"Unloaded: {sceneName}");
+            //manager.OnSceneGroupLoaded += () => Logging.Log("Scene group loaded");
         }
 
-        protected override async void Start()
-        {
-            base.Start();
-            await LoadSceneGroup(0);
-        }
+        protected override async void Start() => await LoadSceneGroup(0);
 
         public async Awaitable LoadSceneGroup(int index)
         {
@@ -82,8 +78,6 @@ namespace GameToolkit.Runtime.Systems.SceneManagement
 
         public override void ProcessUpdate(float deltaTime)
         {
-            base.ProcessUpdate(deltaTime);
-
             if (!isLoading)
                 return;
 

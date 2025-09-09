@@ -4,7 +4,6 @@ using UnityEngine;
 
 namespace GameToolkit.Runtime.Systems.UpdateManagement
 {
-    [DisallowMultipleComponent]
     public class UpdateManager : MonoBehaviour, IUpdateServices
     {
         readonly List<IFixedUpdatable> fixedUpdatableObjects = new();

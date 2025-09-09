@@ -15,7 +15,7 @@ namespace GameToolkit.Runtime.Systems.Persistence
         void Awake()
         {
             Setup();
-            dataService = new FileDataService(new JsonSerializer());
+            InitializeClasses();
         }
 
         void Setup()
@@ -23,6 +23,8 @@ namespace GameToolkit.Runtime.Systems.Persistence
             DontDestroyOnLoad(gameObject);
             ServiceLocator.Global.Register<IPersistenceServices>(this);
         }
+
+        void InitializeClasses() => dataService = new FileDataService(new JsonSerializer());
 
 #pragma warning disable UDR0005 // Domain Reload Analyzer
         void OnEnable() => SceneManager.sceneLoaded += OnSceneLoaded;

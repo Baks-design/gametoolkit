@@ -1,6 +1,6 @@
 using System.Collections.Generic;
+using GameToolkit.Runtime.Systems.UpdateManagement;
 using GameToolkit.Runtime.Utils.Extensions;
-using GameToolkit.Runtime.Utils.Helpers;
 using GameToolkit.Runtime.Utils.Tools.ServicesLocator;
 using UnityEngine;
 using UnityEngine.Audio;
@@ -8,7 +8,7 @@ using UnityEngine.Audio;
 namespace GameToolkit.Runtime.Systems.Audio
 {
     [DisallowMultipleComponent]
-    public class MusicManager : MonoBehaviour, IMusicServices
+    public class MusicManager : CustomMonoBehaviour, IMusicServices
     {
         [SerializeField]
         AudioMixerGroup musicMixerGroup;
@@ -22,7 +22,7 @@ namespace GameToolkit.Runtime.Systems.Audio
         float fading;
         const float crossFadeTime = 1f;
 
-        void Awake()
+        protected override void Awake()
         {
             Setup();
             FillSongs();
@@ -82,20 +82,20 @@ namespace GameToolkit.Runtime.Systems.Audio
             fading = 0.001f;
         }
 
-        void Update()
+        public override void ProcessUpdate(float deltaTime)
         {
-            HandleCrossFade();
+            HandleCrossFade(deltaTime);
 
             if (current && !current.isPlaying && playlist.Count > 0)
                 PlayNextTrack();
         }
 
-        void HandleCrossFade()
+        void HandleCrossFade(float deltaTime)
         {
             if (fading <= 0f)
                 return;
 
-            fading += Time.deltaTime;
+            fading += deltaTime;
 
             var fraction =
                 crossFadeTime > Mathf.Epsilon ? Mathf.Clamp01(fading / crossFadeTime) : 1f;
