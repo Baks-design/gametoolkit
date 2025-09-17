@@ -1,5 +1,4 @@
 using Alchemy.Inspector;
-using GameToolkit.Runtime.Systems.Input;
 using GameToolkit.Runtime.Systems.UpdateManagement;
 using UnityEngine;
 
@@ -16,9 +15,19 @@ namespace GameToolkit.Runtime.Behaviours.Player
         [SerializeField, ReadOnly]
         PlayerCollisionData collisionData;
 
+        GroundCheck groundCheck;
+        ObstacleCheck obstacleCheck;
+        RoofCheck roofCheck;
+        CharacterPush characterPush;
         readonly PlayerMovementData movementData = new();
 
         protected override void Awake()
+        {
+            AdjustComponents();
+            InitalizationClasses();
+        }
+
+        void AdjustComponents()
         {
             controller.center = new Vector3(0f, controller.height / 2f + controller.skinWidth, 0f);
             collisionData = new PlayerCollisionData
@@ -31,59 +40,33 @@ namespace GameToolkit.Runtime.Behaviours.Player
             };
         }
 
+        void InitalizationClasses()
+        {
+            groundCheck = new GroundCheck(controller, collisionConfig, collisionData);
+            obstacleCheck = new ObstacleCheck(
+                controller,
+                collisionConfig,
+                movementData,
+                collisionData
+            );
+            roofCheck = new RoofCheck(controller, collisionData);
+            characterPush = new CharacterPush(controller, collisionConfig);
+        }
+
         public override void ProcessUpdate(float deltaTime)
         {
-            CheckIfGrounded();
-            CheckIfWall();
-            CheckIfRoof();
+            groundCheck.CheckGround();
+            obstacleCheck.CheckObstacle();
+            roofCheck.CheckRoof();
             collisionData.PreviouslyGrounded = collisionData.OnGrounded;
         }
 
-        void CheckIfGrounded()
-        {
-            var hitGround = Physics.SphereCast(
-                controller.transform.position + controller.center,
-                collisionConfig.RaySphereRadius,
-                Vector3.down,
-                out var hitInfo,
-                collisionData.FinalRayLength,
-                collisionConfig.GroundLayer
-            );
+        void OnControllerColliderHit(ControllerColliderHit hit) => characterPush.PushBody(hit);
 
-            collisionData.OnGrounded = hitGround;
-            collisionData.CastHit = hitInfo;
-            collisionData.GroundedNormal = hitInfo.normal;
-        }
-
-        void CheckIfWall()
+        void OnDrawGizmos()
         {
-            if (!InputManager.HasMovement || movementData.FinalMoveDirection.sqrMagnitude <= 0f)
+            if (!Application.isPlaying)
                 return;
-
-            var hitWall = Physics.SphereCast(
-                controller.transform.position + controller.center,
-                collisionConfig.RayObstacleSphereRadius,
-                movementData.FinalMoveDirection,
-                out var wallInfo,
-                collisionConfig.RayObstacleLength,
-                collisionConfig.ObstacleLayers
-            );
-
-            collisionData.HasObstructed = hitWall;
-            collisionData.ObstructedNormal = wallInfo.normal;
-        }
-
-        void CheckIfRoof()
-        {
-            var hitRoof = Physics.SphereCast(
-                controller.transform.position,
-                collisionData.RoofRaySphereRadius,
-                Vector3.up,
-                out var _,
-                collisionData.InitHeight
-            );
-
-            collisionData.HasRoofed = hitRoof;
         }
     }
 }

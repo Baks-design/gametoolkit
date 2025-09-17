@@ -10,7 +10,6 @@ namespace GameToolkit.Runtime.Behaviours.Player
         readonly PlayerCollisionData collisionData;
         readonly PlayerMovementData movementData;
         readonly PlayerMovementConfig movementConfig;
-        IEnumerator landRoutine;
 
         public LandingHandler(
             MonoBehaviour monoBehaviour,
@@ -32,11 +31,11 @@ namespace GameToolkit.Runtime.Behaviours.Player
             if (collisionData.PreviouslyGrounded || !collisionData.OnGrounded)
                 return;
 
-            if (landRoutine != null)
-                monoBehaviour.StopCoroutine(landRoutine);
+            if (movementData.LandRoutine != null)
+                monoBehaviour.StopCoroutine(movementData.LandRoutine);
 
-            landRoutine = LandingRoutine(deltaTime);
-            monoBehaviour.StartCoroutine(landRoutine);
+            movementData.LandRoutine = LandingRoutine(deltaTime);
+            monoBehaviour.StartCoroutine(movementData.LandRoutine);
 
             //Logging.Log($"HandleLanding: {true}");
         }

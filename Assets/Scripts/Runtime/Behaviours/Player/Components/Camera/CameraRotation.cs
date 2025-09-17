@@ -1,5 +1,4 @@
 using GameToolkit.Runtime.Systems.Input;
-using GameToolkit.Runtime.Utils.Extensions;
 using UnityEngine;
 
 namespace GameToolkit.Runtime.Behaviours.Player

@@ -33,6 +33,7 @@ namespace GameToolkit.Runtime.Systems.UpdateManagement
         {
             if (updateServices == null)
                 return;
+
             updateServices.Unregister(this);
         }
     }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace GameToolkit.Runtime.Behaviours.Player
 {
-    public class PlayerMovementController : StatefulEntity //TODO: Adjust Handlers
+    public class PlayerMovementController : StatefulEntity //TODO: Fixes
     {
         [SerializeField]
         Transform yawTransform;
@@ -42,15 +42,6 @@ namespace GameToolkit.Runtime.Behaviours.Player
 
         void InitializeClasses()
         {
-            cameraHandler = new CameraHandler(
-                controller,
-                movementConfig,
-                collisionData,
-                new HeadBobHandler(headBobConfig, movementData, movementConfig),
-                movementData,
-                cameraController,
-                yawTransform
-            );
             crouchHandler = new CrouchHandler(
                 this,
                 controller,
@@ -73,14 +64,23 @@ namespace GameToolkit.Runtime.Behaviours.Player
                 movementData,
                 movementConfig
             );
-            velocityHandler = new VelocityHandler(
+            runnningHandler = new RunnningHandler(controller, movementConfig, movementData);
+            cameraHandler = new CameraHandler(
                 controller,
-                yawTransform,
                 movementConfig,
                 collisionData,
-                movementData
+                new HeadBobHandler(headBobConfig, movementData, movementConfig),
+                movementData,
+                cameraController,
+                yawTransform,
+                runnningHandler
             );
-            runnningHandler = new RunnningHandler(controller, movementConfig, movementData);
+            velocityHandler = new VelocityHandler(
+                controller,
+                movementConfig,
+                movementData,
+                runnningHandler
+            );
         }
 
         void SetupStateMachine()

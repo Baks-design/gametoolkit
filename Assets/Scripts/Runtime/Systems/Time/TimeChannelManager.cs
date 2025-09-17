@@ -3,14 +3,16 @@ using System.Collections.Generic;
 namespace GameToolkit.Runtime.Systems.Times
 {
     /// <summary>
-    /// Default manager for time channels using string identifiers. Developers may replace it with custom managers.
+    /// Default manager for time channels using string identifiers.
+    /// Developers may replace it with custom managers.
     /// </summary>
     public static class TimeChannelManager
     {
         static readonly Dictionary<string, TimeChannel> channels = new();
 
         /// <summary>
-        /// Registers a new time channel with the given name and time source. Does nothing if the name already exists.
+        /// Registers a new time channel with the given name and time source.
+        /// Does nothing if the name already exists.
         /// </summary>
         public static TimeChannel Register(
             string name,

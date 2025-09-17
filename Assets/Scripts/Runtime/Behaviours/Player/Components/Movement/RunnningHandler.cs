@@ -33,8 +33,8 @@ namespace GameToolkit.Runtime.Behaviours.Player
         public bool CanRun()
         {
             var normalizedDir = Vector3.zero;
-            if (smoothFinalMoveDir != Vector3.zero)
-                normalizedDir = smoothFinalMoveDir.normalized;
+            if (movementData.SmoothFinalMoveDir != Vector3.zero)
+                normalizedDir = movementData.SmoothFinalMoveDir.normalized;
             var dot = Vector3.Dot(controller.transform.forward, normalizedDir);
             return dot >= movementConfig.CanRunThreshold && !movementData.IsCrouching;
         }

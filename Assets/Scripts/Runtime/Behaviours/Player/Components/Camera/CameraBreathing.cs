@@ -2,9 +2,10 @@ using UnityEngine;
 
 namespace GameToolkit.Runtime.Behaviours.Player
 {
-    public class CameraBreathing //TODO: Fix Breathing
+    public class CameraBreathing
     {
         readonly PlayerCameraConfig cameraConfig;
+        readonly PerlinNoiseData perlinNoiseConfig;
         readonly PerlinNoiseScroller perlinNoiseScroller;
         readonly Transform cameraTransform;
         readonly PlayerMovementData movementData;
@@ -15,6 +16,7 @@ namespace GameToolkit.Runtime.Behaviours.Player
         public CameraBreathing(
             Transform cameraTransform,
             PlayerCameraConfig cameraConfig,
+            PerlinNoiseData perlinNoiseConfig,
             PlayerMovementData movementData,
             PlayerCameraData cameraData
         )
@@ -23,8 +25,10 @@ namespace GameToolkit.Runtime.Behaviours.Player
             this.movementData = movementData;
             this.cameraTransform = cameraTransform;
             this.cameraData = cameraData;
+            this.cameraConfig = cameraConfig;
+            this.perlinNoiseConfig = perlinNoiseConfig;
 
-            perlinNoiseScroller = new PerlinNoiseScroller(cameraConfig.Data);
+            perlinNoiseScroller = new PerlinNoiseScroller(perlinNoiseConfig, cameraData);
         }
 
         public void UpdateBreathing(float deltaTime)
@@ -37,7 +41,7 @@ namespace GameToolkit.Runtime.Behaviours.Player
             var posOffset = Vector3.zero;
             var rotOffset = Vector3.zero;
 
-            switch (cameraConfig.Data.TransformTarget)
+            switch (perlinNoiseConfig.TransformTarget)
             {
                 case TransformTarget.Position:
                 {

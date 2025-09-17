@@ -14,21 +14,111 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameToolkit.Runtime.Behaviours.Player.HeadBobData
   xCurve:
     serializedVersion: 2
-    m_Curve: []
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 3.633036
+      outSlope: 3.633036
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.15792277
+    - serializedVersion: 3
+      time: 0.5
+      value: 1
+      inSlope: 0.006286651
+      outSlope: 0.006286651
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: -3.6192627
+      outSlope: -3.6192627
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.15006685
+    - serializedVersion: 3
+      time: 1.5
+      value: -1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 1
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 2
+      value: 0
+      inSlope: 3.835659
+      outSlope: 3.835659
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.20751238
+      outWeight: 0.33333334
     m_PreInfinity: 2
-    m_PostInfinity: 2
+    m_PostInfinity: 1
     m_RotationOrder: 4
   yCurve:
     serializedVersion: 2
-    m_Curve: []
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 3.633036
+      outSlope: 3.633036
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.15792277
+    - serializedVersion: 3
+      time: 0.5
+      value: 1
+      inSlope: 0.006286651
+      outSlope: 0.006286651
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: -3.6192627
+      outSlope: -3.6192627
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.15006685
+    - serializedVersion: 3
+      time: 1.5
+      value: -1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 1
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 2
+      value: 0
+      inSlope: 3.835659
+      outSlope: 3.835659
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.20751238
+      outWeight: 0.33333334
     m_PreInfinity: 2
-    m_PostInfinity: 2
+    m_PostInfinity: 1
     m_RotationOrder: 4
-  xAmplitude: 0
-  yAmplitude: 0
-  xFrequency: 0
-  yFrequency: 0
-  runAmplitudeMultiplier: 0
-  runFrequencyMultiplier: 0
-  crouchAmplitudeMultiplier: 0
-  crouchFrequencyMultiplier: 0
+  xAmplitude: 0.05
+  yAmplitude: 0.1
+  xFrequency: 2
+  yFrequency: 2
+  runAmplitudeMultiplier: 1.5
+  runFrequencyMultiplier: 1.5
+  crouchAmplitudeMultiplier: 0.2
+  crouchFrequencyMultiplier: 1

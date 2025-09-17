@@ -8,8 +8,6 @@ namespace GameToolkit.Runtime.Systems.Input
         static InputSystem_Actions inputActions;
 
         public static bool IsInitialized { get; private set; }
-        public static bool KeyboardMouseDevice { get; private set; } = true;
-        public static bool GamepadDevice { get; private set; } = false;
 
         public static event Action<Vector2> OnLookPerformed;
         public static event Action OnLookCanceled;
@@ -75,18 +73,7 @@ namespace GameToolkit.Runtime.Systems.Input
         }
         public static bool AimPressed => inputActions.Player.Aim.WasPerformedThisFrame();
         public static bool AimReleased => inputActions.Player.Aim.WasReleasedThisFrame();
-        public static Vector2 GetMovement
-        {
-            get
-            {
-                var move = inputActions.Player.Move.ReadValue<Vector2>();
-                if (KeyboardMouseDevice)
-                    move = move.normalized;
-                if (GamepadDevice)
-                    move = Vector2.ClampMagnitude(move, 1f);
-                return move;
-            }
-        }
+        public static Vector2 GetMovement => inputActions.Player.Move.ReadValue<Vector2>();
         public static bool HasMovement
         {
             get

@@ -52,20 +52,17 @@ namespace GameToolkit.Runtime.Behaviours.Player
 
             landingHandler.HandleLanding(deltaTime);
 
-            velocityHandler.ApplyGravityOnAirborne(deltaTime);
+            velocityHandler.ApplyGravityOnGrounded();
 
             jumpHandler.HandleJump(deltaTime);
+
+            velocityHandler.CalculateFinalAcceleration();
+            velocityHandler.ApplyMove(deltaTime);
 
             cameraHandler.RotateTowardsCamera(deltaTime);
             cameraHandler.HandleHeadBob(deltaTime);
             cameraHandler.HandleRunFOV(deltaTime);
             cameraHandler.HandleCameraSway(deltaTime);
-        }
-
-        public void FixedUpdate(float deltaTime)
-        {
-            velocityHandler.CalculateFinalAcceleration(deltaTime);
-            velocityHandler.ApplyMove(deltaTime);
         }
     }
 }

@@ -6,19 +6,19 @@ namespace GameToolkit.Runtime.Behaviours.Player
     [Serializable]
     public class PlayerCollisionData
     {
-        public Vector3 InitCenter;
-        public float InitHeight;
-        public bool OnGrounded;
         public RaycastHit CastHit;
+        public Vector3 InitCenter;
         public Vector3 GroundedNormal;
+        public Vector3 ObstructedNormal;
+        public bool OnGrounded;
         public bool PreviouslyGrounded;
         public bool HasObstructed;
-        public float FinalRayLength;
-        public Vector3 ObstructedNormal;
         public bool HasRoofed;
-        public float RoofRaySphereRadius;
         public bool OnUnderwater;
         public bool OnAirborne;
         public bool OnClimbing;
+        public float InitHeight;
+        public float FinalRayLength;
+        public float RoofRaySphereRadius;
     }
 }

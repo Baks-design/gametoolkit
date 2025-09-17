@@ -9,8 +9,6 @@ namespace GameToolkit.Runtime.Behaviours.Player
         readonly PlayerMovementConfig movementConfig;
         readonly PlayerCollisionData collisionData;
         readonly PlayerMovementData movementData;
-        Vector3 smoothFinalMoveDir;
-        Vector2 smoothInputVector;
 
         public DirectionHandler(
             CharacterController controller,
@@ -27,9 +25,9 @@ namespace GameToolkit.Runtime.Behaviours.Player
 
         public void SmoothInput(float deltaTime)
         {
-            smoothInputVector = Vector2.Lerp(
-                smoothInputVector,
-                InputManager.GetMovement,
+            movementData.SmoothInputVector = Vector2.Lerp(
+                movementData.SmoothInputVector,
+                InputManager.GetMovement.normalized,
                 deltaTime * movementConfig.SmoothInputSpeed
             );
 
@@ -38,8 +36,8 @@ namespace GameToolkit.Runtime.Behaviours.Player
 
         public void CalculateMovementDirection()
         {
-            var vDir = controller.transform.forward * smoothInputVector.y;
-            var hDir = controller.transform.right * smoothInputVector.x;
+            var vDir = controller.transform.forward * movementData.SmoothInputVector.y;
+            var hDir = controller.transform.right * movementData.SmoothInputVector.x;
             var desiredDir = vDir + hDir;
             var flattenDir = FlattenVectorOnSlopes(desiredDir);
             movementData.FinalMoveDirection = flattenDir;
@@ -57,8 +55,8 @@ namespace GameToolkit.Runtime.Behaviours.Player
 
         public void SmoothDirection(float deltaTime)
         {
-            smoothFinalMoveDir = Vector3.Lerp(
-                smoothFinalMoveDir,
+            movementData.SmoothFinalMoveDir = Vector3.Lerp(
+                movementData.SmoothFinalMoveDir,
                 movementData.FinalMoveDirection,
                 deltaTime * movementConfig.SmoothFinalDirectionSpeed
             );

@@ -12,6 +12,7 @@ namespace GameToolkit.Runtime.Behaviours.Player
         readonly PlayerCameraController cameraController;
         readonly Transform yawTransform;
         readonly HeadBobHandler headBobHandler;
+        readonly RunnningHandler runnningHandler;
 
         public CameraHandler(
             CharacterController controller,
@@ -20,7 +21,8 @@ namespace GameToolkit.Runtime.Behaviours.Player
             HeadBobHandler headBobHandler,
             PlayerMovementData movementData,
             PlayerCameraController cameraController,
-            Transform yawTransform
+            Transform yawTransform,
+            RunnningHandler runnningHandler
         )
         {
             this.controller = controller;
@@ -30,6 +32,7 @@ namespace GameToolkit.Runtime.Behaviours.Player
             this.movementData = movementData;
             this.cameraController = cameraController;
             this.yawTransform = yawTransform;
+            this.runnningHandler = runnningHandler;
         }
 
         public void RotateTowardsCamera(float deltaTime)
@@ -52,10 +55,10 @@ namespace GameToolkit.Runtime.Behaviours.Player
             )
             {
                 // we want to make our head bob only if we are moving and not during crouch routine
-                if (!duringCrouchAnimation)
+                if (!movementData.IsDuringCrouchAnimation)
                 {
                     headBobHandler.ScrollHeadBob(
-                        movementData.IsRunning && CanRun(),
+                        movementData.IsRunning && runnningHandler.CanRun(),
                         movementData.IsCrouching,
                         InputManager.GetMovement,
                         deltaTime
@@ -73,7 +76,7 @@ namespace GameToolkit.Runtime.Behaviours.Player
                     headBobHandler.ResetHeadBob();
 
                 // we want to reset our head bob only if we are standing still and not during crouch routine
-                if (!duringCrouchAnimation)
+                if (!movementData.IsDuringCrouchAnimation)
                     yawTransform.localPosition = Vector3.Lerp(
                         yawTransform.localPosition,
                         new Vector3(0f, movementData.CurrentStateHeight, 0f),
@@ -83,7 +86,11 @@ namespace GameToolkit.Runtime.Behaviours.Player
         }
 
         public void HandleCameraSway(float deltaTime) =>
-            cameraController.HandleSway(smoothInputVector, InputManager.GetMovement.x, deltaTime);
+            cameraController.HandleSway(
+                movementData.SmoothInputVector,
+                InputManager.GetMovement.x,
+                deltaTime
+            );
 
         public void HandleRunFOV(float deltaTime)
         {
@@ -93,15 +100,19 @@ namespace GameToolkit.Runtime.Behaviours.Player
                 && !collisionData.HasObstructed
             )
             {
-                if (InputManager.SprintPressed && CanRun())
+                if (InputManager.SprintPressed && runnningHandler.CanRun())
                 {
-                    duringRunAnimation = true;
+                    movementData.IsDuringRunAnimation = true;
                     cameraController.ChangeRunFOV(false, deltaTime);
                 }
 
-                if (movementData.IsRunning && CanRun() && !duringRunAnimation)
+                if (
+                    movementData.IsRunning
+                    && runnningHandler.CanRun()
+                    && !movementData.IsDuringRunAnimation
+                )
                 {
-                    duringRunAnimation = true;
+                    movementData.IsDuringRunAnimation = true;
                     cameraController.ChangeRunFOV(false, deltaTime);
                 }
             }
@@ -112,9 +123,9 @@ namespace GameToolkit.Runtime.Behaviours.Player
                 || collisionData.HasObstructed
             )
             {
-                if (duringRunAnimation)
+                if (movementData.IsDuringRunAnimation)
                 {
-                    duringRunAnimation = false;
+                    movementData.IsDuringRunAnimation = false;
                     cameraController.ChangeRunFOV(true, deltaTime);
                 }
             }

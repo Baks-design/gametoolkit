@@ -4,6 +4,6 @@ namespace GameToolkit.Runtime.Behaviours.Player
 {
     public class PlayerSoundController : CustomMonoBehaviour
     {
-        public override void ProcessUpdate(float deltaTime) { }
+        //public override void ProcessUpdate(float deltaTime) { }
     }
 }

@@ -7,33 +7,32 @@ namespace GameToolkit.Runtime.Behaviours.Player
     public class PlayerCameraConfig
     {
         [Header("Look Settings")]
-        public Vector2 Sensitivity = Vector2.zero;
-        public Vector2 SmoothAmount = Vector2.zero;
-        public Vector2 LookAngleMinMax = Vector2.zero;
+        public Vector2 Sensitivity = new Vector2(40f, 40f);
+        public Vector2 SmoothAmount = new Vector2(5f, 5f);
+        public Vector2 LookAngleMinMax = new Vector2(-45f, 45f);
 
         [Header("Breathing Settings")]
-        public PerlinNoiseData Data;
         public bool X = true;
-        public bool Y = true;
-        public bool Z = true;
+        public bool Y = false;
+        public bool Z = false;
 
         [Header("Sway Settings")]
-        public float SwayAmount = 0f;
-        public float SwaySpeed = 0f;
-        public float ReturnSpeed = 0f;
-        public float ChangeDirectionMultiplier = 0f;
-        public AnimationCurve SwayCurve = new();
+        public float SwayAmount = 1f;
+        public float SwaySpeed = 1f;
+        public float ReturnSpeed = 3f;
+        public float ChangeDirectionMultiplier = 4f;
+        public AnimationCurve SwayCurve;
 
         [Header("Zoom Settings")]
         [SerializeField, Range(20f, 60f)]
-        public float ZoomFOV = 20f;
-        public AnimationCurve ZoomCurve = new();
-        public float ZoomTransitionDuration = 0f;
+        public float ZoomFOV = 40f;
+        public float ZoomTransitionDuration = 0.25f;
+        public AnimationCurve ZoomCurve;
 
         [Range(60f, 100f)]
-        public float RunFOV = 60f;
-        public AnimationCurve RunCurve = new();
-        public float RunTransitionDuration = 0f;
-        public float RunReturnTransitionDuration = 0f;
+        public float RunFOV = 70f;
+        public float RunTransitionDuration = 0.75f;
+        public float RunReturnTransitionDuration = 0.5f;
+        public AnimationCurve RunCurve;
     }
 }

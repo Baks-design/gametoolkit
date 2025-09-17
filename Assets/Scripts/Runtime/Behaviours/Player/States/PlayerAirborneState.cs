@@ -8,7 +8,6 @@ namespace GameToolkit.Runtime.Behaviours.Player
         readonly CameraHandler cameraHandler;
         readonly CrouchHandler crouchHandler;
         readonly DirectionHandler directionHandler;
-        readonly HeadBobHandler headBobHandler;
         readonly JumpHandler jumpHandler;
         readonly LandingHandler landingHandler;
         readonly VelocityHandler velocityHandler;
@@ -57,16 +56,13 @@ namespace GameToolkit.Runtime.Behaviours.Player
 
             jumpHandler.HandleJump(deltaTime);
 
+            velocityHandler.CalculateFinalAcceleration();
+            velocityHandler.ApplyMove(deltaTime);
+
             cameraHandler.RotateTowardsCamera(deltaTime);
             cameraHandler.HandleHeadBob(deltaTime);
             cameraHandler.HandleRunFOV(deltaTime);
             cameraHandler.HandleCameraSway(deltaTime);
-        }
-
-        public void FixedUpdate(float deltaTime)
-        {
-            velocityHandler.CalculateFinalAcceleration(deltaTime);
-            velocityHandler.ApplyMove(deltaTime);
         }
     }
 }

@@ -1,6 +1,5 @@
 using Alchemy.Inspector;
 using GameToolkit.Runtime.Systems.UpdateManagement;
-using GameToolkit.Runtime.Utils.Helpers;
 using Unity.Cinemachine;
 using UnityEngine;
 
@@ -20,6 +19,9 @@ namespace GameToolkit.Runtime.Behaviours.Player
         [SerializeField]
         PlayerCameraConfig cameraConfig;
 
+        [SerializeField, InlineEditor]
+        PerlinNoiseData perlinNoiseConfig;
+
         [SerializeField, ReadOnly]
         PlayerCameraData cameraData;
 
@@ -34,6 +36,7 @@ namespace GameToolkit.Runtime.Behaviours.Player
             cameraBreathing = new CameraBreathing(
                 cam.transform,
                 cameraConfig,
+                perlinNoiseConfig,
                 new PlayerMovementData(),
                 cameraData
             );
@@ -43,7 +46,6 @@ namespace GameToolkit.Runtime.Behaviours.Player
 
         public override void ProcessLateUpdate(float deltaTime)
         {
-            base.ProcessLateUpdate(deltaTime);
             cameraRotation.RotationHandler(deltaTime);
             cameraBreathing.UpdateBreathing(deltaTime);
             cameraZoom.HandleZoom(deltaTime);

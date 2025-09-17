@@ -9,7 +9,7 @@ namespace GameToolkit.Runtime.Systems.Times
     public static class TimeChannelFactory
     {
         public static TimeChannel Create(SupportedTime type, float defaultTimeScale = 1f) =>
-            new TimeChannel(type, GetProvider(type), defaultTimeScale);
+            new(type, GetProvider(type), defaultTimeScale);
 
         static Func<float> GetProvider(SupportedTime type) =>
             type switch

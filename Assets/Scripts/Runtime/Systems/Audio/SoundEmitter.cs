@@ -56,14 +56,14 @@ namespace GameToolkit.Runtime.Systems.Audio
                 StopCoroutine(playingCoroutine);
 
             audioSource.Play();
-            playingCoroutine = StartCoroutine(WaitForSoundToEnd());
+            //playingCoroutine = StartCoroutine(WaitForSoundToEnd()); //TODO: Change to UniTask
         }
 
-        IEnumerator WaitForSoundToEnd()
-        {
-            yield return WaitFor.GetWaitWhile(() => audioSource.isPlaying);
-            Stop();
-        }
+        // Awaitable WaitForSoundToEnd()
+        // {
+        //     yield return   WaitUntil(() => audioSource.isPlaying);
+        //     Stop();
+        // }
 
         public void Stop()
         {

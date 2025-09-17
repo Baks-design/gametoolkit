@@ -82,24 +82,23 @@ MonoBehaviour:
   cam: {fileID: 3895871210046877025}
   cameraConfig:
     Sensitivity: {x: 40, y: 40}
-    SmoothAmount: {x: 25, y: 25}
+    SmoothAmount: {x: 5, y: 5}
     LookAngleMinMax: {x: -45, y: 45}
-    Data: {fileID: 11400000, guid: e6e8b1de6cbc95e4ea6e807efa7c2567, type: 2}
     X: 1
-    Y: 1
+    Y: 0
     Z: 0
     SwayAmount: 1
     SwaySpeed: 1
-    ReturnSpeed: 1
-    ChangeDirectionMultiplier: 1
+    ReturnSpeed: 3
+    ChangeDirectionMultiplier: 4
     SwayCurve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
         time: 0
         value: 0
-        inSlope: 0
-        outSlope: 0
+        inSlope: 2
+        outSlope: 2
         tangentMode: 0
         weightedMode: 0
         inWeight: 0.33333334
@@ -117,6 +116,7 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
     ZoomFOV: 40
+    ZoomTransitionDuration: 0.25
     ZoomCurve:
       serializedVersion: 2
       m_Curve:
@@ -141,20 +141,21 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    ZoomTransitionDuration: 1
-    RunFOV: 75
+    RunFOV: 70
+    RunTransitionDuration: 0.75
+    RunReturnTransitionDuration: 0.5
     RunCurve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
         time: 0
         value: 0
-        inSlope: 0
-        outSlope: 0
+        inSlope: 2.6845634
+        outSlope: 2.6845634
         tangentMode: 0
         weightedMode: 0
         inWeight: 0.33333334
-        outWeight: 0.33333334
+        outWeight: 0.055934515
       - serializedVersion: 3
         time: 1
         value: 1
@@ -164,11 +165,13 @@ MonoBehaviour:
         weightedMode: 0
         inWeight: 0.33333334
         outWeight: 0.33333334
-      m_PreInfinity: 2
+      m_PreInfinity: 0
       m_PostInfinity: 2
       m_RotationOrder: 4
-    RunTransitionDuration: 1
-    RunReturnTransitionDuration: 1
+  perlinNoiseConfig: {fileID: 11400000, guid: e6e8b1de6cbc95e4ea6e807efa7c2567, type: 2}
+  cameraData:
+    IsZooming: 0
+    Noise: {x: 0, y: 0, z: 0}
 --- !u!1 &1567549624543649769
 GameObject:
   m_ObjectHideFlags: 0
@@ -338,107 +341,33 @@ MonoBehaviour:
   collisionConfig:
     GroundLayer:
       serializedVersion: 2
-      m_Bits: 1
-    RaySphereRadius: 0.5
-    RayLength: 0.5
+      m_Bits: 9
+    RayLength: 0.1
+    RaySphereRadius: 0.2
     ObstacleLayers:
       serializedVersion: 2
-      m_Bits: 1
-    RayObstacleSphereRadius: 0.5
-    RayObstacleLength: 1
-  movementConfig:
-    StickToGroundForce: 2.5
-    GravityMultiplier: 2.5
-    WalkSpeed: 5
-    MoveBackwardsSpeedPercent: 0.5
-    MoveSideSpeedPercent: 0.5
-    CanRunThreshold: 0.8
-    RunSpeed: 8
-    RunTransitionCurve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 0
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      - serializedVersion: 3
-        time: 1
-        value: 1
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    JumpSpeed: 2.5
-    CrouchSpeed: 2
-    CrouchPercent: 0.6
-    CrouchTransitionDuration: 1
-    CrouchTransitionCurve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 0
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      - serializedVersion: 3
-        time: 1
-        value: 1
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    LowLandAmount: 0.1
-    HighLandAmount: 0.6
-    LandTimer: 0.5
-    LandDuration: 1
-    LandCurve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 0
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      - serializedVersion: 3
-        time: 1
-        value: 1
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    SmoothInputSpeed: 10
-    SmoothRotateSpeed: 10
-    SmoothVelocitySpeed: 10
-    SmoothFinalDirectionSpeed: 10
-    SmoothHeadBobSpeed: 10
+      m_Bits: 9
+    RayObstacleLength: 0.4
+    RayObstacleSphereRadius: 0.2
+    IsPushEnabled: 1
+    PushPower: 2
+    MaxPushForce: 10
+    UseForceInsteadOfVelocity: 1
+    forceMode: 1
+  collisionData:
+    InitCenter: {x: 0, y: 0, z: 0}
+    GroundedNormal: {x: 0, y: 0, z: 0}
+    ObstructedNormal: {x: 0, y: 0, z: 0}
+    OnGrounded: 0
+    PreviouslyGrounded: 0
+    HasObstructed: 0
+    HasRoofed: 0
+    OnUnderwater: 0
+    OnAirborne: 0
+    OnClimbing: 0
+    InitHeight: 0
+    FinalRayLength: 0
+    RoofRaySphereRadius: 0
 --- !u!1 &5069262752107801011
 GameObject:
   m_ObjectHideFlags: 0
@@ -483,7 +412,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5bfff7057d2ff74c9c49a342a98fcc2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameToolkit.Runtime.Behaviours.Player.PlayerSoundController
-  movementController: {fileID: 2499155624402367242}
 --- !u!1 &7345912441207144899
 GameObject:
   m_ObjectHideFlags: 0
@@ -636,15 +564,14 @@ MonoBehaviour:
   yawTransform: {fileID: 7469491795264069964}
   controller: {fileID: 2166393501622899287}
   cameraController: {fileID: 3984641321365205063}
-  headBobConfig: {fileID: 11400000, guid: 894c1592ed99e1842a949d3b141f3489, type: 2}
   movementConfig:
-    StickToGroundForce: 2.5
     GravityMultiplier: 2.5
-    WalkSpeed: 5
+    StickToGroundForce: 1
+    WalkSpeed: 3
     MoveBackwardsSpeedPercent: 0.5
-    MoveSideSpeedPercent: 0.5
-    CanRunThreshold: 0.8
-    RunSpeed: 8
+    MoveSideSpeedPercent: 0.7
+    CanRunThreshold: 0.7
+    RunSpeed: 6
     RunTransitionCurve:
       serializedVersion: 2
       m_Curve:
@@ -655,24 +582,24 @@ MonoBehaviour:
         outSlope: 0
         tangentMode: 0
         weightedMode: 0
-        inWeight: 0
-        outWeight: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
       - serializedVersion: 3
         time: 1
         value: 1
-        inSlope: 0
-        outSlope: 0
+        inSlope: 2
+        outSlope: 2
         tangentMode: 0
         weightedMode: 0
-        inWeight: 0
-        outWeight: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    JumpSpeed: 2.5
-    CrouchSpeed: 0.9
+    JumpHeight: 6
+    CrouchSpeed: 1
     CrouchPercent: 0.6
-    CrouchTransitionDuration: 1
+    CrouchTransitionDuration: 0.5
     CrouchTransitionCurve:
       serializedVersion: 2
       m_Curve:
@@ -683,8 +610,8 @@ MonoBehaviour:
         outSlope: 0
         tangentMode: 0
         weightedMode: 0
-        inWeight: 0
-        outWeight: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
       - serializedVersion: 3
         time: 1
         value: 1
@@ -692,20 +619,38 @@ MonoBehaviour:
         outSlope: 0
         tangentMode: 0
         weightedMode: 0
-        inWeight: 0
-        outWeight: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
     LowLandAmount: 0.1
-    HighLandAmount: 0.6
+    HighLandAmount: 0.4
     LandTimer: 0.5
-    LandDuration: 1
+    LandDuration: 0.5
     LandCurve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
         time: 0
+        value: 0
+        inSlope: -6.524011
+        outSlope: -6.524011
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0.02928031
+      - serializedVersion: 3
+        time: 0.2
+        value: -1
+        inSlope: -0.42737108
+        outSlope: -0.42737108
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 1
         value: 0
         inSlope: 0
         outSlope: 0
@@ -713,37 +658,31 @@ MonoBehaviour:
         weightedMode: 0
         inWeight: 0
         outWeight: 0
-      - serializedVersion: 3
-        time: 1
-        value: 1
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    SmoothInputSpeed: 5
+    SmoothInputSpeed: 10
     SmoothRotateSpeed: 10
-    SmoothVelocitySpeed: 5
-    SmoothFinalDirectionSpeed: 5
-    SmoothHeadBobSpeed: 10
-  collisionData:
-    InitCenter: {x: 0, y: 0, z: 0}
-    InitHeight: 0
-    OnGrounded: 0
-    GroundedNormal: {x: 0, y: 0, z: 0}
-    PreviouslyGrounded: 0
-    HasObstructed: 0
-    FinalRayLength: 0
-    ObstructedNormal: {x: 0, y: 0, z: 0}
-    HasRoofed: 0
-    RoofRaySphereRadius: 0
-    OnUnderwater: 0
-    OnAirborne: 0
-    OnClimbing: 0
+    SmoothVelocitySpeed: 3
+    SmoothFinalDirectionSpeed: 10
+    SmoothHeadBobSpeed: 5
+  headBobConfig: {fileID: 11400000, guid: 894c1592ed99e1842a949d3b141f3489, type: 2}
+  movementData:
+    FinalMoveVelocity: {x: 0, y: 0, z: 0}
+    FinalMoveDirection: {x: 0, y: 0, z: 0}
+    FinalOffset: {x: 0, y: 0, z: 0}
+    CurrentVelocity: {x: 0, y: 0, z: 0}
+    SmoothFinalMoveDir: {x: 0, y: 0, z: 0}
+    SmoothInputVector: {x: 0, y: 0}
+    IsMoving: 0
+    IsWalking: 0
+    IsRunning: 0
+    IsCrouching: 0
+    Resetted: 0
+    IsDuringRunAnimation: 0
+    IsDuringCrouchAnimation: 0
+    InAirTimer: 0
+    CurrentStateHeight: 0
 --- !u!1 &9042488268511448855
 GameObject:
   m_ObjectHideFlags: 0
@@ -789,4 +728,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 073a6b2bba1af9c4fa68aa2c62a717b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameToolkit.Runtime.Behaviours.Player.PlayerAnimationController
-  animator: {fileID: 0}

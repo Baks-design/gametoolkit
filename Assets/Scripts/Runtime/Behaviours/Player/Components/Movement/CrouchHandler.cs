@@ -18,7 +18,6 @@ namespace GameToolkit.Runtime.Behaviours.Player
         readonly float crouchStandHeightDifference;
         IEnumerator crouchRoutine;
         Vector3 crouchCenter;
-        bool duringCrouchAnimation;
 
         public CrouchHandler(
             MonoBehaviour monoBehaviour,
@@ -55,8 +54,8 @@ namespace GameToolkit.Runtime.Behaviours.Player
                 if (collisionData.HasRoofed)
                     return;
 
-            if (landRoutine != null)
-                monoBehaviour.StopCoroutine(landRoutine);
+            if (movementData.LandRoutine != null)
+                monoBehaviour.StopCoroutine(movementData.LandRoutine);
 
             if (crouchRoutine != null)
                 monoBehaviour.StopCoroutine(crouchRoutine);
@@ -67,9 +66,9 @@ namespace GameToolkit.Runtime.Behaviours.Player
 
         IEnumerator CrouchRoutine(float deltaTime)
         {
-            duringCrouchAnimation = true;
+            movementData.IsDuringCrouchAnimation = true;
 
-            //Logging.Log($"duringCrouchAnimation: {duringCrouchAnimation}");
+            //Logging.Log($"movementData.IsDuringCrouchAnimation: {movementData.IsDuringCrouchAnimation}");
 
             var percent = 0f;
             var speed = 1f / movementConfig.CrouchTransitionDuration;
@@ -103,7 +102,7 @@ namespace GameToolkit.Runtime.Behaviours.Player
                 yield return null;
             }
 
-            duringCrouchAnimation = false;
+            movementData.IsDuringCrouchAnimation = false;
         }
     }
 }
