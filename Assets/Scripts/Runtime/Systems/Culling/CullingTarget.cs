@@ -6,7 +6,7 @@ using UnityEngine.Events;
 
 namespace GameToolkit.Runtime.Systems.Culling
 {
-    public class CullingTarget : CustomMonoBehaviour
+    public class CullingTarget : MonoBehaviour, IUpdatable
     {
         [field: SerializeField]
         public float BoundarySphereRadius { get; set; } = 1f;
@@ -37,10 +37,8 @@ namespace GameToolkit.Runtime.Systems.Culling
         static readonly int BaseColorId = Shader.PropertyToID("_BaseColor");
         static readonly int ColorId = Shader.PropertyToID("_Color");
 
-        protected override void Awake()
+        void Awake()
         {
-            base.Awake();
-
             objectRenderer = gameObject.GetComponentInChildren<Renderer>();
             scripts = GetComponents<MonoBehaviour>();
 
@@ -51,9 +49,9 @@ namespace GameToolkit.Runtime.Systems.Culling
             fadeTimer = new CountdownTimer(fadeDuration);
         }
 
-        protected override void OnEnable()
+        void OnEnable()
         {
-            base.OnEnable();
+            UpdateManager.Register(this);
 
             currentAlpha = GetAlpha();
 
@@ -65,18 +63,16 @@ namespace GameToolkit.Runtime.Systems.Culling
                 cullingServices.Register(this);
         }
 
-        protected override void OnDisable()
+        void OnDisable()
         {
-            base.OnDisable();
-
             if (!isPriorityObject)
                 cullingServices.Deregister(this);
+
+            UpdateManager.Unregister(this);
         }
 
-        public override void ProcessUpdate(float deltaTime)
+        public void ProcessUpdate(float deltaTime)
         {
-            base.ProcessUpdate(deltaTime);
-
             if (fadeTimer.IsRunning)
             {
                 var t = 1f - Mathf.Clamp01(fadeTimer.Progress);
@@ -104,9 +100,7 @@ namespace GameToolkit.Runtime.Systems.Culling
                 };
             }
             else
-            {
                 fadeTimer.OnTimerStop = () => { };
-            }
 
             fadeTimer.Reset(fadeDuration);
             fadeTimer.Start();

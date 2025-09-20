@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace GameToolkit.Runtime.Systems.Persistence
 {
-    public class PlayerDataHandler : CustomMonoBehaviour, IBind<PlayerData>
+    public class PlayerDataHandler : MonoBehaviour, IUpdatable, IBind<PlayerData>
     {
         [SerializeField]
         PlayerData data;
@@ -15,13 +15,17 @@ namespace GameToolkit.Runtime.Systems.Persistence
         {
             this.data = data;
             this.data.Id = Id;
-            Transform.SetPositionAndRotation(data.position, data.rotation);
+            transform.SetPositionAndRotation(data.position, data.rotation);
         }
 
-        public override void ProcessUpdate(float deltaTime)
+        void OnEnable() => UpdateManager.Register(this);
+
+        void OnDisable() => UpdateManager.Unregister(this);
+
+        public void ProcessUpdate(float deltaTime)
         {
-            data.position = Transform.position;
-            data.rotation = Transform.rotation;
+            data.position = transform.position;
+            data.rotation = transform.rotation;
         }
     }
 }

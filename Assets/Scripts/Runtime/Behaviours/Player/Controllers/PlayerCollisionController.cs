@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace GameToolkit.Runtime.Behaviours.Player
 {
-    public class PlayerCollisionController : CustomMonoBehaviour
+    public class PlayerCollisionController : MonoBehaviour, IUpdatable
     {
         [SerializeField]
         CharacterController controller;
@@ -21,7 +21,7 @@ namespace GameToolkit.Runtime.Behaviours.Player
         CharacterPush characterPush;
         readonly PlayerMovementData movementData = new();
 
-        protected override void Awake()
+        void Awake()
         {
             AdjustComponents();
             InitalizationClasses();
@@ -53,7 +53,11 @@ namespace GameToolkit.Runtime.Behaviours.Player
             characterPush = new CharacterPush(controller, collisionConfig);
         }
 
-        public override void ProcessUpdate(float deltaTime)
+        void OnEnable() => UpdateManager.Register(this);
+
+        void OnDisable() => UpdateManager.Unregister(this);
+
+        public void ProcessUpdate(float deltaTime)
         {
             groundCheck.CheckGround();
             obstacleCheck.CheckObstacle();
@@ -62,11 +66,5 @@ namespace GameToolkit.Runtime.Behaviours.Player
         }
 
         void OnControllerColliderHit(ControllerColliderHit hit) => characterPush.PushBody(hit);
-
-        void OnDrawGizmos()
-        {
-            if (!Application.isPlaying)
-                return;
-        }
     }
 }

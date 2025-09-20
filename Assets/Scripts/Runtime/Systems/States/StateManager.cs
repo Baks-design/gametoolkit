@@ -35,7 +35,7 @@ namespace GameToolkit.Runtime.Systems.StateManagement
             stateMachine.SetState(gameplayState);
         }
 
-        protected override void OnEnable()
+        void OnEnable()
         {
             changeEventBinding = new EventBinding<ChangeStateEvent>(HandleStateEvent);
             EventBus<ChangeStateEvent>.Register(changeEventBinding);
@@ -47,7 +47,6 @@ namespace GameToolkit.Runtime.Systems.StateManagement
             IsGameRunning = changeStateEvent.IsPlaying;
         }
 
-        protected override void OnDisable() =>
-            EventBus<ChangeStateEvent>.Deregister(changeEventBinding);
+        void OnDisable() => EventBus<ChangeStateEvent>.Deregister(changeEventBinding);
     }
 }

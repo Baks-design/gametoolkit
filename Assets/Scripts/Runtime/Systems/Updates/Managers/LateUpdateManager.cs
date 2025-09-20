@@ -1,32 +1,17 @@
 using System.Collections.Generic;
-using GameToolkit.Runtime.Utils.Tools.ServicesLocator;
 using UnityEngine;
 
 namespace GameToolkit.Runtime.Systems.UpdateManagement
 {
-    public class LateUpdateManager : MonoBehaviour, IUpdateServices
+    public class LateUpdateManager : MonoBehaviour
     {
-        readonly List<ILateUpdatable> lateUpdatableObjects = new();
-        readonly List<ILateUpdatable> pendingObjects = new();
+        static List<ILateUpdatable> lateUpdatableObjects = new();
+        static List<ILateUpdatable> pendingObjects = new();
         static int currentIndex;
 
-        void Awake()
-        {
-            DontDestroyOnLoad(gameObject);
-            ServiceLocator.Global.Register<IUpdateServices>(this);
-        }
+        void Awake() => DontDestroyOnLoad(gameObject);
 
-        public void Register(IManagedObject obj)
-        {
-            if (obj == null)
-                return;
-
-            if (
-                obj is ILateUpdatable lateUpdatable
-                && !lateUpdatableObjects.Contains(lateUpdatable)
-            )
-                lateUpdatableObjects.Add(lateUpdatable);
-        }
+        public static void Register(ILateUpdatable obj) => lateUpdatableObjects.Add(obj);
 
         void LateUpdate()
         {
@@ -34,18 +19,12 @@ namespace GameToolkit.Runtime.Systems.UpdateManagement
                 lateUpdatableObjects[currentIndex].ProcessLateUpdate(Time.deltaTime);
 
             lateUpdatableObjects.AddRange(pendingObjects);
-
             pendingObjects.Clear();
         }
 
-        public void Unregister(IManagedObject obj)
+        public static void Unregister(ILateUpdatable obj)
         {
-            if (obj == null)
-                return;
-
-            if (obj is ILateUpdatable lateUpdatable)
-                lateUpdatableObjects.Remove(lateUpdatable);
-
+            lateUpdatableObjects.Remove(obj);
             currentIndex--;
         }
     }

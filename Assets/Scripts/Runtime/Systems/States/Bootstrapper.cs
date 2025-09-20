@@ -87,6 +87,7 @@ namespace GameToolkit.Runtime.Systems.SceneManagement
             musicManager = Instantiate(musicManager);
             cullingManager = Instantiate(cullingManager);
             playerController = Instantiate(playerController);
+            loadingScreen = Instantiate(loadingScreen);
         }
 
         async Awaitable InitializeObjects()

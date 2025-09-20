@@ -1,7 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
 using GameToolkit.Runtime.Utils.Extensions;
-using GameToolkit.Runtime.Utils.Helpers;
 using GameToolkit.Runtime.Utils.Tools.ServicesLocator;
 using UnityEngine;
 
@@ -12,7 +10,7 @@ namespace GameToolkit.Runtime.Systems.Audio
     {
         [SerializeField]
         AudioSource audioSource;
-        Coroutine playingCoroutine;
+        Awaitable playbackAwaitable;
         ISoundServices soundServices;
 
         public SoundData Data { get; private set; }
@@ -52,25 +50,28 @@ namespace GameToolkit.Runtime.Systems.Audio
 
         public void Play()
         {
-            if (playingCoroutine != null)
-                StopCoroutine(playingCoroutine);
+            if (playbackAwaitable != null && !playbackAwaitable.IsCompleted)
+                playbackAwaitable.Cancel();
 
             audioSource.Play();
-            //playingCoroutine = StartCoroutine(WaitForSoundToEnd()); //TODO: Change to UniTask
+            playbackAwaitable = WaitForSoundToEndAsync();
         }
 
-        // Awaitable WaitForSoundToEnd()
-        // {
-        //     yield return   WaitUntil(() => audioSource.isPlaying);
-        //     Stop();
-        // }
+        async Awaitable WaitForSoundToEndAsync()
+        {
+            while (audioSource.isPlaying)
+                await Awaitable.NextFrameAsync();
+
+            Stop();
+        }
 
         public void Stop()
         {
-            if (playingCoroutine != null)
+            // Cancel any ongoing playback awaitable
+            if (playbackAwaitable != null && !playbackAwaitable.IsCompleted)
             {
-                StopCoroutine(playingCoroutine);
-                playingCoroutine = null;
+                playbackAwaitable.Cancel();
+                playbackAwaitable = null;
             }
 
             audioSource.Stop();

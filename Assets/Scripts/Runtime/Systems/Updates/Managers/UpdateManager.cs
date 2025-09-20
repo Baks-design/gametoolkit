@@ -1,29 +1,17 @@
 using System.Collections.Generic;
-using GameToolkit.Runtime.Utils.Tools.ServicesLocator;
 using UnityEngine;
 
 namespace GameToolkit.Runtime.Systems.UpdateManagement
 {
-    public class UpdateManager : MonoBehaviour, IUpdateServices
+    public class UpdateManager : MonoBehaviour
     {
-        readonly List<IUpdatable> updatableObjects = new();
-        readonly List<IUpdatable> pendingObjects = new();
+        static List<IUpdatable> updatableObjects = new();
+        static List<IUpdatable> pendingObjects = new();
         static int currentIndex;
 
-        void Awake()
-        {
-            DontDestroyOnLoad(gameObject);
-            ServiceLocator.Global.Register<IUpdateServices>(this);
-        }
+        void Awake() => DontDestroyOnLoad(gameObject);
 
-        public void Register(IManagedObject obj)
-        {
-            if (obj == null)
-                return;
-
-            if (obj is IUpdatable updatable && !updatableObjects.Contains(updatable))
-                updatableObjects.Add(updatable);
-        }
+        public static void Register(IUpdatable obj) => updatableObjects.Add(obj);
 
         void Update()
         {
@@ -34,14 +22,9 @@ namespace GameToolkit.Runtime.Systems.UpdateManagement
             pendingObjects.Clear();
         }
 
-        public void Unregister(IManagedObject obj)
+        public static void Unregister(IUpdatable obj)
         {
-            if (obj == null)
-                return;
-
-            if (obj is IUpdatable updatable)
-                updatableObjects.Remove(updatable);
-
+            updatableObjects.Remove(obj);
             currentIndex--;
         }
     }

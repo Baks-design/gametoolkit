@@ -6,8 +6,6 @@ namespace GameToolkit.Runtime.Systems.StateManagement
 {
     public class PauseState : IState
     {
-        public PauseState() { }
-
         public void OnEnter()
         {
             Logging.Log("Enter in PauseState State");

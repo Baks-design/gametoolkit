@@ -1,11 +1,12 @@
 using Alchemy.Inspector;
 using GameToolkit.Runtime.Systems.UpdateManagement;
+using GameToolkit.Runtime.Utils.Helpers;
 using Unity.Cinemachine;
 using UnityEngine;
 
 namespace GameToolkit.Runtime.Behaviours.Player
 {
-    public class PlayerCameraController : CustomMonoBehaviour
+    public class PlayerCameraController : MonoBehaviour, ILateUpdatable
     {
         [SerializeField]
         Transform pitchTransform;
@@ -30,7 +31,7 @@ namespace GameToolkit.Runtime.Behaviours.Player
         CameraRotation cameraRotation;
         CameraBreathing cameraBreathing;
 
-        protected override void Awake()
+        void Awake()
         {
             cameraRotation = new CameraRotation(yawTransform, pitchTransform, cameraConfig);
             cameraBreathing = new CameraBreathing(
@@ -44,7 +45,11 @@ namespace GameToolkit.Runtime.Behaviours.Player
             cameraZoom = new CameraZoom(this, cam, cameraConfig, cameraData);
         }
 
-        public override void ProcessLateUpdate(float deltaTime)
+        void OnEnable() => LateUpdateManager.Register(this);
+
+        void OnDisable() => LateUpdateManager.Unregister(this);
+
+        public void ProcessLateUpdate(float deltaTime)
         {
             cameraRotation.RotationHandler(deltaTime);
             cameraBreathing.UpdateBreathing(deltaTime);

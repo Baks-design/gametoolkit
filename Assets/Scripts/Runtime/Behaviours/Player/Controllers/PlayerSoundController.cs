@@ -1,9 +1,10 @@
 using GameToolkit.Runtime.Systems.UpdateManagement;
+using UnityEngine;
 
 namespace GameToolkit.Runtime.Behaviours.Player
 {
-    public class PlayerSoundController : CustomMonoBehaviour
+    public class PlayerSoundController : MonoBehaviour, IUpdatable
     {
-        //public override void ProcessUpdate(float deltaTime) { }
+        public void ProcessUpdate(float deltaTime) { }
     }
 }

@@ -1,32 +1,17 @@
 using System.Collections.Generic;
-using GameToolkit.Runtime.Utils.Tools.ServicesLocator;
 using UnityEngine;
 
 namespace GameToolkit.Runtime.Systems.UpdateManagement
 {
-    public class FixedUpdateManager : MonoBehaviour, IUpdateServices
+    public class FixedUpdateManager : MonoBehaviour
     {
-        readonly List<IFixedUpdatable> fixedUpdatableObjects = new();
-        readonly List<IFixedUpdatable> pendingObjects = new();
+        static List<IFixedUpdatable> fixedUpdatableObjects = new();
+        static List<IFixedUpdatable> pendingObjects = new();
         static int currentIndex;
 
-        void Awake()
-        {
-            DontDestroyOnLoad(gameObject);
-            ServiceLocator.Global.Register<IUpdateServices>(this);
-        }
+        void Awake() => DontDestroyOnLoad(gameObject);
 
-        public void Register(IManagedObject obj)
-        {
-            if (obj == null)
-                return;
-
-            if (
-                obj is IFixedUpdatable fixedUpdatable
-                && !fixedUpdatableObjects.Contains(fixedUpdatable)
-            )
-                fixedUpdatableObjects.Add(fixedUpdatable);
-        }
+        public static void Register(IFixedUpdatable obj) => fixedUpdatableObjects.Add(obj);
 
         void FixedUpdate()
         {
@@ -34,18 +19,12 @@ namespace GameToolkit.Runtime.Systems.UpdateManagement
                 fixedUpdatableObjects[currentIndex].ProcessFixedUpdate(Time.deltaTime);
 
             fixedUpdatableObjects.AddRange(pendingObjects);
-
             pendingObjects.Clear();
         }
 
-        public void Unregister(IManagedObject obj)
+        public static void Unregister(IFixedUpdatable obj)
         {
-            if (obj == null)
-                return;
-
-            if (obj is IFixedUpdatable fixedUpdatable)
-                fixedUpdatableObjects.Remove(fixedUpdatable);
-
+            fixedUpdatableObjects.Remove(obj);
             currentIndex--;
         }
     }

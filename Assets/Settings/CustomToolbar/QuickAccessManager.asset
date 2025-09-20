@@ -13,45 +13,25 @@ MonoBehaviour:
   m_Name: QuickAccessManager
   m_EditorClassIdentifier: CustomToolbar::OpalStudio.CustomToolbar.Editor.ToolbarElements.QuickAccess.Data.QuickAccessManager
   items:
-  - displayName: Player(Clone)
-    scenePath: Assets/Scenes/Bootstrap.unity
-  - displayName: EventSystem(Clone)
-    scenePath: Assets/Scenes/Bootstrap.unity
   - displayName: Bootstrap
     scenePath: Assets/Scenes/Bootstrap.unity
-  - displayName: SceneLoader Canvas
+  - displayName: Yaw
     scenePath: Assets/Scenes/Bootstrap.unity
-  - displayName: SceneLoader Canvas
-    scenePath: Assets/Prefabs/Gameplay/SceneLoader Canvas.prefab
-  - displayName: GameObject
-    scenePath: Assets/Prefabs/Gameplay/SceneLoader Canvas.prefab
-  - displayName: GameObject
+  - displayName: Camera
     scenePath: Assets/Scenes/Bootstrap.unity
-  - displayName: Scene Loader Manager
-    scenePath: Assets/Scenes/Bootstrap.unity
-  - displayName: Scene Loader Manager
-    scenePath: Assets/Prefabs/Managers/Scene Loader Manager.prefab
   - displayName: Virtual Camera
-    scenePath: Assets/Prefabs/Managers/Scene Loader Manager.prefab
-  - displayName: Gameplay
+    scenePath: Assets/Scenes/Bootstrap.unity
+  - displayName: SceneLoader Canvas(Clone)
+    scenePath: Assets/Scenes/Bootstrap.unity
+  - displayName: Player(Clone)
+    scenePath: Assets/Scenes/Bootstrap.unity
+  - displayName: 'Cinemachine Brain '
     scenePath: 
-  - displayName: Cube
-    scenePath: Assets/Scenes/Level - Prototype.unity
-  - displayName: Player (Clone)
-    scenePath: Assets/Scenes/Level - Prototype.unity
-  - displayName: DelayedActionManager
-    scenePath: DontDestroyOnLoad
-  - displayName: ResourceManagerCallbacks
-    scenePath: DontDestroyOnLoad
-  - displayName: '[Debug Updater]'
-    scenePath: DontDestroyOnLoad
-  - displayName: Scene Loader Manager(Clone)
-    scenePath: DontDestroyOnLoad
-  - displayName: Culling Manager(Clone)
-    scenePath: DontDestroyOnLoad
-  - displayName: Music Manager(Clone)
-    scenePath: DontDestroyOnLoad
-  - displayName: Sound Manager(Clone)
-    scenePath: DontDestroyOnLoad
-  - displayName: Late Update Manager(Clone)
-    scenePath: DontDestroyOnLoad
+  - displayName: Virtual Camera
+    scenePath: Assets/Scenes/Bootstrap.unity
+  - displayName: Yaw
+    scenePath: Assets/Scenes/Bootstrap.unity
+  - displayName: Camera
+    scenePath: Assets/Prefabs/Gameplay/SceneLoader Canvas.prefab
+  - displayName: SceneLoader Canvas
+    scenePath: Assets/Prefabs/Gameplay/SceneLoader Canvas.prefab

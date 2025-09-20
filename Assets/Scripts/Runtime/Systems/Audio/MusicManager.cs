@@ -7,8 +7,7 @@ using UnityEngine.Audio;
 
 namespace GameToolkit.Runtime.Systems.Audio
 {
-    [DisallowMultipleComponent]
-    public class MusicManager : CustomMonoBehaviour, IMusicServices
+    public class MusicManager : MonoBehaviour, IUpdatable, IMusicServices
     {
         [SerializeField]
         AudioMixerGroup musicMixerGroup;
@@ -22,7 +21,7 @@ namespace GameToolkit.Runtime.Systems.Audio
         float fading;
         const float crossFadeTime = 1f;
 
-        protected override void Awake()
+        void Awake()
         {
             Setup();
             FillSongs();
@@ -42,6 +41,10 @@ namespace GameToolkit.Runtime.Systems.Audio
             foreach (var clip in initialPlaylist)
                 AddToPlaylist(clip);
         }
+
+        void OnEnable() => UpdateManager.Register(this);
+
+        void OnDisable() => UpdateManager.Unregister(this);
 
         public void AddToPlaylist(AudioClip clip)
         {
@@ -82,7 +85,7 @@ namespace GameToolkit.Runtime.Systems.Audio
             fading = 0.001f;
         }
 
-        public override void ProcessUpdate(float deltaTime)
+        public void ProcessUpdate(float deltaTime)
         {
             HandleCrossFade(deltaTime);
 

@@ -1,10 +1,11 @@
 using Alchemy.Inspector;
+using GameToolkit.Runtime.Systems.UpdateManagement;
 using GameToolkit.Runtime.Utils.Tools.StatesMachine;
 using UnityEngine;
 
 namespace GameToolkit.Runtime.Behaviours.Player
 {
-    public class PlayerMovementController : StatefulEntity //TODO: Fixes
+    public class PlayerMovementController : StatefulEntity, IUpdatable
     {
         [SerializeField]
         Transform yawTransform;
@@ -140,5 +141,11 @@ namespace GameToolkit.Runtime.Behaviours.Player
 
             stateMachine.SetState(groundedState);
         }
+
+        void OnEnable() => UpdateManager.Register(this);
+
+        void OnDisable() => UpdateManager.Unregister(this);
+
+        public void ProcessUpdate(float deltaTime) => stateMachine.Update(deltaTime);
     }
 }

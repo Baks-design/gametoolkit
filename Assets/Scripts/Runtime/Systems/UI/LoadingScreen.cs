@@ -1,3 +1,4 @@
+using GameToolkit.Runtime.Utils.Helpers;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.UI;
@@ -21,28 +22,16 @@ namespace GameToolkit.Runtime.Systems.SceneManagement
         public void Show()
         {
             loadingCanvas.gameObject.SetActive(true);
-            loadingCamera.gameObject.SetActive(true);
+            loadingCamera.Priority.Value = 99;
         }
 
-        public void SetBarPercent(float percent)
-        {
-            loadingBar.fillAmount = 0f;
-
-            var currentFillAmount = loadingBar.fillAmount;
-            var progressDifference = Mathf.Abs(currentFillAmount - percent);
-            var dynamicFillSpeed = progressDifference * fillSpeed;
-
-            loadingBar.fillAmount = Mathf.Lerp(
-                currentFillAmount,
-                percent,
-                percent * dynamicFillSpeed
-            );
-        }
+        public void SetBarPercent(float percent) =>
+            loadingBar.fillAmount = Mathfs.Eerp(loadingBar.fillAmount, percent, fillSpeed);
 
         public void Hide()
         {
             loadingCanvas.gameObject.SetActive(false);
-            loadingCamera.gameObject.SetActive(false);
+            loadingCamera.Priority.Value = 1;
         }
     }
 }

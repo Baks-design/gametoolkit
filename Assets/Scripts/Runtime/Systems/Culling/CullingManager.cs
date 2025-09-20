@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace GameToolkit.Runtime.Systems.Culling
 {
-    public class CullingManager : CustomMonoBehaviour, ICullingServices
+    public class CullingManager : MonoBehaviour, IUpdatable, ICullingServices
     {
         [SerializeField]
         float maxCullingDistance = 100f;
@@ -30,7 +30,7 @@ namespace GameToolkit.Runtime.Systems.Culling
         readonly List<CullingTarget> owners = new(64);
         readonly Dictionary<CullingTarget, int> map = new(64);
 
-        protected override void Awake()
+        void Awake()
         {
             Setup();
             SetupCulling();
@@ -60,7 +60,21 @@ namespace GameToolkit.Runtime.Systems.Culling
             tagSet = new(cullableTags);
         }
 
-        public override void ProcessUpdate(float deltaTime)
+        void OnEnable() => UpdateManager.Register(this);
+
+        void OnDisable()
+        {
+            if (group == null)
+                return;
+
+            group.onStateChanged = null;
+            group.Dispose();
+            group = null;
+
+            UpdateManager.Unregister(this);
+        }
+
+        public void ProcessUpdate(float deltaTime)
         {
             tPos += deltaTime;
             if (tPos >= updateInterval)
@@ -160,17 +174,6 @@ namespace GameToolkit.Runtime.Systems.Culling
                 tmp = new int[count];
             var vis = group.QueryIndices(true, tmp, 0);
             return (vis, count - vis);
-        }
-
-        protected override void OnDisable()
-        {
-            base.OnDisable();
-
-            if (group == null)
-                return;
-            group.onStateChanged = null;
-            group.Dispose();
-            group = null;
         }
     }
 }

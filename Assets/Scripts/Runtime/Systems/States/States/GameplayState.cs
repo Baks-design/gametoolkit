@@ -6,8 +6,6 @@ namespace GameToolkit.Runtime.Systems.StateManagement
 {
     public class GameplayState : IState
     {
-        public GameplayState() { }
-
         public void OnEnter()
         {
             Logging.Log("Enter in GameplayState State");

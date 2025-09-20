@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace GameToolkit.Runtime.Systems.SceneManagement
 {
-    public class SceneLoaderManager : CustomMonoBehaviour, ISceneLoaderServices
+    public class SceneLoaderManager : MonoBehaviour, ISceneLoaderServices
     {
         [SerializeField]
         SceneGroup[] sceneGroups;
