@@ -3,15 +3,15 @@ using UnityEngine;
 
 namespace GameToolkit.Runtime.Systems.UpdateManagement
 {
-    public class UpdateManager : MonoBehaviour
+    public class UpdateManager : MonoBehaviour, IUpdateServices
     {
-        static List<IUpdatable> updatableObjects = new();
-        static List<IUpdatable> pendingObjects = new();
-        static int currentIndex;
+        readonly List<IUpdatable> updatableObjects = new();
+        readonly List<IUpdatable> pendingObjects = new();
+        int currentIndex;
 
-        void Awake() => DontDestroyOnLoad(gameObject);
+        public void Initialize() => DontDestroyOnLoad(gameObject);
 
-        public static void Register(IUpdatable obj) => updatableObjects.Add(obj);
+        public void Register(IUpdatable obj) => updatableObjects.Add(obj);
 
         void Update()
         {
@@ -22,7 +22,7 @@ namespace GameToolkit.Runtime.Systems.UpdateManagement
             pendingObjects.Clear();
         }
 
-        public static void Unregister(IUpdatable obj)
+        public void Unregister(IUpdatable obj)
         {
             updatableObjects.Remove(obj);
             currentIndex--;

@@ -4,7 +4,7 @@ namespace GameToolkit.Runtime.Systems.Input
 {
     public static class InputManager
     {
-        static InputSystem_Actions inputActions;
+        public static InputSystem_Actions inputActions;
 
         #region Initialization
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
@@ -21,14 +21,8 @@ namespace GameToolkit.Runtime.Systems.Input
         public static bool AimPressed => inputActions.Player.Aim.WasPerformedThisFrame();
         public static bool AimReleased => inputActions.Player.Aim.WasReleasedThisFrame();
         public static Vector2 GetMovement => inputActions.Player.Move.ReadValue<Vector2>();
-        public static bool HasMovement
-        {
-            get
-            {
-                var value = inputActions.Player.Move.ReadValue<Vector2>();
-                return Mathf.Abs(value.x) > 0.1f || Mathf.Abs(value.y) > 0.1f;
-            }
-        }
+        public static bool HasMovement =>
+            inputActions.Player.Move.ReadValue<Vector2>() != Vector2.zero;
         public static bool JumpPressed => inputActions.Player.Jump.WasPerformedThisFrame();
         public static bool CrouchPressed => inputActions.Player.Crouch.WasPerformedThisFrame();
         public static bool SprintPressed => inputActions.Player.Sprint.WasPressedThisFrame();

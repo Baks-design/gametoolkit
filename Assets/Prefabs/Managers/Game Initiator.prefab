@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2588277385060455947}
   - component: {fileID: 695654579107721859}
   m_Layer: 0
-  m_Name: Bootstrap
+  m_Name: Game Initiator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -45,12 +45,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameToolkit.Runtime.Systems.SceneManagement.Bootstrapper
   cinemachineBrain: {fileID: 6036582767980027160, guid: 3f3342904b44a494bb590a91abee3e33, type: 3}
-  directionalLight: {fileID: 5384529999818269057, guid: 9aed534d9bf987449a71a872020bac69, type: 3}
   eventSystem: {fileID: 6786894314004984135, guid: 5a0b398bad0c4724c97616e64de06053, type: 3}
   loadingScreen: {fileID: 8597761550704072756, guid: 207e86e1f13534f4da045661223a99dd, type: 3}
-  playerController: {fileID: 2499155624402367242, guid: cb860804401e8f5489339b176f929f5f, type: 3}
+  playerReference:
+    m_AssetGUID: cb860804401e8f5489339b176f929f5f
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
   sceneLoaderManager: {fileID: 7842328117121115499, guid: 7c8abceb4dfc4174c8d6173a8e0b4350, type: 3}
-  persistenceManager: {fileID: 4253394395299823458, guid: a9c23dce061901d4d843e78c02b265cf, type: 3}
+  persistenceManager: {fileID: 4566326643265681088, guid: 06622027f6b25504fb9e956433e7e51e, type: 3}
   stateManager: {fileID: 7861216879625202077, guid: a3044c08b398cf5479384646f67bc40b, type: 3}
   updateManager: {fileID: 2296136757437147367, guid: a08256b38dc69c24c8eab13d128ae782, type: 3}
   fixedUpdateManager: {fileID: 7860394034275770666, guid: 14639b37b3c2fce4c8f26e2d67f2729a, type: 3}

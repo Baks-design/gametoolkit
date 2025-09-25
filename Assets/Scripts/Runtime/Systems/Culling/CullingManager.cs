@@ -29,17 +29,12 @@ namespace GameToolkit.Runtime.Systems.Culling
         BoundingSphere[] spheres = new BoundingSphere[64];
         readonly List<CullingTarget> owners = new(64);
         readonly Dictionary<CullingTarget, int> map = new(64);
+        IUpdateServices updateServices;
 
-        void Awake()
-        {
-            Setup();
-            SetupCulling();
-        }
-
-        void Setup()
+        public void Initialize()
         {
             DontDestroyOnLoad(gameObject);
-            ServiceLocator.Global.Register<ICullingServices>(this);
+            SetupCulling();
         }
 
         void SetupCulling()
@@ -60,39 +55,31 @@ namespace GameToolkit.Runtime.Systems.Culling
             tagSet = new(cullableTags);
         }
 
-        void OnEnable() => UpdateManager.Register(this);
-
-        void OnDisable()
+        void Start()
         {
-            if (group == null)
-                return;
-
-            group.onStateChanged = null;
-            group.Dispose();
-            group = null;
-
-            UpdateManager.Unregister(this);
+            if (ServiceLocator.Global.TryGet(out updateServices))
+                updateServices.Register(this);
         }
 
         public void ProcessUpdate(float deltaTime)
         {
             tPos += deltaTime;
-            if (tPos >= updateInterval)
+            if (tPos < updateInterval)
+                return;
+
+            for (var i = 0; i < count; i++)
             {
-                for (var i = 0; i < count; i++)
-                {
-                    var o = owners[i];
-                    if (!o)
-                        continue;
+                var o = owners[i];
+                if (!o)
+                    continue;
 
-                    var s = spheres[i];
-                    s.position = o.transform.position;
-                    s.radius = o.BoundarySphereRadius;
-                    spheres[i] = s;
-                }
-
-                tPos = 0f;
+                var s = spheres[i];
+                s.position = o.transform.position;
+                s.radius = o.BoundarySphereRadius;
+                spheres[i] = s;
             }
+
+            tPos = 0f;
         }
 
         public void Register(CullingTarget t)
@@ -174,6 +161,18 @@ namespace GameToolkit.Runtime.Systems.Culling
                 tmp = new int[count];
             var vis = group.QueryIndices(true, tmp, 0);
             return (vis, count - vis);
+        }
+
+        void OnDisable()
+        {
+            if (group == null)
+                return;
+
+            group.onStateChanged = null;
+            group.Dispose();
+            group = null;
+
+            updateServices.Unregister(this);
         }
     }
 }

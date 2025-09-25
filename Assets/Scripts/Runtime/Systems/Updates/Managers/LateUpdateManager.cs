@@ -3,15 +3,15 @@ using UnityEngine;
 
 namespace GameToolkit.Runtime.Systems.UpdateManagement
 {
-    public class LateUpdateManager : MonoBehaviour
+    public class LateUpdateManager : MonoBehaviour, ILateUpdateServices
     {
-        static List<ILateUpdatable> lateUpdatableObjects = new();
-        static List<ILateUpdatable> pendingObjects = new();
-        static int currentIndex;
+        readonly List<ILateUpdatable> lateUpdatableObjects = new();
+        readonly List<ILateUpdatable> pendingObjects = new();
+        int currentIndex;
 
-        void Awake() => DontDestroyOnLoad(gameObject);
+        public void Initialize() => DontDestroyOnLoad(gameObject);
 
-        public static void Register(ILateUpdatable obj) => lateUpdatableObjects.Add(obj);
+        public void Register(ILateUpdatable obj) => lateUpdatableObjects.Add(obj);
 
         void LateUpdate()
         {
@@ -22,7 +22,7 @@ namespace GameToolkit.Runtime.Systems.UpdateManagement
             pendingObjects.Clear();
         }
 
-        public static void Unregister(ILateUpdatable obj)
+        public void Unregister(ILateUpdatable obj)
         {
             lateUpdatableObjects.Remove(obj);
             currentIndex--;

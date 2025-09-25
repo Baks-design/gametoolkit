@@ -1,12 +1,13 @@
 using Alchemy.Inspector;
 using GameToolkit.Runtime.Systems.UpdateManagement;
+using GameToolkit.Runtime.Utils.Tools.ServicesLocator;
 using UnityEngine;
 
 namespace GameToolkit.Runtime.Behaviours.Player
 {
     public class PlayerCollisionController : MonoBehaviour, IUpdatable
     {
-        [SerializeField]
+        [SerializeField, Required]
         CharacterController controller;
 
         [SerializeField]
@@ -20,6 +21,7 @@ namespace GameToolkit.Runtime.Behaviours.Player
         RoofCheck roofCheck;
         CharacterPush characterPush;
         readonly PlayerMovementData movementData = new();
+        IUpdateServices updateServices;
 
         void Awake()
         {
@@ -53,18 +55,22 @@ namespace GameToolkit.Runtime.Behaviours.Player
             characterPush = new CharacterPush(controller, collisionConfig);
         }
 
-        void OnEnable() => UpdateManager.Register(this);
-
-        void OnDisable() => UpdateManager.Unregister(this);
+        void OnEnable()
+        {
+            if (ServiceLocator.Global.TryGet(out updateServices))
+                updateServices.Register(this);
+        }
 
         public void ProcessUpdate(float deltaTime)
         {
             groundCheck.CheckGround();
             obstacleCheck.CheckObstacle();
-            roofCheck.CheckRoof();
+            //roofCheck.CheckRoof();
             collisionData.PreviouslyGrounded = collisionData.OnGrounded;
         }
 
         void OnControllerColliderHit(ControllerColliderHit hit) => characterPush.PushBody(hit);
+
+        void OnDisable() => updateServices.Unregister(this);
     }
 }

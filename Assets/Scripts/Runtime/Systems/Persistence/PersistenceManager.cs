@@ -1,48 +1,24 @@
 using System.Collections.Generic;
-using GameToolkit.Runtime.Utils.Tools.ServicesLocator;
+using Alchemy.Inspector;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace GameToolkit.Runtime.Systems.Persistence
 {
     public class PersistenceManager : MonoBehaviour, IPersistenceServices
     {
+        [SerializeField, ReadOnly]
+        GameData gameData;
         IDataService dataService;
 
-        [field: SerializeField]
-        public GameData GameData { get; private set; }
+        public GameData GameData => gameData;
 
-        void Awake()
-        {
-            Setup();
-            InitializeClasses();
-        }
-
-        void Setup()
+        public void Initialize()
         {
             DontDestroyOnLoad(gameObject);
-            ServiceLocator.Global.Register<IPersistenceServices>(this);
+            dataService = new FileDataService(new JsonSerializer());
         }
 
-        void InitializeClasses() => dataService = new FileDataService(new JsonSerializer());
-
-#pragma warning disable UDR0005 // Domain Reload Analyzer
-        void OnEnable() => SceneManager.sceneLoaded += OnSceneLoaded;
-#pragma warning restore UDR0005 // Domain Reload Analyzer
-
-        void Start() => NewGame();
-
-        void OnDisable() => SceneManager.sceneLoaded -= OnSceneLoaded;
-
-        void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-        {
-            if (scene.name == "Menu")
-                return;
-
-            Bind<PlayerDataHandler, PlayerData>(GameData.playerData);
-        }
-
-        void Bind<T, TData>(TData data)
+        public void Bind<T, TData>(TData data)
             where T : MonoBehaviour, IBind<TData>
             where TData : ISaveable, new()
         {
@@ -57,23 +33,25 @@ namespace GameToolkit.Runtime.Systems.Persistence
             }
         }
 
-        void Bind<T, TData>(List<TData> datas)
+        public void Bind<T, TData>(List<TData> datas)
             where T : MonoBehaviour, IBind<TData>
             where TData : ISaveable, new()
         {
             var entities = FindObjectsByType<T>(FindObjectsSortMode.None);
             foreach (var entity in entities)
             {
-                TData data = default;
+                var data = default(TData);
+                var found = false;
                 foreach (var d in datas)
                 {
                     if (d.Id == entity.Id)
                     {
                         data = d;
+                        found = true;
                         break;
                     }
                 }
-                if (data == null)
+                if (!found)
                 {
                     data = new TData { Id = entity.Id };
                     datas.Add(data);
@@ -82,26 +60,19 @@ namespace GameToolkit.Runtime.Systems.Persistence
             }
         }
 
-        public void NewGame()
-        {
-            GameData = new GameData { Name = "Game", CurrentLevelName = "Demo" };
-            if (GameData != null)
-                SceneManager.LoadScene(GameData.CurrentLevelName);
-        }
+        public void NewGame() =>
+            gameData = new GameData { Name = "Game", CurrentLevelName = "Demo" };
 
-        public void SaveGame() => dataService.Save(GameData);
+        public void SaveGame() => dataService.Save(gameData);
 
         public void LoadGame(string gameName)
         {
-            GameData = dataService.Load(gameName);
-
-            if (string.IsNullOrWhiteSpace(GameData.CurrentLevelName))
-                GameData.CurrentLevelName = "Demo";
-
-            SceneManager.LoadScene(GameData.CurrentLevelName);
+            gameData = dataService.Load(gameName);
+            if (string.IsNullOrWhiteSpace(gameData.CurrentLevelName))
+                gameData.CurrentLevelName = "Demo";
         }
 
-        public void ReloadGame() => LoadGame(GameData.Name);
+        public void ReloadGame() => LoadGame(gameData.Name);
 
         public void DeleteGame(string gameName) => dataService.Delete(gameName);
     }

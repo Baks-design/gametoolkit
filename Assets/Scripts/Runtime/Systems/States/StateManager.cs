@@ -1,27 +1,20 @@
+using GameToolkit.Runtime.Systems.SceneManagement;
 using GameToolkit.Runtime.Utils.Helpers;
 using GameToolkit.Runtime.Utils.Tools.EventBus;
-using GameToolkit.Runtime.Utils.Tools.ServicesLocator;
 using GameToolkit.Runtime.Utils.Tools.StatesMachine;
 
 namespace GameToolkit.Runtime.Systems.StateManagement
 {
     public class StateManager : StatefulEntity, IStateServices
     {
-        EventBinding<ChangeStateEvent> changeEventBinding;
+        EventBinding<PauseScreenEvent> pauseScreenEventBinding;
 
         public bool IsGameRunning { get; private set; }
 
-        protected override void Awake()
-        {
-            base.Awake();
-            SetupManager();
-            SetupStateMachine();
-        }
-
-        void SetupManager()
+        public void Initialize()
         {
             DontDestroyOnLoad(gameObject);
-            ServiceLocator.Global.Register<IStateServices>(this);
+            SetupStateMachine();
         }
 
         void SetupStateMachine()
@@ -37,16 +30,16 @@ namespace GameToolkit.Runtime.Systems.StateManagement
 
         void OnEnable()
         {
-            changeEventBinding = new EventBinding<ChangeStateEvent>(HandleStateEvent);
-            EventBus<ChangeStateEvent>.Register(changeEventBinding);
+            pauseScreenEventBinding = new EventBinding<PauseScreenEvent>(HandlePauseScreenEvent);
+            EventBus<PauseScreenEvent>.Register(pauseScreenEventBinding);
         }
 
-        void HandleStateEvent(ChangeStateEvent changeStateEvent)
+        void HandlePauseScreenEvent(PauseScreenEvent pauseScreenEvent)
         {
-            Logging.Log($"Current State: {changeStateEvent.IsPlaying}");
-            IsGameRunning = changeStateEvent.IsPlaying;
+            Logging.Log($"Current State: {pauseScreenEvent.HasOpened}");
+            IsGameRunning = pauseScreenEvent.HasOpened;
         }
 
-        void OnDisable() => EventBus<ChangeStateEvent>.Deregister(changeEventBinding);
+        void OnDisable() => EventBus<PauseScreenEvent>.Deregister(pauseScreenEventBinding);
     }
 }

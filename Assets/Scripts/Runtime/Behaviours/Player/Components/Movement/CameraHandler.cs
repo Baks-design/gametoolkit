@@ -1,4 +1,5 @@
 using GameToolkit.Runtime.Systems.Input;
+using GameToolkit.Runtime.Utils.Helpers;
 using UnityEngine;
 
 namespace GameToolkit.Runtime.Behaviours.Player
@@ -48,11 +49,7 @@ namespace GameToolkit.Runtime.Behaviours.Player
 
         public void HandleHeadBob(float deltaTime)
         {
-            if (
-                InputManager.HasMovement
-                && collisionData.OnGrounded
-                && !collisionData.HasObstructed
-            )
+            if (InputManager.HasMovement && !collisionData.HasObstructed)
             {
                 // we want to make our head bob only if we are moving and not during crouch routine
                 if (!movementData.IsDuringCrouchAnimation)
@@ -94,11 +91,7 @@ namespace GameToolkit.Runtime.Behaviours.Player
 
         public void HandleRunFOV(float deltaTime)
         {
-            if (
-                InputManager.HasMovement
-                && collisionData.OnGrounded
-                && !collisionData.HasObstructed
-            )
+            if (InputManager.HasMovement && !collisionData.HasObstructed)
             {
                 if (InputManager.SprintPressed && runnningHandler.CanRun())
                 {

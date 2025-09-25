@@ -84,7 +84,7 @@ MonoBehaviour:
     Sensitivity: {x: 40, y: 40}
     SmoothAmount: {x: 5, y: 5}
     LookAngleMinMax: {x: -45, y: 45}
-    X: 1
+    X: 0
     Y: 0
     Z: 0
     SwayAmount: 1
@@ -116,7 +116,7 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
     ZoomFOV: 40
-    ZoomTransitionDuration: 0.25
+    ZoomTransitionDuration: 1
     ZoomCurve:
       serializedVersion: 2
       m_Curve:
@@ -172,7 +172,7 @@ MonoBehaviour:
   cameraData:
     IsZooming: 0
     Noise: {x: 0, y: 0, z: 0}
---- !u!1 &1567549624543649769
+--- !u!1 &1622558665626182649
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -180,87 +180,164 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2172076946766768379}
-  - component: {fileID: 717521337215399130}
-  - component: {fileID: 9206385957165647539}
+  - component: {fileID: 7953385271493619520}
+  - component: {fileID: 5253022390122192966}
   m_Layer: 6
-  m_Name: Capsule
+  m_Name: Movement
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &2172076946766768379
+  m_IsActive: 1
+--- !u!4 &7953385271493619520
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1567549624543649769}
+  m_GameObject: {fileID: 1622558665626182649}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
-  m_Father: {fileID: 456643529499698464}
+  m_Father: {fileID: 7225105510741475586}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &717521337215399130
-MeshFilter:
+--- !u!114 &5253022390122192966
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1567549624543649769}
-  m_Mesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
---- !u!23 &9206385957165647539
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1567549624543649769}
+  m_GameObject: {fileID: 1622558665626182649}
   m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
-  m_RayTracingAccelStructBuildFlagsOverride: 0
-  m_RayTracingAccelStructBuildFlags: 1
-  m_SmallMeshCulling: 1
-  m_ForceMeshLod: -1
-  m_MeshLodSelectionBias: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_AdditionalVertexStreams: {fileID: 0}
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe95b04d76ebccc438d2502eec7f45f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameToolkit.Runtime.Behaviours.Player.PlayerMovementController
+  yawTransform: {fileID: 7469491795264069964}
+  controller: {fileID: 2166393501622899287}
+  cameraController: {fileID: 3984641321365205063}
+  movementConfig:
+    GravityMultiplier: 2.5
+    StickToGroundForce: 1
+    WalkSpeed: 3
+    MoveBackwardsSpeedPercent: 0.5
+    MoveSideSpeedPercent: 0.7
+    CanRunThreshold: 0.7
+    RunSpeed: 6
+    RunTransitionCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 2
+        outSlope: 2
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    JumpHeight: 12
+    CrouchSpeed: 1
+    CrouchPercent: 0.6
+    CrouchTransitionDuration: 0.5
+    CrouchTransitionCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    LowLandAmount: 0.1
+    HighLandAmount: 0.4
+    LandTimer: 0.5
+    LandDuration: 0.5
+    LandCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: -6.524011
+        outSlope: -6.524011
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0.02928031
+      - serializedVersion: 3
+        time: 0.2
+        value: -1
+        inSlope: -0.42737108
+        outSlope: -0.42737108
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 1
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    SmoothInputSpeed: 10
+    SmoothRotateSpeed: 10
+    SmoothVelocitySpeed: 3
+    SmoothFinalDirectionSpeed: 10
+    SmoothHeadBobSpeed: 5
+  headBobConfig: {fileID: 11400000, guid: 894c1592ed99e1842a949d3b141f3489, type: 2}
+  movementData:
+    FinalMoveVelocity: {x: 0, y: 0, z: 0}
+    FinalMoveDirection: {x: 0, y: 0, z: 0}
+    FinalOffset: {x: 0, y: 0, z: 0}
+    CurrentVelocity: {x: 0, y: 0, z: 0}
+    SmoothFinalMoveDir: {x: 0, y: 0, z: 0}
+    SmoothInputVector: {x: 0, y: 0}
+    IsMoving: 0
+    IsWalking: 0
+    IsRunning: 0
+    IsCrouching: 0
+    Resetted: 0
+    IsDuringRunAnimation: 0
+    IsDuringCrouchAnimation: 0
+    InAirTimer: 0
+    CurrentStateHeight: 0
 --- !u!1 &4632029916826643094
 GameObject:
   m_ObjectHideFlags: 0
@@ -412,6 +489,59 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5bfff7057d2ff74c9c49a342a98fcc2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameToolkit.Runtime.Behaviours.Player.PlayerSoundController
+--- !u!1 &6208362211275420771
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5438827002426162030}
+  - component: {fileID: 3634472814060822221}
+  m_Layer: 6
+  m_Name: Data
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5438827002426162030
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6208362211275420771}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 7225105510741475586}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3634472814060822221
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6208362211275420771}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b481654c9418b8a42ab491542eba7934, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameToolkit.Runtime.Systems.Persistence.PlayerDataHandler
+  controller: {fileID: 2166393501622899287}
+  data:
+    position: {x: 0, y: 0, z: 0}
+    rotation: {x: 0, y: 0, z: 0, w: 0}
+  <Id>k__BackingField:
+    Part1: 4118776203
+    Part2: 1107735704
+    Part3: 2203480760
+    Part4: 2265533945
 --- !u!1 &7345912441207144899
 GameObject:
   m_ObjectHideFlags: 0
@@ -497,7 +627,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7225105510741475586}
   - component: {fileID: 2166393501622899287}
-  - component: {fileID: 2499155624402367242}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -514,12 +643,14 @@ Transform:
   m_GameObject: {fileID: 8425183318071612769}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.00000005960464, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 2834563580162832141}
+  - {fileID: 7953385271493619520}
   - {fileID: 7974969786926291093}
+  - {fileID: 5438827002426162030}
   - {fileID: 8903617878108667461}
   - {fileID: 456643529499698464}
   m_Father: {fileID: 0}
@@ -549,140 +680,6 @@ CharacterController:
   m_SkinWidth: 0.01
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0.91, z: 0}
---- !u!114 &2499155624402367242
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8425183318071612769}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe95b04d76ebccc438d2502eec7f45f1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GameToolkit.Runtime.Behaviours.Player.PlayerMovementController
-  yawTransform: {fileID: 7469491795264069964}
-  controller: {fileID: 2166393501622899287}
-  cameraController: {fileID: 3984641321365205063}
-  movementConfig:
-    GravityMultiplier: 2.5
-    StickToGroundForce: 1
-    WalkSpeed: 3
-    MoveBackwardsSpeedPercent: 0.5
-    MoveSideSpeedPercent: 0.7
-    CanRunThreshold: 0.7
-    RunSpeed: 6
-    RunTransitionCurve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 0
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.33333334
-      - serializedVersion: 3
-        time: 1
-        value: 1
-        inSlope: 2
-        outSlope: 2
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.33333334
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    JumpHeight: 6
-    CrouchSpeed: 1
-    CrouchPercent: 0.6
-    CrouchTransitionDuration: 0.5
-    CrouchTransitionCurve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 0
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.33333334
-      - serializedVersion: 3
-        time: 1
-        value: 1
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.33333334
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    LowLandAmount: 0.1
-    HighLandAmount: 0.4
-    LandTimer: 0.5
-    LandDuration: 0.5
-    LandCurve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 0
-        inSlope: -6.524011
-        outSlope: -6.524011
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0.02928031
-      - serializedVersion: 3
-        time: 0.2
-        value: -1
-        inSlope: -0.42737108
-        outSlope: -0.42737108
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.33333334
-      - serializedVersion: 3
-        time: 1
-        value: 0
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    SmoothInputSpeed: 10
-    SmoothRotateSpeed: 10
-    SmoothVelocitySpeed: 3
-    SmoothFinalDirectionSpeed: 10
-    SmoothHeadBobSpeed: 5
-  headBobConfig: {fileID: 11400000, guid: 894c1592ed99e1842a949d3b141f3489, type: 2}
-  movementData:
-    FinalMoveVelocity: {x: 0, y: 0, z: 0}
-    FinalMoveDirection: {x: 0, y: 0, z: 0}
-    FinalOffset: {x: 0, y: 0, z: 0}
-    CurrentVelocity: {x: 0, y: 0, z: 0}
-    SmoothFinalMoveDir: {x: 0, y: 0, z: 0}
-    SmoothInputVector: {x: 0, y: 0}
-    IsMoving: 0
-    IsWalking: 0
-    IsRunning: 0
-    IsCrouching: 0
-    Resetted: 0
-    IsDuringRunAnimation: 0
-    IsDuringCrouchAnimation: 0
-    InAirTimer: 0
-    CurrentStateHeight: 0
 --- !u!1 &9042488268511448855
 GameObject:
   m_ObjectHideFlags: 0
@@ -712,8 +709,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
-  m_Children:
-  - {fileID: 2172076946766768379}
+  m_Children: []
   m_Father: {fileID: 7225105510741475586}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8348823329799764046

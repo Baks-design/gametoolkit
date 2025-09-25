@@ -169,7 +169,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8028878361074368343, guid: 158ddb5419a90d9469eec2e90ed74167, type: 3}
       propertyPath: m_Name
-      value: Bootstrap
+      value: Game Initiator
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

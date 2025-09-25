@@ -4,23 +4,23 @@ using UnityEngine;
 namespace GameToolkit.Runtime.Systems.Persistence
 {
     [CustomEditor(typeof(PersistenceManager))]
-    public class SaveManagerEditor : Editor
+    public class SaveLoadTestEditor : Editor
     {
         public override void OnInspectorGUI()
         {
-            var persistenceManager = (PersistenceManager)target;
-            var gameName = persistenceManager.GameData.Name;
+            var saveLoadSystem = (PersistenceManager)target;
+            var gameName = saveLoadSystem.GameData.Name;
 
             DrawDefaultInspector();
 
             if (GUILayout.Button("New Game"))
-                persistenceManager.NewGame();
+                saveLoadSystem.NewGame();
             if (GUILayout.Button("Save Game"))
-                persistenceManager.SaveGame();
+                saveLoadSystem.SaveGame();
             if (GUILayout.Button("Load Game"))
-                persistenceManager.LoadGame(gameName);
+                saveLoadSystem.LoadGame(gameName);
             if (GUILayout.Button("Delete Game"))
-                persistenceManager.DeleteGame(gameName);
+                saveLoadSystem.DeleteGame(gameName);
         }
     }
 }

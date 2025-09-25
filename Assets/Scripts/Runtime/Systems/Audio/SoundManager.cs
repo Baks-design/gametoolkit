@@ -1,6 +1,6 @@
 using System.Collections.Generic;
+using Alchemy.Inspector;
 using GameToolkit.Runtime.Utils.Helpers;
-using GameToolkit.Runtime.Utils.Tools.ServicesLocator;
 using UnityEngine;
 using UnityEngine.Pool;
 
@@ -9,7 +9,7 @@ namespace GameToolkit.Runtime.Systems.Audio
     [DisallowMultipleComponent]
     public class SoundManager : MonoBehaviour, ISoundServices
     {
-        [SerializeField]
+        [SerializeField, AssetsOnly, Required]
         SoundEmitter soundEmitterPrefab;
 
         [SerializeField]
@@ -28,16 +28,10 @@ namespace GameToolkit.Runtime.Systems.Audio
         readonly List<SoundEmitter> activeSoundEmitters = new();
         public readonly LinkedList<SoundEmitter> FrequentSoundEmitters = new();
 
-        void Awake()
+        public void Initialize()
         {
-            Setup();
-            InitializePool();
-        }
-
-        void Setup()
-        {
-            ServiceLocator.Global.Register<ISoundServices>(this);
             DontDestroyOnLoad(gameObject);
+            InitializePool();
         }
 
         void InitializePool() =>

@@ -23,23 +23,16 @@ namespace GameToolkit.Runtime.Behaviours.Player
             this.movementConfig = movementConfig;
         }
 
-        public void HandleJump(float deltaTime)
+        public void HandleJump()
         {
-            if (
-                !InputManager.JumpPressed
-                || !controller.isGrounded
-                || movementData.IsCrouching
-                || !movementData.IsRunning
-            )
+            if (!InputManager.JumpPressed || movementData.IsCrouching)
                 return;
 
-            movementData.FinalMoveVelocity.y = Mathf.Sqrt(
-                movementConfig.JumpHeight * deltaTime * -2f
-            );
+            movementData.FinalMoveVelocity.y = movementConfig.JumpHeight;
+            //Logging.Log($"movementData.FinalMoveVelocity.y: {movementData.FinalMoveVelocity.y}");
+
             collisionData.PreviouslyGrounded = true;
             collisionData.OnGrounded = false;
-
-            //Logging.Log($"movementData.FinalMoveVelocity.y: {movementData.FinalMoveVelocity.y}");
         }
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Eflatun.SceneReference;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -32,7 +33,6 @@ namespace GameToolkit.Runtime.Systems.SceneManagement
                 loadedScenes.Add(SceneManager.GetSceneAt(i).name);
 
             var totalScenesToLoad = ActiveSceneGroup.Scenes.Count;
-
             var operationGroup = new AsyncOperationGroup(totalScenesToLoad);
 
             for (var i = 0; i < totalScenesToLoad; i++)
@@ -65,7 +65,7 @@ namespace GameToolkit.Runtime.Systems.SceneManagement
             while (!operationGroup.IsDone || !handleGroup.IsDone)
             {
                 progress?.Report((operationGroup.Progress + handleGroup.Progress) / 2f);
-                await Awaitable.WaitForSecondsAsync(1f);
+                await Awaitable.WaitForSecondsAsync(0.1f);
             }
 
             var activeScene = SceneManager.GetSceneByName(
@@ -103,7 +103,6 @@ namespace GameToolkit.Runtime.Systems.SceneManagement
                         break;
                     }
                 }
-
                 if (hasValidHandle)
                     continue;
 
@@ -127,14 +126,12 @@ namespace GameToolkit.Runtime.Systems.SceneManagement
             foreach (var handle in handleGroup.Handles)
                 if (handle.IsValid())
                     Addressables.UnloadSceneAsync(handle);
+
             handleGroup.Handles.Clear();
 
             // Wait until all AsyncOperations in the group are done
             while (!operationGroup.IsDone)
-                await Awaitable.WaitForSecondsAsync(1f); // delay to avoid tight loop
-
-            // Optional: UnloadUnusedAssets - unloads all unused assets from memory
-            await Resources.UnloadUnusedAssets();
+                await Awaitable.WaitForSecondsAsync(0.1f); // delay to avoid tight loop
         }
     }
 }

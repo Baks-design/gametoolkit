@@ -1,13 +1,18 @@
 using GameToolkit.Runtime.Systems.UpdateManagement;
+using GameToolkit.Runtime.Utils.Tools.ServicesLocator;
 using UnityEngine;
 
 namespace GameToolkit.Runtime.Behaviours.Player
 {
     public class PlayerAnimationController : MonoBehaviour, IUpdatable
     {
-        void OnEnable() => UpdateManager.Register(this);
+        IUpdateServices updateServices;
 
-        void OnDisable() => UpdateManager.Unregister(this);
+        void OnEnable()
+        {
+            if (ServiceLocator.Global.TryGet(out updateServices))
+                updateServices.Register(this);
+        }
 
         public void ProcessUpdate(float deltaTime)
         {
@@ -27,5 +32,7 @@ namespace GameToolkit.Runtime.Behaviours.Player
         void UpdateSwimming() { }
 
         void UpdateClimbing() { }
+
+        void OnDisable() => updateServices.Unregister(this);
     }
 }

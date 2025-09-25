@@ -28,7 +28,7 @@ namespace GameToolkit.Runtime.Behaviours.Player
 
         public void HandleLanding(float deltaTime)
         {
-            if (collisionData.PreviouslyGrounded || !collisionData.OnGrounded)
+            if (collisionData.PreviouslyGrounded)
                 return;
 
             if (movementData.LandRoutine != null)

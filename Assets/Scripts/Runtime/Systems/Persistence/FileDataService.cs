@@ -18,38 +18,33 @@ namespace GameToolkit.Runtime.Systems.Persistence
             fileExtension = "json";
         }
 
-        string GetPathToFile(string fileName) =>
-            Path.Combine(dataPath, string.Concat(fileName, ".", fileExtension));
-
         public void Save(GameData data, bool overwrite = true)
         {
             var fileLocation = GetPathToFile(data.Name);
-
             if (!overwrite && File.Exists(fileLocation))
                 throw new IOException(
                     $"The file '{data.Name}.{fileExtension}' already exists and cannot be overwritten."
                 );
-
             File.WriteAllText(fileLocation, serializer.Serialize(data));
         }
 
         public GameData Load(string name)
         {
             var fileLocation = GetPathToFile(name);
-
             if (!File.Exists(fileLocation))
                 throw new ArgumentException($"No persisted GameData with name '{name}'");
-
             return serializer.Deserialize<GameData>(File.ReadAllText(fileLocation));
         }
 
         public void Delete(string name)
         {
             var fileLocation = GetPathToFile(name);
-
             if (File.Exists(fileLocation))
                 File.Delete(fileLocation);
         }
+
+        string GetPathToFile(string fileName) =>
+            Path.Combine(dataPath, string.Concat(fileName, ".", fileExtension));
 
         public void DeleteAll()
         {

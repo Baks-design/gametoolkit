@@ -1,9 +1,11 @@
-using System;
-using GameToolkit.Runtime.Utils.Extensions;
+﻿using System;
 using UnityEngine;
 
-namespace GameToolkit.Runtime.Systems.Persistence
+namespace GameToolkit.Runtime.Utils.Helpers
 {
+    /// <summary>
+    /// Represents a globally unique identifier (GUID) that is serializable with Unity and usable in game scripts.
+    /// </summary>
     [Serializable]
     public struct SerializableGuid : IEquatable<SerializableGuid>
     {
@@ -70,8 +72,7 @@ namespace GameToolkit.Runtime.Systems.Persistence
 
         public static implicit operator SerializableGuid(Guid guid) => new(guid);
 
-        public override readonly bool Equals(object obj) =>
-            obj is SerializableGuid guid && Equals(guid);
+        public override bool Equals(object obj) => obj is SerializableGuid guid && Equals(guid);
 
         public readonly bool Equals(SerializableGuid other) =>
             Part1 == other.Part1

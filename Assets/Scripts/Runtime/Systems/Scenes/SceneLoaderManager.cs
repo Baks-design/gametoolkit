@@ -1,7 +1,7 @@
-using GameToolkit.Runtime.Systems.UpdateManagement;
+using GameToolkit.Runtime.Systems.Persistence;
 using GameToolkit.Runtime.Utils.Helpers;
-using GameToolkit.Runtime.Utils.Tools.ServicesLocator;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace GameToolkit.Runtime.Systems.SceneManagement
 {
@@ -10,12 +10,13 @@ namespace GameToolkit.Runtime.Systems.SceneManagement
         [SerializeField]
         SceneGroup[] sceneGroups;
         float targetProgress;
+        PersistenceManager persistenceManager;
         readonly SceneGroupManager manager = new();
 
-        public void Initialize()
+        public void Initialize(PersistenceManager persistenceManager)
         {
-            DontDestroyOnLoad(this);
-            ServiceLocator.Global.Register<ISceneLoaderServices>(this);
+            this.persistenceManager = persistenceManager;
+            DontDestroyOnLoad(gameObject);
         }
 
         public async Awaitable LoadSceneGroup(int index)
@@ -32,6 +33,15 @@ namespace GameToolkit.Runtime.Systems.SceneManagement
             progress.Progressed += target => targetProgress = Mathf.Max(target, targetProgress);
 
             await manager.LoadScenes(sceneGroups[index], progress);
+
+            PersistenceBinding();
+        }
+
+        void PersistenceBinding()
+        {
+            persistenceManager.Bind<PlayerDataHandler, PlayerData>(
+                persistenceManager.GameData.playerData
+            );
         }
     }
 }

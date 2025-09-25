@@ -1,3 +1,4 @@
+using Alchemy.Inspector;
 using GameToolkit.Runtime.Systems.UpdateManagement;
 using GameToolkit.Runtime.Utils.Tools.ServicesLocator;
 using GameToolkit.Runtime.Utils.Tools.StatesMachine;
@@ -8,11 +9,11 @@ namespace GameToolkit.Runtime.Systems.Culling
 {
     public class CullingTarget : MonoBehaviour, IUpdatable
     {
-        [field: SerializeField]
-        public float BoundarySphereRadius { get; set; } = 1f;
-
-        [SerializeField]
+        [SerializeField, Required]
         Renderer objectRenderer;
+
+        [field: SerializeField]
+        public float BoundarySphereRadius { get; private set; } = 1f;
 
         [SerializeField]
         float fadeDuration = 2f;
@@ -36,12 +37,13 @@ namespace GameToolkit.Runtime.Systems.Culling
         float targetAlpha;
         static readonly int BaseColorId = Shader.PropertyToID("_BaseColor");
         static readonly int ColorId = Shader.PropertyToID("_Color");
+        IUpdateServices updateServices;
 
         void Awake()
         {
             objectRenderer = gameObject.GetComponentInChildren<Renderer>();
-            scripts = GetComponents<MonoBehaviour>();
 
+            scripts = GetComponents<MonoBehaviour>();
             for (var i = 0; i < scripts.Length; i++)
                 if (scripts[i] == this)
                     scripts[i] = null;
@@ -51,34 +53,26 @@ namespace GameToolkit.Runtime.Systems.Culling
 
         void OnEnable()
         {
-            UpdateManager.Register(this);
-
-            currentAlpha = GetAlpha();
+            if (ServiceLocator.Global.TryGet(out updateServices))
+                updateServices.Register(this);
 
             ServiceLocator.Global.Get(out cullingServices);
-
             if (isPriorityObject)
                 onVisible?.Invoke();
             else
                 cullingServices.Register(this);
-        }
 
-        void OnDisable()
-        {
-            if (!isPriorityObject)
-                cullingServices.Deregister(this);
-
-            UpdateManager.Unregister(this);
+            currentAlpha = GetAlpha();
         }
 
         public void ProcessUpdate(float deltaTime)
         {
-            if (fadeTimer.IsRunning)
-            {
-                var t = 1f - Mathf.Clamp01(fadeTimer.Progress);
-                var a = Mathf.Lerp(startAlpha, targetAlpha, t);
-                SetAlpha(a);
-            }
+            if (!fadeTimer.IsRunning)
+                return;
+
+            var t = 1f - Mathf.Clamp01(fadeTimer.Progress);
+            var a = Mathf.Lerp(startAlpha, targetAlpha, t);
+            SetAlpha(a);
         }
 
         void BeginFadeTo(float target, bool deactivate)
@@ -108,7 +102,7 @@ namespace GameToolkit.Runtime.Systems.Culling
 
         void EnableScripts(bool v)
         {
-            for (int i = 0; i < scripts.Length; i++)
+            for (var i = 0; i < scripts.Length; i++)
             {
                 var s = scripts[i];
                 if (s == null)
@@ -145,6 +139,7 @@ namespace GameToolkit.Runtime.Systems.Culling
         {
             if (fadeTimer.IsRunning)
                 fadeTimer.Stop();
+
             if (isPriorityObject)
                 return;
 
@@ -174,6 +169,7 @@ namespace GameToolkit.Runtime.Systems.Culling
                 return m.GetColor(BaseColorId).a;
             if (m.HasProperty(ColorId))
                 return m.GetColor(ColorId).a;
+
             return 1f;
         }
 
@@ -205,6 +201,14 @@ namespace GameToolkit.Runtime.Systems.Culling
             }
 
             objectRenderer.SetPropertyBlock(mpb);
+        }
+
+        void OnDisable()
+        {
+            if (!isPriorityObject)
+                cullingServices.Deregister(this);
+
+            updateServices.Unregister(this);
         }
     }
 }

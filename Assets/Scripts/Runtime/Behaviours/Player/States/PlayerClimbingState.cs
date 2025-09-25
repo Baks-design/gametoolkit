@@ -37,9 +37,6 @@ namespace GameToolkit.Runtime.Behaviours.Player
         public void Update(float deltaTime)
         {
             //Logging.Log($"Current State:{Climbing State}");
-            //Logging.Log($"Delta Time:{deltaTime}");
         }
-
-        public void FixedUpdate(float deltaTime) { }
     }
 }

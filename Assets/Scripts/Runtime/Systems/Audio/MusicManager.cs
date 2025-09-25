@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Alchemy.Inspector;
 using GameToolkit.Runtime.Systems.UpdateManagement;
 using GameToolkit.Runtime.Utils.Extensions;
 using GameToolkit.Runtime.Utils.Tools.ServicesLocator;
@@ -9,10 +10,10 @@ namespace GameToolkit.Runtime.Systems.Audio
 {
     public class MusicManager : MonoBehaviour, IUpdatable, IMusicServices
     {
-        [SerializeField]
+        [SerializeField, Required]
         AudioMixerGroup musicMixerGroup;
 
-        [SerializeField]
+        [SerializeField, Required]
         List<AudioClip> initialPlaylist;
 
         AudioSource current;
@@ -20,17 +21,12 @@ namespace GameToolkit.Runtime.Systems.Audio
         readonly Queue<AudioClip> playlist = new();
         float fading;
         const float crossFadeTime = 1f;
+        IUpdateServices updateServices;
 
-        void Awake()
+        public void Initialize()
         {
-            Setup();
-            FillSongs();
-        }
-
-        void Setup()
-        {
-            ServiceLocator.Global.Register<IMusicServices>(this);
             DontDestroyOnLoad(gameObject);
+            FillSongs();
         }
 
         void FillSongs()
@@ -42,9 +38,11 @@ namespace GameToolkit.Runtime.Systems.Audio
                 AddToPlaylist(clip);
         }
 
-        void OnEnable() => UpdateManager.Register(this);
-
-        void OnDisable() => UpdateManager.Unregister(this);
+        void Start()
+        {
+            if (ServiceLocator.Global.TryGet(out updateServices))
+                updateServices.Register(this);
+        }
 
         public void AddToPlaylist(AudioClip clip)
         {
@@ -119,5 +117,7 @@ namespace GameToolkit.Runtime.Systems.Audio
                 }
             }
         }
+
+        void OnDisable() => updateServices.Unregister(this);
     }
 }

@@ -47,7 +47,7 @@ namespace GameToolkit.Runtime.Behaviours.Player
 
         public void HandleCrouch(float deltaTime)
         {
-            if (!InputManager.CrouchPressed || !collisionData.OnGrounded)
+            if (!InputManager.CrouchPressed)
                 return;
 
             if (movementData.IsCrouching)

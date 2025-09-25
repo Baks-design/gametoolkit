@@ -1,6 +1,6 @@
 using Alchemy.Inspector;
 using GameToolkit.Runtime.Systems.UpdateManagement;
-using GameToolkit.Runtime.Utils.Helpers;
+using GameToolkit.Runtime.Utils.Tools.ServicesLocator;
 using Unity.Cinemachine;
 using UnityEngine;
 
@@ -8,13 +8,13 @@ namespace GameToolkit.Runtime.Behaviours.Player
 {
     public class PlayerCameraController : MonoBehaviour, ILateUpdatable
     {
-        [SerializeField]
+        [SerializeField, Required]
         Transform pitchTransform;
 
-        [SerializeField]
+        [SerializeField, Required]
         Transform yawTransform;
 
-        [SerializeField]
+        [SerializeField, Required]
         CinemachineCamera cam;
 
         [SerializeField]
@@ -30,6 +30,7 @@ namespace GameToolkit.Runtime.Behaviours.Player
         CameraSwaying cameraSwaying;
         CameraRotation cameraRotation;
         CameraBreathing cameraBreathing;
+        ILateUpdateServices lateUpdateServices;
 
         void Awake()
         {
@@ -45,9 +46,11 @@ namespace GameToolkit.Runtime.Behaviours.Player
             cameraZoom = new CameraZoom(this, cam, cameraConfig, cameraData);
         }
 
-        void OnEnable() => LateUpdateManager.Register(this);
-
-        void OnDisable() => LateUpdateManager.Unregister(this);
+        void OnEnable()
+        {
+            if (ServiceLocator.Global.TryGet(out lateUpdateServices))
+                lateUpdateServices.Register(this);
+        }
 
         public void ProcessLateUpdate(float deltaTime)
         {
@@ -61,5 +64,7 @@ namespace GameToolkit.Runtime.Behaviours.Player
 
         public void ChangeRunFOV(bool returning, float deltaTime) =>
             cameraZoom.ChangeRunFOV(returning, deltaTime);
+
+        void OnDisable() => lateUpdateServices.Unregister(this);
     }
 }

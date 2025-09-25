@@ -8,7 +8,6 @@ namespace GameToolkit.Runtime.Behaviours.Player
         readonly CameraHandler cameraHandler;
         readonly CrouchHandler crouchHandler;
         readonly DirectionHandler directionHandler;
-        readonly JumpHandler jumpHandler;
         readonly LandingHandler landingHandler;
         readonly VelocityHandler velocityHandler;
         readonly RunnningHandler runnningHandler;
@@ -17,7 +16,6 @@ namespace GameToolkit.Runtime.Behaviours.Player
             CameraHandler cameraHandler,
             CrouchHandler crouchHandler,
             DirectionHandler directionHandler,
-            JumpHandler jumpHandler,
             LandingHandler landingHandler,
             VelocityHandler velocityHandler,
             RunnningHandler runnningHandler
@@ -26,7 +24,6 @@ namespace GameToolkit.Runtime.Behaviours.Player
             this.cameraHandler = cameraHandler;
             this.crouchHandler = crouchHandler;
             this.directionHandler = directionHandler;
-            this.jumpHandler = jumpHandler;
             this.landingHandler = landingHandler;
             this.velocityHandler = velocityHandler;
             this.runnningHandler = runnningHandler;
@@ -36,33 +33,29 @@ namespace GameToolkit.Runtime.Behaviours.Player
 
         public void Update(float deltaTime)
         {
-            //Logging.Log($"Current State:{Airborne State}");
+            Logging.Log($"Current State: PlayerAirborneState State");
             //Logging.Log($"Delta Time:{deltaTime}");
 
+            cameraHandler.RotateTowardsCamera(deltaTime);
+
+            // Apply Smoothing
             directionHandler.SmoothInput(deltaTime);
-            directionHandler.CalculateMovementDirection();
+            velocityHandler.SmoothSpeed(deltaTime);
             directionHandler.SmoothDirection(deltaTime);
 
+            // Calculate Movement
+            directionHandler.CalculateMovementAirborneDirection();
             velocityHandler.CalculateSpeed();
-            velocityHandler.SmoothSpeed(deltaTime);
+            velocityHandler.CalculateFinalAirborneAcceleration();
 
+            // Handle Player Movement, Gravity, Jump, Crouch etc.
             runnningHandler.HandleRun();
-
-            crouchHandler.HandleCrouch(deltaTime);
-
+            cameraHandler.HandleCameraSway(deltaTime);
             landingHandler.HandleLanding(deltaTime);
 
+            // Apply Movement
             velocityHandler.ApplyGravityOnAirborne(deltaTime);
-
-            jumpHandler.HandleJump(deltaTime);
-
-            velocityHandler.CalculateFinalAcceleration();
             velocityHandler.ApplyMove(deltaTime);
-
-            cameraHandler.RotateTowardsCamera(deltaTime);
-            cameraHandler.HandleHeadBob(deltaTime);
-            cameraHandler.HandleRunFOV(deltaTime);
-            cameraHandler.HandleCameraSway(deltaTime);
         }
     }
 }

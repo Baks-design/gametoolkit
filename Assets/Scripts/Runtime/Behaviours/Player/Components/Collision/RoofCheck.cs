@@ -20,7 +20,8 @@ namespace GameToolkit.Runtime.Behaviours.Player
                 collisionData.RoofRaySphereRadius,
                 Vector3.up,
                 out var _,
-                collisionData.InitHeight
+                collisionData.InitHeight,
+                Physics.AllLayers
             );
 
             collisionData.HasRoofed = hitRoof;

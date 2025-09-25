@@ -1,5 +1,6 @@
 using Alchemy.Inspector;
 using GameToolkit.Runtime.Systems.UpdateManagement;
+using GameToolkit.Runtime.Utils.Tools.ServicesLocator;
 using GameToolkit.Runtime.Utils.Tools.StatesMachine;
 using UnityEngine;
 
@@ -7,13 +8,13 @@ namespace GameToolkit.Runtime.Behaviours.Player
 {
     public class PlayerMovementController : StatefulEntity, IUpdatable
     {
-        [SerializeField]
+        [SerializeField, Required]
         Transform yawTransform;
 
-        [SerializeField]
+        [SerializeField, Required]
         CharacterController controller;
 
-        [SerializeField]
+        [SerializeField, Required]
         PlayerCameraController cameraController;
 
         [SerializeField]
@@ -33,6 +34,7 @@ namespace GameToolkit.Runtime.Behaviours.Player
         VelocityHandler velocityHandler;
         RunnningHandler runnningHandler;
         readonly PlayerCollisionData collisionData = new();
+        IUpdateServices updateServices;
 
         protected override void Awake()
         {
@@ -99,7 +101,6 @@ namespace GameToolkit.Runtime.Behaviours.Player
                 cameraHandler,
                 crouchHandler,
                 directionHandler,
-                jumpHandler,
                 landingHandler,
                 velocityHandler,
                 runnningHandler
@@ -123,11 +124,11 @@ namespace GameToolkit.Runtime.Behaviours.Player
                 runnningHandler
             );
 
-            At(groundedState, airborneState, !controller.isGrounded);
+            At(groundedState, airborneState, !collisionData.OnGrounded);
             At(groundedState, climbingState, collisionData.OnClimbing);
             At(groundedState, underwaterState, collisionData.OnUnderwater);
 
-            At(airborneState, groundedState, controller.isGrounded);
+            At(airborneState, groundedState, collisionData.OnGrounded);
             At(airborneState, underwaterState, collisionData.OnUnderwater);
             At(airborneState, climbingState, collisionData.OnClimbing);
 
@@ -142,10 +143,14 @@ namespace GameToolkit.Runtime.Behaviours.Player
             stateMachine.SetState(groundedState);
         }
 
-        void OnEnable() => UpdateManager.Register(this);
-
-        void OnDisable() => UpdateManager.Unregister(this);
+        void OnEnable()
+        {
+            if (ServiceLocator.Global.TryGet(out updateServices))
+                updateServices.Register(this);
+        }
 
         public void ProcessUpdate(float deltaTime) => stateMachine.Update(deltaTime);
+
+        void OnDisable() => updateServices.Unregister(this);
     }
 }

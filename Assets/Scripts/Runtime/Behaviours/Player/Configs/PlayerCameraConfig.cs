@@ -7,9 +7,9 @@ namespace GameToolkit.Runtime.Behaviours.Player
     public class PlayerCameraConfig
     {
         [Header("Look Settings")]
-        public Vector2 Sensitivity = new Vector2(40f, 40f);
-        public Vector2 SmoothAmount = new Vector2(5f, 5f);
-        public Vector2 LookAngleMinMax = new Vector2(-45f, 45f);
+        public Vector2 Sensitivity = new(40f, 40f);
+        public Vector2 SmoothAmount = new(5f, 5f);
+        public Vector2 LookAngleMinMax = new(-45f, 45f);
 
         [Header("Breathing Settings")]
         public bool X = true;

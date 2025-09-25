@@ -13,25 +13,33 @@ MonoBehaviour:
   m_Name: QuickAccessManager
   m_EditorClassIdentifier: CustomToolbar::OpalStudio.CustomToolbar.Editor.ToolbarElements.QuickAccess.Data.QuickAccessManager
   items:
-  - displayName: Bootstrap
-    scenePath: Assets/Scenes/Bootstrap.unity
-  - displayName: Yaw
-    scenePath: Assets/Scenes/Bootstrap.unity
-  - displayName: Camera
-    scenePath: Assets/Scenes/Bootstrap.unity
-  - displayName: Virtual Camera
-    scenePath: Assets/Scenes/Bootstrap.unity
-  - displayName: SceneLoader Canvas(Clone)
-    scenePath: Assets/Scenes/Bootstrap.unity
-  - displayName: Player(Clone)
-    scenePath: Assets/Scenes/Bootstrap.unity
-  - displayName: 'Cinemachine Brain '
+  - displayName: Movement
+    scenePath: Assets/Prefabs/Gameplay/Player.prefab
+  - displayName: Player
+    scenePath: Assets/Prefabs/Gameplay/Player.prefab
+  - displayName: Player
     scenePath: 
-  - displayName: Virtual Camera
-    scenePath: Assets/Scenes/Bootstrap.unity
-  - displayName: Yaw
-    scenePath: Assets/Scenes/Bootstrap.unity
+  - displayName: Gameplay
+    scenePath: 
+  - displayName: Player(Clone)
+    scenePath: Assets/Scenes/Level - Prototype.unity
+  - displayName: Player(Clone)
+    scenePath: Assets/Scenes/Level - Prototype.unity
+  - displayName: Player(Clone)
+    scenePath: Assets/Scenes/Level - Prototype.unity
+  - displayName: Player(Clone)
+    scenePath: Assets/Scenes/Level - Prototype.unity
   - displayName: Camera
-    scenePath: Assets/Prefabs/Gameplay/SceneLoader Canvas.prefab
-  - displayName: SceneLoader Canvas
-    scenePath: Assets/Prefabs/Gameplay/SceneLoader Canvas.prefab
+    scenePath: Assets/Scenes/Level - Prototype.unity
+  - displayName: Collision
+    scenePath: Assets/Scenes/Level - Prototype.unity
+  - displayName: Player(Clone)
+    scenePath: Assets/Scenes/Level - Prototype.unity
+  - displayName: Collision
+    scenePath: Assets/Scenes/Level - Prototype.unity
+  - displayName: Player(Clone)
+    scenePath: Assets/Scenes/Level - Prototype.unity
+  - displayName: exported-model
+    scenePath: 
+  - displayName: Animations
+    scenePath: 

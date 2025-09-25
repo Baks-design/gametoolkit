@@ -36,33 +36,32 @@ namespace GameToolkit.Runtime.Behaviours.Player
 
         public void Update(float deltaTime)
         {
-            //Logging.Log($"Current State:{Grounded State}");
+            Logging.Log($"Current State: Grounded State");
             //Logging.Log($"Delta Time:{deltaTime}");
 
+            cameraHandler.RotateTowardsCamera(deltaTime);
+
+            // Apply Smoothing
             directionHandler.SmoothInput(deltaTime);
-            directionHandler.CalculateMovementDirection();
+            velocityHandler.SmoothSpeed(deltaTime);
             directionHandler.SmoothDirection(deltaTime);
 
+            // Calculate Movement
+            directionHandler.CalculateMovementGroundedDirection();
             velocityHandler.CalculateSpeed();
-            velocityHandler.SmoothSpeed(deltaTime);
+            velocityHandler.CalculateFinalGroundedAcceleration();
 
+            // Handle Player Movement, Gravity, Jump, Crouch etc.
             runnningHandler.HandleRun();
-
             crouchHandler.HandleCrouch(deltaTime);
-
-            landingHandler.HandleLanding(deltaTime);
-
-            velocityHandler.ApplyGravityOnGrounded();
-
-            jumpHandler.HandleJump(deltaTime);
-
-            velocityHandler.CalculateFinalAcceleration();
-            velocityHandler.ApplyMove(deltaTime);
-
-            cameraHandler.RotateTowardsCamera(deltaTime);
             cameraHandler.HandleHeadBob(deltaTime);
             cameraHandler.HandleRunFOV(deltaTime);
             cameraHandler.HandleCameraSway(deltaTime);
+
+            // Apply Movement
+            velocityHandler.ApplyGravityOnGrounded();
+            jumpHandler.HandleJump();
+            velocityHandler.ApplyMove(deltaTime);
         }
     }
 }

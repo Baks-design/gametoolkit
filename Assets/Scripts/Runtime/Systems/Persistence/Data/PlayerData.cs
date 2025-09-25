@@ -1,4 +1,5 @@
 using System;
+using GameToolkit.Runtime.Utils.Helpers;
 using UnityEngine;
 
 namespace GameToolkit.Runtime.Systems.Persistence
@@ -9,7 +10,7 @@ namespace GameToolkit.Runtime.Systems.Persistence
         public Vector3 position;
         public Quaternion rotation;
 
-        [field: SerializeField]
+        [field: NonSerialized]
         public SerializableGuid Id { get; set; }
     }
 }
