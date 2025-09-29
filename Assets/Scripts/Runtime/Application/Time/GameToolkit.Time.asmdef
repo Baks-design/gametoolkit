@@ -1,0 +1,20 @@
+{
+    "name": "GameToolkit.Time",
+    "rootNamespace": "GameToolkit.Runtime.Application.Time",
+    "references": [
+        "GameToolkit.Helpers",
+        "GameToolkit.Extensions"
+    ],
+    "includePlatforms": [
+        "Editor",
+        "WindowsStandalone64"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

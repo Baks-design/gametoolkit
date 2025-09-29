@@ -1,0 +1,17 @@
+{
+    "name": "GameToolkit.Tools.StatesMachine",
+    "rootNamespace": "GameToolkit.Runtime.Utils.Tools.StatesMachine",
+    "references": [],
+    "includePlatforms": [
+        "Editor",
+        "WindowsStandalone64"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

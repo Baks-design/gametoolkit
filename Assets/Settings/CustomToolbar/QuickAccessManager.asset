@@ -13,33 +13,39 @@ MonoBehaviour:
   m_Name: QuickAccessManager
   m_EditorClassIdentifier: CustomToolbar::OpalStudio.CustomToolbar.Editor.ToolbarElements.QuickAccess.Data.QuickAccessManager
   items:
-  - displayName: Movement
-    scenePath: Assets/Prefabs/Gameplay/Player.prefab
-  - displayName: Player
-    scenePath: Assets/Prefabs/Gameplay/Player.prefab
-  - displayName: Player
+  - displayName: InputSystem_Actions
     scenePath: 
-  - displayName: Gameplay
+  - displayName: InputManager
     scenePath: 
-  - displayName: Player(Clone)
-    scenePath: Assets/Scenes/Level - Prototype.unity
-  - displayName: Player(Clone)
-    scenePath: Assets/Scenes/Level - Prototype.unity
-  - displayName: Player(Clone)
-    scenePath: Assets/Scenes/Level - Prototype.unity
-  - displayName: Player(Clone)
-    scenePath: Assets/Scenes/Level - Prototype.unity
-  - displayName: Camera
-    scenePath: Assets/Scenes/Level - Prototype.unity
-  - displayName: Collision
-    scenePath: Assets/Scenes/Level - Prototype.unity
-  - displayName: Player(Clone)
-    scenePath: Assets/Scenes/Level - Prototype.unity
-  - displayName: Collision
-    scenePath: Assets/Scenes/Level - Prototype.unity
-  - displayName: Player(Clone)
-    scenePath: Assets/Scenes/Level - Prototype.unity
-  - displayName: exported-model
+  - displayName: Input
     scenePath: 
-  - displayName: Animations
+  - displayName: Input
+    scenePath: 
+  - displayName: Runtime
+    scenePath: 
+  - displayName: Sound Library
+    scenePath: 
+  - displayName: Player Head Bob Data
+    scenePath: 
+  - displayName: Camera Perlin Noise Data
+    scenePath: 
+  - displayName: GameToolkit.Helpers
+    scenePath: 
+  - displayName: GameToolkit.Culling
+    scenePath: 
+  - displayName: GameToolkit.Extensions
+    scenePath: 
+  - displayName: GameToolkit.Helpers
+    scenePath: 
+  - displayName: GameToolkit.Input
+    scenePath: 
+  - displayName: GameToolkit.Persistence
+    scenePath: 
+  - displayName: GameToolkit.Player
+    scenePath: 
+  - displayName: GameToolkit.Scenes
+    scenePath: 
+  - displayName: GameToolkit.Sound
+    scenePath: 
+  - displayName: GameToolkit.States
     scenePath: 

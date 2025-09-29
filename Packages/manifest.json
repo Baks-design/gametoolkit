@@ -2,6 +2,7 @@
   "dependencies": {
     "com.annulusgames.alchemy": "https://github.com/annulusgames/Alchemy.git?path=/Alchemy/Assets/Alchemy",
     "com.eflatun.scenereference": "git+https://github.com/starikcetin/Eflatun.SceneReference.git#4.1.1",
+    "com.github-glitchenzo.nugetforunity": "https://github.com/GlitchEnzo/NuGetForUnity.git?path=/src/NuGetForUnity",
     "com.opalstudio.customtoolbar": "https://github.com/Alaxxxx/CustomToolbar.git",
     "com.unity.addressables": "2.7.3",
     "com.unity.ai.navigation": "2.0.9",
@@ -20,6 +21,10 @@
     "com.unity.visualeffectgraph": "17.2.0",
     "com.vertx.debugging": "https://github.com/vertxxyz/Vertx.Debugging.git",
     "com.witalosk.unistats": "https://github.com/witalosk/UniStats.git?path=Packages/com.witalosk.unistats",
-    "com.unity.modules.audio": "1.0.0"
-  }
+    "com.unity.modules.audio": "1.0.0",
+    "jp.hadashikick.vcontainer": "https://github.com/hadashiA/VContainer.git?path=VContainer/Assets/VContainer#1.17.0",
+    "com.annulusgames.debug-ui": "https://github.com/AnnulusGames/DebugUI.git?path=src/DebugUI/Assets/DebugUI",
+    "com.annulusgames.lit-motion": "https://github.com/annulusgames/LitMotion.git?path=src/LitMotion/Assets/LitMotion",
+    "com.annulusgames.lit-motion.animation": "https://github.com/annulusgames/LitMotion.git?path=src/LitMotion/Assets/LitMotion.Animation"
+   }
 }

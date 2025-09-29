@@ -1,0 +1,22 @@
+{
+    "name": "GameToolkit.Culling",
+    "rootNamespace": "GameToolkit.Runtime.Game.Systems.Culling",
+    "references": [
+        "Alchemy",
+        "GameToolkit.Update",
+        "GameToolkit.Time",
+        "GameToolkit.Tools.ServicesLocator"
+    ],
+    "includePlatforms": [
+        "Editor",
+        "WindowsStandalone64"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

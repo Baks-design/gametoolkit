@@ -1,0 +1,23 @@
+{
+    "name": "GameToolkit.Persistence",
+    "rootNamespace": "GameToolkit.Runtime.Application.Persistence",
+    "references": [
+        "Alchemy",
+        "GameToolkit.Update",
+        "GameToolkit.Extensions",
+        "GameToolkit.Tools.ServicesLocator",
+        "GameToolkit.Helpers"
+    ],
+    "includePlatforms": [
+        "Editor",
+        "WindowsStandalone64"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

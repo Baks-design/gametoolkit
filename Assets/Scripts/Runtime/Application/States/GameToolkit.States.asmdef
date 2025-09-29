@@ -1,0 +1,33 @@
+{
+    "name": "GameToolkit.States",
+    "rootNamespace": "GameToolkit.Runtime.Application.States",
+    "references": [
+        "Alchemy",
+        "Unity.Cinemachine",
+        "Unity.Addressables",
+        "GameToolkit.Culling",
+        "GameToolkit.Sound",
+        "GameToolkit.Update",
+        "GameToolkit.Persistence",
+        "GameToolkit.Scenes",
+        "GameToolkit.Tools.StatesMachine",
+        "GameToolkit.Tools.ServicesLocator",
+        "GameToolkit.Tools.EventBus",
+        "GameToolkit.Helpers",
+        "GameToolkit.UI",
+        "GameToolkit.Input",
+        "Unity.ResourceManager"
+    ],
+    "includePlatforms": [
+        "Editor",
+        "WindowsStandalone64"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

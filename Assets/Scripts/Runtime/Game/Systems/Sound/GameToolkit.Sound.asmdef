@@ -1,0 +1,23 @@
+{
+    "name": "GameToolkit.Sound",
+    "rootNamespace": "GameToolkit.Runtime.Game.Systems.Sound",
+    "references": [
+        "Alchemy",
+        "GameToolkit.Update",
+        "GameToolkit.Tools.ServicesLocator",
+        "GameToolkit.Extensions",
+        "GameToolkit.Helpers"
+    ],
+    "includePlatforms": [
+        "Editor",
+        "WindowsStandalone64"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

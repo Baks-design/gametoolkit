@@ -1,0 +1,26 @@
+{
+    "name": "GameToolkit.Player",
+    "rootNamespace": "GameToolkit.Runtime.Game.Behaviours.Player",
+    "references": [
+        "Alchemy",
+        "Unity.Cinemachine",
+        "GameToolkit.Input",
+        "GameToolkit.Update",
+        "GameToolkit.Sound",
+        "GameToolkit.Helpers",
+        "GameToolkit.Tools.StatesMachine",
+        "GameToolkit.Tools.ServicesLocator"
+    ],
+    "includePlatforms": [
+        "Editor",
+        "WindowsStandalone64"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,0 +1,17 @@
+{
+    "name": "GameToolkit.Helpers",
+    "rootNamespace": "ameToolkit.Runtime.Utils.Helpers",
+    "references": [],
+    "includePlatforms": [
+        "Editor",
+        "WindowsStandalone64"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

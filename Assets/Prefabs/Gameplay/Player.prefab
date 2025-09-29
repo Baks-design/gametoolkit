@@ -84,7 +84,7 @@ MonoBehaviour:
     Sensitivity: {x: 40, y: 40}
     SmoothAmount: {x: 5, y: 5}
     LookAngleMinMax: {x: -45, y: 45}
-    X: 0
+    X: 1
     Y: 0
     Z: 0
     SwayAmount: 1
@@ -219,6 +219,7 @@ MonoBehaviour:
   yawTransform: {fileID: 7469491795264069964}
   controller: {fileID: 2166393501622899287}
   cameraController: {fileID: 3984641321365205063}
+  soundController: {fileID: 7184927629246242024}
   movementConfig:
     GravityMultiplier: 2.5
     StickToGroundForce: 1
@@ -321,6 +322,7 @@ MonoBehaviour:
     SmoothVelocitySpeed: 3
     SmoothFinalDirectionSpeed: 10
     SmoothHeadBobSpeed: 5
+    MovementSmoothing: 0.1
   headBobConfig: {fileID: 11400000, guid: 894c1592ed99e1842a949d3b141f3489, type: 2}
   movementData:
     FinalMoveVelocity: {x: 0, y: 0, z: 0}
@@ -333,11 +335,15 @@ MonoBehaviour:
     IsWalking: 0
     IsRunning: 0
     IsCrouching: 0
+    IsClimbing: 0
+    IsSwimming: 0
     Resetted: 0
     IsDuringRunAnimation: 0
     IsDuringCrouchAnimation: 0
     InAirTimer: 0
     CurrentStateHeight: 0
+    CurrentSpeed: 0
+    VerticalVelocity: 0
 --- !u!1 &4632029916826643094
 GameObject:
   m_ObjectHideFlags: 0
@@ -461,7 +467,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &8903617878108667461
 Transform:
   m_ObjectHideFlags: 0
@@ -489,6 +495,71 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5bfff7057d2ff74c9c49a342a98fcc2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameToolkit.Runtime.Behaviours.Player.PlayerSoundController
+  controller: {fileID: 2166393501622899287}
+  soundConfig:
+    FootstepIntervalWalk: 0.5
+    FootstepIntervalRun: 0.3
+    FootstepVolume: 0.7
+    LandingVolume: 0.8
+    SwimmingInterval: 0.4
+    SwimmingVolume: 0.6
+    ClimbingInterval: 0.6
+    ClimbingVolume: 0.5
+  soundLibrary: {fileID: 11400000, guid: 9e505778dd80cc74babeb16af718497c, type: 2}
+--- !u!1 &5494003559039039089
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5457083056773309816}
+  - component: {fileID: 3186841403853273047}
+  m_Layer: 6
+  m_Name: Animator
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5457083056773309816
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5494003559039039089}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 456643529499698464}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!95 &3186841403853273047
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5494003559039039089}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &6208362211275420771
 GameObject:
   m_ObjectHideFlags: 0
@@ -647,12 +718,12 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children:
+  - {fileID: 5438827002426162030}
+  - {fileID: 7974969786926291093}
   - {fileID: 2834563580162832141}
   - {fileID: 7953385271493619520}
-  - {fileID: 7974969786926291093}
-  - {fileID: 5438827002426162030}
-  - {fileID: 8903617878108667461}
   - {fileID: 456643529499698464}
+  - {fileID: 8903617878108667461}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!143 &2166393501622899287
@@ -709,7 +780,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
-  m_Children: []
+  m_Children:
+  - {fileID: 5457083056773309816}
   m_Father: {fileID: 7225105510741475586}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8348823329799764046
@@ -724,3 +796,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 073a6b2bba1af9c4fa68aa2c62a717b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameToolkit.Runtime.Behaviours.Player.PlayerAnimationController
+  animator: {fileID: 3186841403853273047}

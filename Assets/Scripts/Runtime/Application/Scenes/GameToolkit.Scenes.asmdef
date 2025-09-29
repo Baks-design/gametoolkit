@@ -1,0 +1,22 @@
+{
+    "name": "GameToolkit.Scenes",
+    "rootNamespace": "GameToolkit.Runtime.Application.Scenes",
+    "references": [
+        "Eflatun.SceneReference",
+        "Unity.Addressables",
+        "Unity.ResourceManager",
+        "GameToolkit.Helpers"
+    ],
+    "includePlatforms": [
+        "Editor",
+        "WindowsStandalone64"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
