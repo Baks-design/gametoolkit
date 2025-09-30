@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using GameToolkit.Runtime.Utils.Helpers;
 using UnityEngine;
 
@@ -12,7 +13,7 @@ namespace GameToolkit.Runtime.Application.Scenes
 
         public void Initialize() => DontDestroyOnLoad(gameObject);
 
-        public async Awaitable LoadSceneGroup(int index)
+        public async UniTask LoadSceneGroup(int index)
         {
             targetProgress = 1f;
 

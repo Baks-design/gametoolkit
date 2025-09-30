@@ -3,6 +3,8 @@
     "rootNamespace": "GameToolkit.Runtime.Application.States",
     "references": [
         "Alchemy",
+        "UniTask",
+        "Unity.ResourceManager",
         "Unity.Cinemachine",
         "Unity.Addressables",
         "GameToolkit.Culling",
@@ -15,8 +17,7 @@
         "GameToolkit.Tools.EventBus",
         "GameToolkit.Helpers",
         "GameToolkit.UI",
-        "GameToolkit.Input",
-        "Unity.ResourceManager"
+        "GameToolkit.Input"
     ],
     "includePlatforms": [
         "Editor",

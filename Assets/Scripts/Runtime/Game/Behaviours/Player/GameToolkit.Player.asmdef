@@ -3,6 +3,7 @@
     "rootNamespace": "GameToolkit.Runtime.Game.Behaviours.Player",
     "references": [
         "Alchemy",
+        "UniTask",
         "Unity.Cinemachine",
         "GameToolkit.Input",
         "GameToolkit.Update",

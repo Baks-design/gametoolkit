@@ -1,5 +1,6 @@
 using System;
 using System.Threading;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace GameToolkit.Runtime.Game.Behaviours.Player
@@ -37,7 +38,10 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
             _ = StartLanding(deltaTime, landingCancellationTokenSource.Token);
         }
 
-        async Awaitable StartLanding(float deltaTime, CancellationToken cancellationToken = default)
+        async UniTaskVoid StartLanding(
+            float deltaTime,
+            CancellationToken cancellationToken = default
+        )
         {
             try
             {
@@ -49,7 +53,7 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
             }
         }
 
-        async Awaitable LandingAsync(float deltaTime, CancellationToken cancellationToken = default)
+        async UniTask LandingAsync(float deltaTime, CancellationToken cancellationToken = default)
         {
             var percent = 0f;
             var speed = 1f / movementConfig.LandDuration;
@@ -72,7 +76,7 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
                 localPos.y = initLandHeight + desiredY;
                 yawTransform.localPosition = localPos;
 
-                await Awaitable.NextFrameAsync();
+                await UniTask.NextFrame(PlayerLoopTiming.Update, cancellationToken);
             }
 
             //Logging.Log($"HandleLanding: {true}");

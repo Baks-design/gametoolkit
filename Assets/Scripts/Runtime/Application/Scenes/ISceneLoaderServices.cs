@@ -1,9 +1,9 @@
-using UnityEngine;
+using Cysharp.Threading.Tasks;
 
 namespace GameToolkit.Runtime.Application.Scenes
 {
     public interface ISceneLoaderServices
     {
-        Awaitable LoadSceneGroup(int index);
+        UniTask LoadSceneGroup(int index);
     }
 }

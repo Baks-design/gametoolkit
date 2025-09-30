@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ZLinq;
 
 namespace GameToolkit.Runtime.Utils.Tools.StatesMachine
 {
@@ -40,9 +41,12 @@ namespace GameToolkit.Runtime.Utils.Tools.StatesMachine
 
         static void ResetActionPredicateFlags(IEnumerable<Transition> transitions)
         {
-            foreach (var transition in transitions)
-                if (transition is Transition<ActionPredicate> actionTransition)
-                    actionTransition.condition.flag = false;
+            foreach (
+                var transition in transitions
+                    .AsValueEnumerable()
+                    .OfType<Transition<ActionPredicate>>()
+            )
+                transition.condition.flag = false;
         }
 
         public void LateUpdate(float deltaTime) => currentNode.State?.LateUpdate(deltaTime);

@@ -8,7 +8,6 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
         readonly CharacterController controller;
         readonly PlayerMovementConfig movementConfig;
         readonly PlayerMovementData movementData;
-        readonly PlayerCollisionData collisionData;
         readonly RunnningHandler runningHandler;
         readonly float walkRunSpeedDifference;
         float smoothCurrentSpeed;
@@ -18,7 +17,6 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
             CharacterController controller,
             PlayerMovementConfig movementConfig,
             PlayerMovementData movementData,
-            PlayerCollisionData collisionData,
             RunnningHandler runningHandler
         )
         {

@@ -2,6 +2,8 @@
     "name": "GameToolkit.Scenes",
     "rootNamespace": "GameToolkit.Runtime.Application.Scenes",
     "references": [
+        "ZLinq.Unity",
+        "UniTask",
         "Eflatun.SceneReference",
         "Unity.Addressables",
         "Unity.ResourceManager",

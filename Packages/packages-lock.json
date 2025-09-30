@@ -34,6 +34,36 @@
       },
       "hash": "b651c5866fe0e3fba065ce2e56dfdfcd59d3d109"
     },
+    "com.cysharp.r3": {
+      "version": "https://github.com/Cysharp/R3.git?path=src/R3.Unity/Assets/R3.Unity",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.unity.modules.imgui": "1.0.0"
+      },
+      "hash": "97debd29b7c6b0aa6b0121b754df0c9d337a74bf"
+    },
+    "com.cysharp.unitask": {
+      "version": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "ec9204d381eb406a8f6e68fd67429a96ca6c5322"
+    },
+    "com.cysharp.zlinq": {
+      "version": "https://github.com/Cysharp/ZLinq.git?path=src/ZLinq.Unity/Assets/ZLinq.Unity",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "c3d18e4e99f9848e019ef50d0ae2d94f7a7cc820"
+    },
+    "com.cysharp.zstring": {
+      "version": "https://github.com/Cysharp/ZString.git?path=src/ZString.Unity/Assets/Scripts/ZString",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "c44d71c9743c500fd69302e19b5fc6208b7ed64f"
+    },
     "com.eflatun.scenereference": {
       "version": "git+https://github.com/starikcetin/Eflatun.SceneReference.git#4.1.1",
       "depth": 0,
@@ -186,7 +216,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.localization": {
-      "version": "1.5.7",
+      "version": "1.5.8",
       "depth": 0,
       "source": "registry",
       "dependencies": {

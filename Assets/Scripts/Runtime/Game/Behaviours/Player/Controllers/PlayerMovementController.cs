@@ -88,7 +88,6 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
                 controller,
                 movementConfig,
                 movementData,
-                collisionData,
                 runnningHandler
             );
         }

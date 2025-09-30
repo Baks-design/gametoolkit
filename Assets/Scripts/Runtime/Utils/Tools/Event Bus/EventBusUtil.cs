@@ -32,9 +32,7 @@ namespace GameToolkit.Runtime.Utils.Tools.EventBus
         public static void InitializeEditor()
         {
             EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
-#pragma warning disable UDR0003 // Domain Reload Analyzer
             EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
-#pragma warning restore UDR0003 // Domain Reload Analyzer
         }
 
         static void OnPlayModeStateChanged(PlayModeStateChange state)

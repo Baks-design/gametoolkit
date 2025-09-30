@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using ZLinq;
 
 namespace GameToolkit.Runtime.Utils.Tools.StatesMachine
 {
@@ -8,12 +10,6 @@ namespace GameToolkit.Runtime.Utils.Tools.StatesMachine
         [SerializeField]
         List<IPredicate> rules = new();
 
-        public bool Evaluate()
-        {
-            var result = true;
-            foreach (var rule in rules)
-                result &= rule.Evaluate();
-            return result;
-        }
+        public bool Evaluate() => rules.AsValueEnumerable().All(r => r.Evaluate());
     }
 }

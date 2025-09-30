@@ -1,5 +1,6 @@
 using System;
 using System.Threading;
+using Cysharp.Threading.Tasks;
 using GameToolkit.Runtime.Application.Input;
 using UnityEngine;
 
@@ -58,7 +59,10 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
             _ = StartCrouch(deltaTime, crouchCancellationTokenSource.Token);
         }
 
-        async Awaitable StartCrouch(float deltaTime, CancellationToken cancellationToken = default)
+        async UniTaskVoid StartCrouch(
+            float deltaTime,
+            CancellationToken cancellationToken = default
+        )
         {
             try
             {
@@ -70,7 +74,7 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
             }
         }
 
-        async Awaitable CrouchAsync(float deltaTime, CancellationToken cancellationToken = default)
+        async UniTask CrouchAsync(float deltaTime, CancellationToken cancellationToken = default)
         {
             movementData.IsDuringCrouchAnimation = true;
 
@@ -105,7 +109,7 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
                 camPos.y = Mathf.Lerp(camCurrentHeight, camDesiredHeight, smoothPercent);
                 yawTransform.localPosition = camPos;
 
-                await Awaitable.NextFrameAsync();
+                await UniTask.NextFrame(PlayerLoopTiming.Update, cancellationToken);
             }
 
             movementData.IsDuringCrouchAnimation = false;

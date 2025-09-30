@@ -13,6 +13,14 @@ MonoBehaviour:
   m_Name: QuickAccessManager
   m_EditorClassIdentifier: CustomToolbar::OpalStudio.CustomToolbar.Editor.ToolbarElements.QuickAccess.Data.QuickAccessManager
   items:
+  - displayName: Game Initiator
+    scenePath: Assets/Scenes/Game Initiator.unity
+  - displayName: Game Initiator
+    scenePath: Assets/Scenes/Game Initiator.unity
+  - displayName: NuGet
+    scenePath: 
+  - displayName: packages
+    scenePath: 
   - displayName: InputSystem_Actions
     scenePath: 
   - displayName: InputManager
@@ -26,26 +34,4 @@ MonoBehaviour:
   - displayName: Sound Library
     scenePath: 
   - displayName: Player Head Bob Data
-    scenePath: 
-  - displayName: Camera Perlin Noise Data
-    scenePath: 
-  - displayName: GameToolkit.Helpers
-    scenePath: 
-  - displayName: GameToolkit.Culling
-    scenePath: 
-  - displayName: GameToolkit.Extensions
-    scenePath: 
-  - displayName: GameToolkit.Helpers
-    scenePath: 
-  - displayName: GameToolkit.Input
-    scenePath: 
-  - displayName: GameToolkit.Persistence
-    scenePath: 
-  - displayName: GameToolkit.Player
-    scenePath: 
-  - displayName: GameToolkit.Scenes
-    scenePath: 
-  - displayName: GameToolkit.Sound
-    scenePath: 
-  - displayName: GameToolkit.States
     scenePath: 

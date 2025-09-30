@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using ZLinq;
 
 namespace GameToolkit.Runtime.Application.Scenes
 {
@@ -9,12 +11,10 @@ namespace GameToolkit.Runtime.Application.Scenes
         public string GroupName = "New Scene Group";
         public List<SceneData> Scenes;
 
-        public string FindSceneNameByType(SceneType sceneType)
-        {
-            foreach (var scene in Scenes)
-                if (scene.SceneType == sceneType)
-                    return scene.Reference?.Name;
-            return null;
-        }
+        public string FindSceneNameByType(SceneType sceneType) =>
+            Scenes
+                .AsValueEnumerable()
+                .FirstOrDefault(scene => scene.SceneType == sceneType)
+                ?.Reference.Name;
     }
 }

@@ -3,6 +3,7 @@
     "rootNamespace": "GameToolkit.Runtime.Application.Persistence",
     "references": [
         "Alchemy",
+        "ZLinq.Unity",
         "GameToolkit.Update",
         "GameToolkit.Extensions",
         "GameToolkit.Tools.ServicesLocator",

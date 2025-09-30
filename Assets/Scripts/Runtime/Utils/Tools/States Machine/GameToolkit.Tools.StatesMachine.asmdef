@@ -1,7 +1,7 @@
 {
     "name": "GameToolkit.Tools.StatesMachine",
     "rootNamespace": "GameToolkit.Runtime.Utils.Tools.StatesMachine",
-    "references": [],
+    "references": [ "ZLinq.Unity", "Alchemy" ],
     "includePlatforms": [
         "Editor",
         "WindowsStandalone64"

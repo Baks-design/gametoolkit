@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.ResourceManagement.ResourceProviders;
+using ZLinq;
 
 namespace GameToolkit.Runtime.Application.Scenes
 {
@@ -8,32 +9,9 @@ namespace GameToolkit.Runtime.Application.Scenes
     {
         public readonly List<AsyncOperationHandle<SceneInstance>> Handles;
 
-        public float Progress
-        {
-            get
-            {
-                if (Handles.Count == 0)
-                    return 0;
-
-                var total = 0f;
-                foreach (var handle in Handles)
-                    total += handle.PercentComplete;
-                return total / Handles.Count;
-            }
-        }
-        public bool IsDone
-        {
-            get
-            {
-                if (Handles.Count == 0)
-                    return true;
-
-                foreach (var handle in Handles)
-                    if (!handle.IsDone)
-                        return false;
-                return true;
-            }
-        }
+        public float Progress =>
+            Handles.Count == 0 ? 0 : Handles.AsValueEnumerable().Average(h => h.PercentComplete);
+        public bool IsDone => Handles.Count == 0 || Handles.AsValueEnumerable().All(o => o.IsDone);
 
         public AsyncOperationHandleGroup(int initialCapacity) =>
             Handles = new List<AsyncOperationHandle<SceneInstance>>(initialCapacity);

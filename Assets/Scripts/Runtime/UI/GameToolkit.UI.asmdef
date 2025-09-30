@@ -3,9 +3,9 @@
     "rootNamespace": "GameToolkit.Runtime.UI",
     "references": [
         "Alchemy",
-        "GameToolkit.Input",
         "Unity.InputSystem",
         "Unity.Cinemachine",
+        "GameToolkit.Input",
         "GameToolkit.Tools.EventBus"
     ],
     "includePlatforms": [

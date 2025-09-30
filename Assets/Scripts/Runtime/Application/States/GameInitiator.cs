@@ -1,4 +1,5 @@
 using Alchemy.Inspector;
+using Cysharp.Threading.Tasks;
 using GameToolkit.Runtime.Application.Persistence;
 using GameToolkit.Runtime.Application.Scenes;
 using GameToolkit.Runtime.Game.Systems.Culling;
@@ -106,7 +107,7 @@ namespace GameToolkit.Runtime.Application.States
             ServiceLocator.Global.Register<ILateUpdateServices>(lateUpdateManager);
         }
 
-        async Awaitable InitializeObjects()
+        async UniTask InitializeObjects()
         {
             stateManager.Initialize();
             persistenceManager.Initialize();
@@ -121,9 +122,9 @@ namespace GameToolkit.Runtime.Application.States
             await sceneLoaderManager.LoadSceneGroup(0);
         }
 
-        async Awaitable CreateObjects() => await InstantiatePlayer();
+        async UniTask CreateObjects() => await InstantiatePlayer();
 
-        async Awaitable InstantiatePlayer()
+        async UniTask InstantiatePlayer()
         {
             var handle = Addressables.LoadAssetAsync<GameObject>(playerReference);
 
@@ -141,9 +142,6 @@ namespace GameToolkit.Runtime.Application.States
             player.transform.position = new Vector3(0f, 0f, -5f);
         }
 
-        void BeginGame()
-        {
-            persistenceManager.NewGame(); //Only in tests
-        }
+        void BeginGame() => persistenceManager.NewGame(); //Only in tests
     }
 }

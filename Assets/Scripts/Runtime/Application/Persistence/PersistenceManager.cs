@@ -1,6 +1,8 @@
 using System.Collections.Generic;
+using System.Linq;
 using Alchemy.Inspector;
 using UnityEngine;
+using ZLinq;
 
 namespace GameToolkit.Runtime.Application.Persistence
 {
@@ -22,10 +24,9 @@ namespace GameToolkit.Runtime.Application.Persistence
             where T : MonoBehaviour, IBind<TData>
             where TData : ISaveable, new()
         {
-            var entities = FindObjectsByType<T>(FindObjectsSortMode.None);
-            T entity = null;
-            if (entities.Length > 0)
-                entity = entities[0];
+            var entity = FindObjectsByType<T>(FindObjectsSortMode.None)
+                .AsValueEnumerable()
+                .FirstOrDefault();
             if (entity != null)
             {
                 data ??= new TData { Id = entity.Id };
@@ -40,18 +41,8 @@ namespace GameToolkit.Runtime.Application.Persistence
             var entities = FindObjectsByType<T>(FindObjectsSortMode.None);
             foreach (var entity in entities)
             {
-                var data = default(TData);
-                var found = false;
-                foreach (var d in datas)
-                {
-                    if (d.Id == entity.Id)
-                    {
-                        data = d;
-                        found = true;
-                        break;
-                    }
-                }
-                if (!found)
+                var data = datas.AsValueEnumerable().FirstOrDefault(d => d.Id == entity.Id);
+                if (data == null)
                 {
                     data = new TData { Id = entity.Id };
                     datas.Add(data);

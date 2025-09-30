@@ -1,9 +1,9 @@
 using System;
 using System.Threading;
+using Cysharp.Threading.Tasks;
 using GameToolkit.Runtime.Application.Input;
 using GameToolkit.Runtime.Utils.Helpers;
 using Unity.Cinemachine;
-using UnityEngine;
 
 namespace GameToolkit.Runtime.Game.Behaviours.Player
 {
@@ -35,10 +35,10 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
             if (InputManager.AimPressed || InputManager.AimReleased)
                 _ = ChangeFOV(deltaTime);
 
-            //Logging.Log($"HandleZoom: {true}");
+            //Logging.Log($"HandleAimFOV: true");
         }
 
-        async Awaitable ChangeFOV(float deltaTime)
+        async UniTaskVoid ChangeFOV(float deltaTime)
         {
             if (running)
             {
@@ -67,10 +67,10 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
         {
             _ = ChangeRunFOV(returning, deltaTime);
 
-            //Logging.Log($"HandleRunFOV: {true}");
+            //Logging.Log($"HandleRunFOV: true");
         }
 
-        async Awaitable ChangeRunFOV(bool returning, float deltaTime)
+        async UniTaskVoid ChangeRunFOV(bool returning, float deltaTime)
         {
             // Cancel previous run FOV tasks
             runFovCancellationTokenSource?.Cancel();
@@ -89,10 +89,7 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
             }
         }
 
-        async Awaitable ChangeFOVAsync(
-            float deltaTime,
-            CancellationToken cancellationToken = default
-        )
+        async UniTask ChangeFOVAsync(float deltaTime, CancellationToken cancellationToken = default)
         {
             var percent = 0f;
             var speed = 1f / cameraConfig.ZoomTransitionDuration;
@@ -109,11 +106,11 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
                 percent += deltaTime * speed;
                 var smoothPercent = cameraConfig.ZoomCurve.Evaluate(percent);
                 cam.Lens.FieldOfView = Mathfs.Eerp(currentFOV, targetFOV, smoothPercent);
-                await Awaitable.NextFrameAsync();
+                await UniTask.NextFrame(PlayerLoopTiming.Update, cancellationToken);
             }
         }
 
-        async Awaitable ChangeRunFOVAsync(
+        async UniTask ChangeRunFOVAsync(
             bool returning,
             float deltaTime,
             CancellationToken cancellationToken = default
@@ -137,7 +134,7 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
                 percent += deltaTime * speed;
                 var smoothPercent = cameraConfig.RunCurve.Evaluate(percent);
                 cam.Lens.FieldOfView = Mathfs.Eerp(currentFOV, targetFOV, smoothPercent);
-                await Awaitable.NextFrameAsync();
+                await UniTask.NextFrame(PlayerLoopTiming.Update, cancellationToken);
             }
         }
     }
