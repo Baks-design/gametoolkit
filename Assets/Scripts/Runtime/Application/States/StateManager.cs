@@ -1,12 +1,15 @@
+using GameToolkit.Runtime.Application.Input;
 using GameToolkit.Runtime.UI;
 using GameToolkit.Runtime.Utils.Helpers;
 using GameToolkit.Runtime.Utils.Tools.EventBus;
+using GameToolkit.Runtime.Utils.Tools.ServicesLocator;
 using GameToolkit.Runtime.Utils.Tools.StatesMachine;
 
 namespace GameToolkit.Runtime.Application.States
 {
     public class StateManager : StatefulEntity, IStateServices
     {
+        IInputServices inputServices;
         EventBinding<PauseScreenEvent> pauseScreenEventBinding;
 
         public bool IsGameRunning { get; private set; }
@@ -14,13 +17,16 @@ namespace GameToolkit.Runtime.Application.States
         public void Initialize()
         {
             DontDestroyOnLoad(gameObject);
+            GetServices();
             SetupStateMachine();
         }
 
+        void GetServices() => ServiceLocator.Global.Get(out inputServices);
+
         void SetupStateMachine()
         {
-            var gameplayState = new GameplayState();
-            var pauseState = new PauseState();
+            var gameplayState = new GameplayState(inputServices);
+            var pauseState = new PauseState(inputServices);
 
             At(gameplayState, pauseState, !IsGameRunning);
             At(pauseState, gameplayState, IsGameRunning);

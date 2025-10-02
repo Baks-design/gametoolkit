@@ -22,7 +22,9 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
         public AnimationCurve RunTransitionCurve;
 
         [Header("Jump Settings")]
-        public float JumpHeight = 6f;
+        public float JumpHeight = 2f;
+        public float CoyoteTime = 0.1f;
+        public float JumpBufferTime = 0.1f;
 
         [Header("Crouch Settings")]
         public float CrouchSpeed = 1f;

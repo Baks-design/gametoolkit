@@ -5,50 +5,41 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
 {
     public class VelocityHandler
     {
+        readonly IMovementInput movementInput;
         readonly CharacterController controller;
         readonly PlayerMovementConfig movementConfig;
         readonly PlayerMovementData movementData;
         readonly RunnningHandler runningHandler;
-        readonly float walkRunSpeedDifference;
         float smoothCurrentSpeed;
         float finalSmoothCurrentSpeed;
 
         public VelocityHandler(
+            IMovementInput movementInput,
             CharacterController controller,
             PlayerMovementConfig movementConfig,
             PlayerMovementData movementData,
             RunnningHandler runningHandler
         )
         {
+            this.movementInput = movementInput;
             this.controller = controller;
             this.movementConfig = movementConfig;
             this.movementData = movementData;
             this.runningHandler = runningHandler;
 
             movementData.InAirTimer = 0f;
-            walkRunSpeedDifference = movementConfig.RunSpeed - movementConfig.WalkSpeed;
         }
 
         public void CalculateSpeed()
         {
-            movementData.CurrentSpeed =
-                movementData.IsRunning && runningHandler.CanRun()
-                    ? movementConfig.RunSpeed
-                    : movementConfig.WalkSpeed;
-            movementData.CurrentSpeed = movementData.IsCrouching
-                ? movementConfig.CrouchSpeed
-                : movementData.CurrentSpeed;
-            movementData.CurrentSpeed = !InputManager.HasMovement ? 0f : movementData.CurrentSpeed;
-            movementData.CurrentSpeed =
-                InputManager.GetMovement.y == -1f
-                    ? movementData.CurrentSpeed * movementConfig.MoveBackwardsSpeedPercent
-                    : movementData.CurrentSpeed;
-            movementData.CurrentSpeed =
-                InputManager.GetMovement.x != 0f && InputManager.GetMovement.y == 0f
-                    ? movementData.CurrentSpeed * movementConfig.MoveSideSpeedPercent
-                    : movementData.CurrentSpeed;
+            // Start with base speed based on movement state
+            var baseSpeed = CalculateBaseSpeed();
+            // Apply movement direction modifiers
+            movementData.CurrentSpeed = ApplyDirectionModifiers(baseSpeed);
 
-            //Logging.Log($"CurrentSpeed: {currentSpeed}");
+            // Handle no movement case
+            if (!movementInput.HasMovement())
+                movementData.CurrentSpeed = 0f;
         }
 
         public void SmoothSpeed(float deltaTime)
@@ -59,24 +50,10 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
                 deltaTime * movementConfig.SmoothVelocitySpeed
             );
 
-            //Logging.Log($"SmoothCurrentSpeed: {smoothCurrentSpeed}");
-
-            if (movementData.IsRunning && runningHandler.CanRun())
-            {
-                var walkRunPercent = Mathf.InverseLerp(
-                    movementConfig.WalkSpeed,
-                    movementConfig.RunSpeed,
-                    smoothCurrentSpeed
-                );
-                finalSmoothCurrentSpeed =
-                    movementConfig.RunTransitionCurve.Evaluate(walkRunPercent)
-                        * walkRunSpeedDifference
-                    + movementConfig.WalkSpeed;
-            }
-            else
-                finalSmoothCurrentSpeed = smoothCurrentSpeed;
-
-            //Logging.Log($"FinalSmoothCurrentSpeed: {finalSmoothCurrentSpeed}");
+            finalSmoothCurrentSpeed =
+                movementData.IsRunning && runningHandler.CanRun()
+                    ? CalculateRunTransitionSpeed()
+                    : smoothCurrentSpeed;
         }
 
         public void ApplyGravityOnGrounded()
@@ -85,49 +62,87 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
             movementData.FinalMoveVelocity.y = -movementConfig.StickToGroundForce;
         }
 
-        public void ApplyGravityOnAirborne(float deltaTime)
+        public void ApplyGravityOnAir(float deltaTime)
         {
             movementData.InAirTimer += deltaTime;
             movementData.FinalMoveVelocity +=
                 deltaTime * movementConfig.GravityMultiplier * Physics.gravity;
         }
 
-        public void CalculateFinalGroundedAcceleration()
+        public void CalculateFinalAccelerationOnGrounded()
         {
             var targetVelocity = finalSmoothCurrentSpeed * movementData.SmoothFinalMoveDir;
-
-            movementData.FinalMoveVelocity.x = targetVelocity.x;
-            movementData.FinalMoveVelocity.y += targetVelocity.y;
-            movementData.FinalMoveVelocity.z = targetVelocity.z;
-
-            //Logging.Log($"movementData.FinalMoveVelocity: {movementData.FinalMoveVelocity}");
+            movementData.FinalMoveVelocity = new Vector3(
+                targetVelocity.x,
+                movementData.FinalMoveVelocity.y + targetVelocity.y, // Maintain gravity with Y movement
+                targetVelocity.z
+            );
         }
 
-        public void CalculateFinalAirborneAcceleration()
+        public void CalculateFinalAccelerationOnAir()
         {
             var targetVelocity = finalSmoothCurrentSpeed * movementData.SmoothFinalMoveDir;
-
-            movementData.FinalMoveVelocity.x = targetVelocity.x;
-            movementData.FinalMoveVelocity.z = targetVelocity.z;
-
-            //Logging.Log($"movementData.FinalMoveVelocity: {movementData.FinalMoveVelocity}");
+            movementData.FinalMoveVelocity = new Vector3(
+                targetVelocity.x,
+                movementData.FinalMoveVelocity.y, // Preserve existing Y velocity (gravity)
+                targetVelocity.z
+            );
         }
 
         public void ApplyMove(float deltaTime)
         {
             controller.Move(movementData.FinalMoveVelocity * deltaTime);
+            UpdateMovementState();
+        }
 
-            movementData.VerticalVelocity = movementData.FinalMoveVelocity.y;
+        float CalculateBaseSpeed()
+        {
+            if (movementData.IsCrouching)
+                return movementConfig.CrouchSpeed;
 
-            movementData.IsMoving = controller.velocity.magnitude > 0.1f;
-            //Logging.Log($"movementData.IsMoving: {movementData.IsMoving}");
+            if (movementData.IsRunning && runningHandler.CanRun())
+                return movementConfig.RunSpeed;
 
-            movementData.IsWalking =
-                Mathf.Abs(controller.velocity.x) > 0.1f || Mathf.Abs(controller.velocity.z) > 0.1f;
-            //Logging.Log($"movementData.IsWalking: {movementData.IsWalking}");
+            return movementConfig.WalkSpeed;
+        }
 
-            movementData.CurrentVelocity = controller.velocity;
-            //Logging.Log($"movementData.CurrentVelocity: {movementData.CurrentVelocity}");
+        float ApplyDirectionModifiers(float baseSpeed)
+        {
+            var input = movementInput.GetMovement();
+
+            // Moving backwards
+            if (input.y < -0.1f)
+                return baseSpeed * movementConfig.MoveBackwardsSpeedPercent;
+
+            // Pure sideways movement
+            if (Mathf.Abs(input.x) > 0.1f && Mathf.Abs(input.y) < 0.1f)
+                return baseSpeed * movementConfig.MoveSideSpeedPercent;
+
+            return baseSpeed;
+        }
+
+        float CalculateRunTransitionSpeed()
+        {
+            var walkRunPercent = Mathf.InverseLerp(
+                movementConfig.WalkSpeed,
+                movementConfig.RunSpeed,
+                smoothCurrentSpeed
+            );
+
+            return movementConfig.RunTransitionCurve.Evaluate(walkRunPercent)
+                    * (movementConfig.RunSpeed - movementConfig.WalkSpeed)
+                + movementConfig.WalkSpeed;
+        }
+
+        void UpdateMovementState()
+        {
+            var velocity = controller.velocity;
+            var horizontalSpeed = new Vector3(velocity.x, 0f, velocity.z).magnitude;
+
+            movementData.VerticalVelocity = velocity.y;
+            movementData.IsMoving = horizontalSpeed > 0.1f;
+            movementData.IsWalking = movementData.IsMoving && !movementData.IsRunning;
+            movementData.CurrentVelocity = velocity;
         }
     }
 }

@@ -1,52 +1,58 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace GameToolkit.Runtime.Application.Input
 {
-    public static class InputManager
+    public class InputManager : IInputServices, IMovementInput, IUIInput
     {
-        public static InputSystem_Actions inputActions;
+        InputSystem_Actions inputActions;
 
-        #region Initialization
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-        static void Initialize()
-        {
-            inputActions = new InputSystem_Actions();
-            EnablePlayerInput();
-            //Logging.Log("InputManager initialized successfully.");
-        }
-        #endregion
+        public void Initialize() => inputActions = new InputSystem_Actions();
 
-        #region Input State Getters
-        public static Vector2 GetLook => inputActions.Player.Look.ReadValue<Vector2>();
-        public static bool AimPressed => inputActions.Player.Aim.WasPerformedThisFrame();
-        public static bool AimReleased => inputActions.Player.Aim.WasReleasedThisFrame();
-        public static Vector2 GetMovement => inputActions.Player.Move.ReadValue<Vector2>();
-        public static bool HasMovement =>
-            inputActions.Player.Move.ReadValue<Vector2>() != Vector2.zero;
-        public static bool JumpPressed => inputActions.Player.Jump.WasPerformedThisFrame();
-        public static bool CrouchPressed => inputActions.Player.Crouch.WasPerformedThisFrame();
-        public static bool SprintPressed => inputActions.Player.Sprint.WasPressedThisFrame();
-        public static bool SprintReleased => inputActions.Player.Sprint.WasReleasedThisFrame();
-        #endregion
-
-        #region Enable/Disable Methods
-        public static void EnablePlayerInput()
+        #region Services
+        public void EnablePlayerInput()
         {
             inputActions.Player.Enable();
             inputActions.UI.Disable();
         }
 
-        public static void EnableUIInput()
+        public void EnableUIInput()
         {
             inputActions.Player.Disable();
             inputActions.UI.Enable();
         }
 
-        public static void DisableAllInput()
+        public void DisableAllInput()
         {
             inputActions.Player.Disable();
             inputActions.UI.Disable();
         }
+        #endregion
+
+        #region Player
+        public InputAction OpenMenuPressed() => inputActions.Player.OpenPauseScreen;
+
+        public Vector2 GetLook() => inputActions.Player.Look.ReadValue<Vector2>();
+
+        public bool AimPressed() => inputActions.Player.Aim.WasPerformedThisFrame();
+
+        public bool AimReleased() => inputActions.Player.Aim.WasReleasedThisFrame();
+
+        public Vector2 GetMovement() => inputActions.Player.Move.ReadValue<Vector2>();
+
+        public bool HasMovement() => inputActions.Player.Move.ReadValue<Vector2>() != Vector2.zero;
+
+        public bool JumpPressed() => inputActions.Player.Jump.WasPerformedThisFrame();
+
+        public bool CrouchPressed() => inputActions.Player.Crouch.WasPerformedThisFrame();
+
+        public bool SprintPressed() => inputActions.Player.Sprint.WasPressedThisFrame();
+
+        public bool SprintReleased() => inputActions.Player.Sprint.WasReleasedThisFrame();
+        #endregion
+
+        #region UI
+        public InputAction CloseMenuPressed() => inputActions.UI.ClosePauseScreen;
         #endregion
     }
 }

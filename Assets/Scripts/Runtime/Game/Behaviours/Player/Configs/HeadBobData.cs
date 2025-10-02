@@ -15,7 +15,6 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
 
         [Header("Frequency")]
         public float xFrequency = 2f;
-        public float yFrequency = 2f;
 
         [Header("Run Multipliers")]
         public float runAmplitudeMultiplier = 1.5f;

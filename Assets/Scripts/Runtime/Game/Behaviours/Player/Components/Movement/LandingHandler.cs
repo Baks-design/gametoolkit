@@ -58,28 +58,30 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
             var percent = 0f;
             var speed = 1f / movementConfig.LandDuration;
 
+            // Cache initial values
             var localPos = yawTransform.localPosition;
-            var initLandHeight = localPos.y;
-
-            var landAmount =
-                movementData.InAirTimer > movementConfig.LandTimer
-                    ? movementConfig.HighLandAmount
-                    : movementConfig.LowLandAmount;
+            var initialHeight = localPos.y;
+            var landAmount = CalculateLandAmount();
 
             while (percent < 1f)
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
                 percent += deltaTime * speed;
-                var desiredY = movementConfig.LandCurve.Evaluate(percent) * landAmount;
+                var curveValue = movementConfig.LandCurve.Evaluate(percent);
+                var desiredOffset = curveValue * landAmount;
 
-                localPos.y = initLandHeight + desiredY;
+                // Update position efficiently
+                localPos.y = initialHeight + desiredOffset;
                 yawTransform.localPosition = localPos;
 
                 await UniTask.NextFrame(PlayerLoopTiming.Update, cancellationToken);
             }
-
-            //Logging.Log($"HandleLanding: {true}");
         }
+
+        float CalculateLandAmount() =>
+            movementData.InAirTimer > movementConfig.LandTimer
+                ? movementConfig.HighLandAmount
+                : movementConfig.LowLandAmount;
     }
 }

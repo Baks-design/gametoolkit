@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using UnityEngine;
 
 namespace GameToolkit.Runtime.Game.Behaviours.Player
@@ -7,7 +6,6 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
     [Serializable]
     public class PlayerMovementData
     {
-        public IEnumerator LandRoutine;
         public Vector3 FinalMoveVelocity;
         public Vector3 FinalMoveDirection;
         public Vector3 FinalOffset;

@@ -13,18 +13,21 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
             this.collisionData = collisionData;
         }
 
-        public void CheckRoof()
+        public bool CheckRoof()
         {
             var hitRoof = Physics.SphereCast(
                 controller.transform.position,
-                collisionData.RoofRaySphereRadius,
+                controller.radius,
                 Vector3.up,
-                out var _,
+                out _,
                 collisionData.InitHeight,
-                Physics.AllLayers
+                Physics.AllLayers,
+                QueryTriggerInteraction.Ignore
             );
 
             collisionData.HasRoofed = hitRoof;
+
+            return hitRoof;
         }
     }
 }

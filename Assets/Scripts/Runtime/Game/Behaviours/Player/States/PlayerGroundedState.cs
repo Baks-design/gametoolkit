@@ -5,63 +5,95 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
 {
     public class PlayerGroundedState : IState
     {
-        readonly CameraHandler cameraHandler;
-        readonly CrouchHandler crouchHandler;
-        readonly DirectionHandler directionHandler;
-        readonly JumpHandler jumpHandler;
-        readonly LandingHandler landingHandler;
-        readonly VelocityHandler velocityHandler;
-        readonly RunnningHandler runnningHandler;
+        readonly PlayerCollisionData collisionData;
+        readonly IPlayerSound sound;
+        readonly IPlayerAnimation animation;
+        readonly IPlayerCamera camera;
+        readonly IPlayerCollision collision;
+        readonly ICrouchHandler crouch;
+        readonly ICameraHandler camHandler;
+        readonly IVelocityHandler velocity;
+        readonly IRunnningHandler run;
+        readonly ILandingHandler land;
+        readonly IJumpHandler jump;
+        readonly IDirectionHandler direction;
 
         public PlayerGroundedState(
-            CameraHandler cameraHandler,
-            CrouchHandler crouchHandler,
-            DirectionHandler directionHandler,
-            JumpHandler jumpHandler,
-            LandingHandler landingHandler,
-            VelocityHandler velocityHandler,
-            RunnningHandler runnningHandler
+            PlayerCollisionData collisionData,
+            IPlayerSound sound,
+            IPlayerAnimation animation,
+            IPlayerCamera camera,
+            IPlayerCollision collision,
+            ICrouchHandler crouch,
+            ICameraHandler camHandler,
+            IVelocityHandler velocity,
+            IRunnningHandler run,
+            ILandingHandler land,
+            IJumpHandler jump,
+            IDirectionHandler direction
         )
         {
-            this.cameraHandler = cameraHandler;
-            this.crouchHandler = crouchHandler;
-            this.directionHandler = directionHandler;
-            this.jumpHandler = jumpHandler;
-            this.landingHandler = landingHandler;
-            this.velocityHandler = velocityHandler;
-            this.runnningHandler = runnningHandler;
+            this.collisionData = collisionData;
+            this.sound = sound;
+            this.animation = animation;
+            this.camera = camera;
+            this.collision = collision;
+            this.crouch = crouch;
+            this.camHandler = camHandler;
+            this.velocity = velocity;
+            this.run = run;
+            this.land = land;
+            this.jump = jump;
+            this.direction = direction;
         }
 
         public void OnEnter() => Logging.Log("Enter in Grounded State");
 
+        public void FixedUpdate(float deltaTime) { }
+
         public void Update(float deltaTime)
         {
-            Logging.Log($"Current State: Grounded State");
-            //Logging.Log($"Delta Time:{deltaTime}");
+            Logging.Log($"Current State: On Grounded State");
 
-            cameraHandler.RotateTowardsCamera(deltaTime);
+            camHandler.RotateTowardsCamera(deltaTime);
 
-            // Apply Smoothing
-            directionHandler.SmoothInput(deltaTime);
-            velocityHandler.SmoothSpeed(deltaTime);
-            directionHandler.SmoothDirection(deltaTime);
+            collision.GroundCheckHandler();
+            collision.ObstacleCheckHandler();
 
-            // Calculate Movement
-            directionHandler.CalculateMovementGroundedDirection();
-            velocityHandler.CalculateSpeed();
-            velocityHandler.CalculateFinalGroundedAcceleration();
+            direction.SmoothInput(deltaTime);
+            velocity.SmoothSpeed(deltaTime);
+            direction.SmoothDirection(deltaTime);
 
-            // Handle Player Movement, Gravity, Jump, Crouch etc.
-            runnningHandler.HandleRun();
-            crouchHandler.HandleCrouch(deltaTime);
-            cameraHandler.HandleHeadBob(deltaTime);
-            cameraHandler.HandleRunFOV(deltaTime);
-            cameraHandler.HandleCameraSway(deltaTime);
+            direction.CalculateMovementGroundedDirection();
+            velocity.CalculateSpeed();
+            velocity.CalculateFinalGroundedAcceleration();
 
-            // Apply Movement
-            velocityHandler.ApplyGravityOnGrounded();
-            jumpHandler.HandleJump();
-            velocityHandler.ApplyMove(deltaTime);
+            //land.HandleLanding(deltaTime);
+            run.HandleRun();
+            crouch.HandleCrouch(deltaTime);
+            camHandler.HandleHeadBob(deltaTime);
+            camHandler.HandleRunFOV(deltaTime);
+            camHandler.HandleCameraSway(deltaTime);
+
+            velocity.ApplyGravityOnGrounded();
+            jump.HandleJump();
+            velocity.ApplyMove(deltaTime);
+
+            collisionData.PreviouslyGrounded = collisionData.OnGrounded;
+
+            // animation.UpdateMoving();
+            // animation.UpdateCrouch();
+            // animation.UpdateJump();
+
+            sound.UpdateFootsteps(deltaTime);
+            sound.UpdateLanding();
+        }
+
+        public void LateUpdate(float deltaTime)
+        {
+            camera.BreathingHandler(deltaTime);
+            camera.AimHandler(deltaTime);
+            camera.RotationHandler(deltaTime);
         }
     }
 }

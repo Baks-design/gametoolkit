@@ -5,80 +5,73 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
 {
     public class DirectionHandler
     {
+        readonly IMovementInput movementInput;
         readonly CharacterController controller;
         readonly PlayerMovementConfig movementConfig;
         readonly PlayerCollisionData collisionData;
         readonly PlayerMovementData movementData;
 
         public DirectionHandler(
+            IMovementInput movementInput,
             CharacterController controller,
             PlayerMovementConfig movementConfig,
             PlayerCollisionData collisionData,
             PlayerMovementData movementData
         )
         {
+            this.movementInput = movementInput;
             this.controller = controller;
             this.movementConfig = movementConfig;
             this.collisionData = collisionData;
             this.movementData = movementData;
         }
 
-        public void SmoothInput(float deltaTime)
-        {
-            //Logging.Log($"FinalMoveDirection: {InputManager.GetMovement.normalized}");
-
+        public void SmoothInput(float deltaTime) =>
             movementData.SmoothInputVector = Vector2.Lerp(
                 movementData.SmoothInputVector,
-                InputManager.GetMovement.normalized,
+                movementInput.GetMovement().normalized,
                 deltaTime * movementConfig.SmoothInputSpeed
             );
 
-            //Logging.Log($"SmoothInputVector: {movementData.SmoothInputVector}");
+        public void CalculateMovementDirectionOnGrounded()
+        {
+            // Cache the smooth input vector to avoid multiple property accesses
+            var smoothInput = movementData.SmoothInputVector;
+            // Calculate world space direction
+            var desiredDir = CalculateWorldDirection(smoothInput);
+            // Apply slope handling if grounded
+            movementData.FinalMoveDirection = FlattenVectorOnSlopes(desiredDir);
         }
 
-        public void CalculateMovementGroundedDirection()
+        public void CalculateMovementDirectionOnAir()
         {
-            var zDir = controller.transform.forward * movementData.SmoothInputVector.y;
-            var xDir = controller.transform.right * movementData.SmoothInputVector.x;
-
-            var desiredDir = xDir + zDir;
-            desiredDir.y = 0f;
-
-            //Logging.Log($"desiredDir: {desiredDir}");
-
-            var flattenDir = FlattenVectorOnSlopes(desiredDir);
-            movementData.FinalMoveDirection = flattenDir;
-
-            //Logging.Log($"FinalMoveDirection: {movementData.FinalMoveDirection}");
-        }
-
-        Vector3 FlattenVectorOnSlopes(Vector3 vectorToFlat) =>
-            Vector3.ProjectOnPlane(vectorToFlat, collisionData.GroundedNormal);
-
-        public void CalculateMovementAirborneDirection()
-        {
-            var zDir = controller.transform.forward * movementData.SmoothInputVector.y;
-            var xDir = controller.transform.right * movementData.SmoothInputVector.x;
-
-            var desiredDir = xDir + zDir;
-            desiredDir.y = 0f;
-
-            //Logging.Log($"desiredDir: {desiredDir}");
-
+            // Cache the smooth input vector to avoid multiple property accesses
+            var smoothInput = movementData.SmoothInputVector;
+            // Calculate world space direction
+            var desiredDir = CalculateWorldDirection(smoothInput);
+            // Apply slope handling if grounded
             movementData.FinalMoveDirection = desiredDir;
-
-            //Logging.Log($"FinalMoveDirection: {movementData.FinalMoveDirection}");
         }
 
-        public void SmoothDirection(float deltaTime)
-        {
+        public void SmoothDirection(float deltaTime) =>
             movementData.SmoothFinalMoveDir = Vector3.Lerp(
                 movementData.SmoothFinalMoveDir,
                 movementData.FinalMoveDirection,
                 deltaTime * movementConfig.SmoothFinalDirectionSpeed
             );
 
-            //Logging.Log($"SmoothFinalMoveDir: {movementData.SmoothFinalMoveDir}");
+        Vector3 CalculateWorldDirection(Vector2 input)
+        {
+            var zDir = controller.transform.forward * input.y;
+            var xDir = controller.transform.right * input.x;
+
+            var desiredDir = xDir + zDir;
+            desiredDir.y = 0f;
+
+            return desiredDir.normalized; // Always normalize for consistent speed
         }
+
+        Vector3 FlattenVectorOnSlopes(Vector3 vector) =>
+            Vector3.ProjectOnPlane(vector, collisionData.GroundedNormal).normalized;
     }
 }

@@ -1,5 +1,6 @@
 using Alchemy.Inspector;
 using Cysharp.Threading.Tasks;
+using GameToolkit.Runtime.Application.Input;
 using GameToolkit.Runtime.Application.Persistence;
 using GameToolkit.Runtime.Application.Scenes;
 using GameToolkit.Runtime.Game.Systems.Culling;
@@ -60,6 +61,8 @@ namespace GameToolkit.Runtime.Application.States
         [SerializeField, AssetsOnly, Required]
         CullingManager cullingManager;
 
+        InputManager inputManager;
+
         async void Awake()
         {
             BindObjects();
@@ -80,6 +83,7 @@ namespace GameToolkit.Runtime.Application.States
 
         void BindObjects()
         {
+            inputManager = new InputManager();
             cinemachineBrain = Instantiate(cinemachineBrain);
             eventSystem = Instantiate(eventSystem);
             loadingScreen = Instantiate(loadingScreen);
@@ -96,6 +100,9 @@ namespace GameToolkit.Runtime.Application.States
 
         void ServicesRegistration()
         {
+            ServiceLocator.Global.Register<IInputServices>(inputManager);
+            ServiceLocator.Global.Register<IMovementInput>(inputManager);
+            ServiceLocator.Global.Register<IUIInput>(inputManager);
             ServiceLocator.Global.Register<ISceneLoaderServices>(sceneLoaderManager);
             ServiceLocator.Global.Register<IPersistenceServices>(persistenceManager);
             ServiceLocator.Global.Register<IStateServices>(stateManager);
@@ -109,7 +116,7 @@ namespace GameToolkit.Runtime.Application.States
 
         async UniTask InitializeObjects()
         {
-            stateManager.Initialize();
+            inputManager.Initialize();
             persistenceManager.Initialize();
             sceneLoaderManager.Initialize();
             updateManager.Initialize();
@@ -118,7 +125,7 @@ namespace GameToolkit.Runtime.Application.States
             soundManager.Initialize();
             musicManager.Initialize();
             cullingManager.Initialize();
-
+            stateManager.Initialize();
             await sceneLoaderManager.LoadSceneGroup(0);
         }
 
@@ -142,6 +149,9 @@ namespace GameToolkit.Runtime.Application.States
             player.transform.position = new Vector3(0f, 0f, -5f);
         }
 
-        void BeginGame() => persistenceManager.NewGame(); //Only in tests
+        void BeginGame()
+        {
+            persistenceManager.NewGame();
+        }
     }
 }

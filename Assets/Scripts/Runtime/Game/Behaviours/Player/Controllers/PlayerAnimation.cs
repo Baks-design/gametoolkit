@@ -1,30 +1,27 @@
-using System;
 using Alchemy.Inspector;
-using GameToolkit.Runtime.Game.Systems.Update;
-using GameToolkit.Runtime.Utils.Tools.ServicesLocator;
 using UnityEngine;
 
 namespace GameToolkit.Runtime.Game.Behaviours.Player
 {
-    public class PlayerAnimationController : MonoBehaviour, IUpdatable
+    public class PlayerAnimation : MonoBehaviour, IPlayerAnimation
     {
         [SerializeField, Required]
         Animator animator;
 
-        [SerializeField, ReadOnly]
+        [SerializeField, HideInInspector]
         PlayerMovementData movementData;
 
-        [SerializeField, ReadOnly]
+        [SerializeField, HideInInspector]
         PlayerMovementConfig movementConfig;
 
-        [SerializeField, ReadOnly]
+        [SerializeField, HideInInspector]
         PlayerCollisionData collisionData;
 
-        IUpdateServices updateServices;
         float currentSpeed;
         bool wasGrounded;
         bool wasSwimming;
         bool wasClimbing;
+
         readonly int SpeedId = Animator.StringToHash("_Speed");
         readonly int IsGroundedId = Animator.StringToHash("_IsGrounded");
         readonly int IsJumpingId = Animator.StringToHash("_IsJumping");
@@ -41,31 +38,22 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
         readonly int StartClimbingId = Animator.StringToHash("_StartClimbing");
         readonly int StopClimbingId = Animator.StringToHash("_StopClimbing");
 
-        void OnEnable()
-        {
-            if (ServiceLocator.Global.TryGet(out updateServices))
-                updateServices.Register(this);
-        }
-
-        void OnDisable() => updateServices?.Unregister(this);
-
-        public void ProcessUpdate(float deltaTime)
-        {
-            UpdateMoving();
-            UpdateJump();
-            UpdateCrouch();
-            UpdateSwimming();
-            UpdateClimbing();
-        }
-
-        void UpdateMoving()
+        public void UpdateMoving()
         {
             var targetSpeed = movementData.IsMoving ? movementData.CurrentSpeed : 0f;
             currentSpeed = Mathf.Lerp(currentSpeed, targetSpeed, movementConfig.MovementSmoothing);
             animator.SetFloat(SpeedId, currentSpeed);
         }
 
-        void UpdateJump()
+        public void UpdateFalling()
+        {
+            var isGrounded = collisionData.OnGrounded;
+            var verticalVelocity = movementData.VerticalVelocity;
+            var isFalling = !isGrounded && verticalVelocity < 0f;
+            animator.SetBool(IsFallingId, isFalling);
+        }
+
+        public void UpdateJump()
         {
             var isGrounded = collisionData.OnGrounded;
             var verticalVelocity = movementData.VerticalVelocity;
@@ -85,9 +73,9 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
             wasGrounded = isGrounded;
         }
 
-        void UpdateCrouch() => animator.SetBool(IsCrouchingId, movementData.IsCrouching);
+        public void UpdateCrouch() => animator.SetBool(IsCrouchingId, movementData.IsCrouching);
 
-        void UpdateSwimming()
+        public void UpdateSwimming()
         {
             var isSwimming = movementData.IsSwimming;
 
@@ -107,7 +95,7 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
             wasSwimming = isSwimming;
         }
 
-        void UpdateClimbing()
+        public void UpdateClimbing()
         {
             var isClimbing = movementData.IsClimbing;
 

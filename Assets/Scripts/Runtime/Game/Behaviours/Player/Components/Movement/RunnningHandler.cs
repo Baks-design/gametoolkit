@@ -5,16 +5,19 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
 {
     public class RunnningHandler
     {
+        readonly IMovementInput movementInput;
         readonly CharacterController controller;
         readonly PlayerMovementConfig movementConfig;
         readonly PlayerMovementData movementData;
 
         public RunnningHandler(
+            IMovementInput movementInput,
             CharacterController controller,
             PlayerMovementConfig movementConfig,
             PlayerMovementData movementData
         )
         {
+            this.movementInput = movementInput;
             this.controller = controller;
             this.movementConfig = movementConfig;
             this.movementData = movementData;
@@ -22,21 +25,21 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
 
         public void HandleRun()
         {
-            if (InputManager.SprintPressed)
+            if (movementInput.SprintPressed())
                 movementData.IsRunning = true;
-            if (InputManager.SprintReleased)
+            else if (movementInput.SprintReleased())
                 movementData.IsRunning = false;
-
-            //Logging.Log($"movementData.IsRunning: {movementData.IsRunning}");
         }
 
         public bool CanRun()
         {
-            var normalizedDir = Vector3.zero;
-            if (movementData.SmoothFinalMoveDir != Vector3.zero)
-                normalizedDir = movementData.SmoothFinalMoveDir.normalized;
+            if (movementData.IsCrouching || movementData.SmoothFinalMoveDir == Vector3.zero)
+                return false;
+
+            var normalizedDir = movementData.SmoothFinalMoveDir.normalized;
             var dot = Vector3.Dot(controller.transform.forward, normalizedDir);
-            return dot >= movementConfig.CanRunThreshold && !movementData.IsCrouching;
+
+            return dot >= movementConfig.CanRunThreshold;
         }
     }
 }

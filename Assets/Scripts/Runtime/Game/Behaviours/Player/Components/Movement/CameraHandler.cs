@@ -5,26 +5,29 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
 {
     public class CameraHandler
     {
+        readonly IMovementInput movementInput;
         readonly CharacterController controller;
         readonly PlayerMovementConfig movementConfig;
         readonly PlayerCollisionData collisionData;
         readonly PlayerMovementData movementData;
-        readonly PlayerCameraController cameraController;
+        readonly PlayerCamera cameraController;
         readonly Transform yawTransform;
         readonly HeadBobHandler headBobHandler;
         readonly RunnningHandler runnningHandler;
 
         public CameraHandler(
+            IMovementInput movementInput,
             CharacterController controller,
             PlayerMovementConfig movementConfig,
             PlayerCollisionData collisionData,
             HeadBobHandler headBobHandler,
             PlayerMovementData movementData,
-            PlayerCameraController cameraController,
+            PlayerCamera cameraController,
             Transform yawTransform,
             RunnningHandler runnningHandler
         )
         {
+            this.movementInput = movementInput;
             this.controller = controller;
             this.movementConfig = movementConfig;
             this.collisionData = collisionData;
@@ -35,92 +38,95 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
             this.runnningHandler = runnningHandler;
         }
 
-        public void RotateTowardsCamera(float deltaTime)
-        {
+        public void RotateTowardsCamera(float deltaTime) =>
             controller.transform.rotation = Quaternion.Slerp(
                 controller.transform.rotation,
                 yawTransform.rotation,
                 deltaTime * movementConfig.SmoothRotateSpeed
             );
 
-            //Logging.Log($"Rotation: {controller.transform.rotation}");
-        }
-
         public void HandleHeadBob(float deltaTime)
         {
-            if (InputManager.HasMovement && !collisionData.HasObstructed)
-            {
-                // we want to make our head bob only if we are moving and not during crouch routine
-                if (!movementData.IsDuringCrouchAnimation)
-                {
-                    headBobHandler.ScrollHeadBob(
-                        movementData.IsRunning && runnningHandler.CanRun(),
-                        movementData.IsCrouching,
-                        InputManager.GetMovement,
-                        deltaTime
-                    );
-                    yawTransform.localPosition = Vector3.Lerp(
-                        yawTransform.localPosition,
-                        (Vector3.up * movementData.CurrentStateHeight) + movementData.FinalOffset,
-                        deltaTime * movementConfig.SmoothHeadBobSpeed
-                    );
-                }
-            }
-            else // if we are not moving or we are not grounded
-            {
-                if (!movementData.Resetted)
-                    headBobHandler.ResetHeadBob();
+            var shouldBob = movementInput.HasMovement() && !collisionData.HasObstructed;
+            var canBob = shouldBob && !movementData.IsDuringCrouchAnimation;
 
-                // we want to reset our head bob only if we are standing still and not during crouch routine
-                if (!movementData.IsDuringCrouchAnimation)
-                    yawTransform.localPosition = Vector3.Lerp(
-                        yawTransform.localPosition,
-                        new Vector3(0f, movementData.CurrentStateHeight, 0f),
-                        deltaTime * movementConfig.SmoothHeadBobSpeed
-                    );
+            if (canBob)
+            {
+                var canRun = movementData.IsRunning && runnningHandler.CanRun();
+                headBobHandler.ScrollHeadBob(
+                    canRun,
+                    movementData.IsCrouching,
+                    movementInput.GetMovement(),
+                    deltaTime
+                );
+
+                UpdateHeadPosition(
+                    deltaTime,
+                    (Vector3.up * movementData.CurrentStateHeight) + movementData.FinalOffset
+                );
+            }
+            else
+            {
+                ResetHeadBobState();
+                UpdateHeadPosition(deltaTime, new Vector3(0f, movementData.CurrentStateHeight, 0f));
             }
         }
 
         public void HandleCameraSway(float deltaTime) =>
-            cameraController.HandleSway(
+            cameraController.SwayHandler(
                 movementData.SmoothInputVector,
-                InputManager.GetMovement.x,
+                movementInput.GetMovement().x,
                 deltaTime
             );
 
         public void HandleRunFOV(float deltaTime)
         {
-            if (InputManager.HasMovement && !collisionData.HasObstructed)
-            {
-                if (InputManager.SprintPressed && runnningHandler.CanRun())
-                {
-                    movementData.IsDuringRunAnimation = true;
-                    cameraController.ChangeRunFOV(false, deltaTime);
-                }
+            var canStartRun =
+                movementInput.HasMovement()
+                && !collisionData.HasObstructed
+                && runnningHandler.CanRun();
 
-                if (
-                    movementData.IsRunning
-                    && runnningHandler.CanRun()
-                    && !movementData.IsDuringRunAnimation
-                )
-                {
-                    movementData.IsDuringRunAnimation = true;
-                    cameraController.ChangeRunFOV(false, deltaTime);
-                }
-            }
+            var shouldStartRun =
+                canStartRun
+                && (
+                    movementInput.SprintPressed()
+                    || (movementData.IsRunning && !movementData.IsDuringRunAnimation)
+                );
 
-            if (
-                InputManager.SprintReleased
-                || !InputManager.HasMovement
-                || collisionData.HasObstructed
-            )
+            var shouldStopRun =
+                movementInput.SprintReleased()
+                || !movementInput.HasMovement()
+                || collisionData.HasObstructed;
+
+            if (shouldStartRun && !movementData.IsDuringRunAnimation)
             {
-                if (movementData.IsDuringRunAnimation)
-                {
-                    movementData.IsDuringRunAnimation = false;
-                    cameraController.ChangeRunFOV(true, deltaTime);
-                }
+                movementData.IsDuringRunAnimation = true;
+                cameraController.RunFOVHandler(false, deltaTime);
             }
+            else if (shouldStopRun && movementData.IsDuringRunAnimation)
+            {
+                movementData.IsDuringRunAnimation = false;
+                cameraController.RunFOVHandler(true, deltaTime);
+            }
+        }
+
+        // Helper methods
+        void UpdateHeadPosition(float deltaTime, Vector3 targetPosition)
+        {
+            if (movementData.IsDuringCrouchAnimation)
+                return;
+
+            yawTransform.localPosition = Vector3.Lerp(
+                yawTransform.localPosition,
+                targetPosition,
+                deltaTime * movementConfig.SmoothHeadBobSpeed
+            );
+        }
+
+        void ResetHeadBobState()
+        {
+            if (!movementData.Resetted)
+                headBobHandler.ResetHeadBob();
         }
     }
 }

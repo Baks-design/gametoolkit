@@ -5,6 +5,7 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
 {
     public class CameraRotation
     {
+        readonly IMovementInput movementInput;
         readonly PlayerCameraConfig cameraConfig;
         readonly Transform yawTransform;
         readonly Transform pitchTransform;
@@ -14,11 +15,13 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
         float desiredPitch;
 
         public CameraRotation(
+            IMovementInput movementInput,
             Transform yawTransform,
             Transform pitchTransform,
             PlayerCameraConfig cameraConfig
         )
         {
+            this.movementInput = movementInput;
             this.yawTransform = yawTransform;
             this.pitchTransform = pitchTransform;
             this.cameraConfig = cameraConfig;
@@ -33,8 +36,9 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
 
         void CalculateRotation(float deltaTime)
         {
-            desiredYaw += InputManager.GetLook.x * cameraConfig.Sensitivity.x * deltaTime;
-            desiredPitch -= InputManager.GetLook.y * cameraConfig.Sensitivity.y * deltaTime;
+            var lookInput = movementInput.GetLook();
+            desiredYaw += lookInput.x * cameraConfig.Sensitivity.x * deltaTime;
+            desiredPitch -= lookInput.y * cameraConfig.Sensitivity.y * deltaTime;
             desiredPitch = Mathf.Clamp(
                 desiredPitch,
                 cameraConfig.LookAngleMinMax.x,

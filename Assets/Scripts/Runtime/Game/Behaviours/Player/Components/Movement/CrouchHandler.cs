@@ -8,9 +8,11 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
 {
     public class CrouchHandler
     {
+        readonly IMovementInput movementInput;
         readonly PlayerMovementConfig movementConfig;
         readonly PlayerCollisionData collisionData;
         readonly PlayerMovementData movementData;
+        readonly IPlayerCollision collision;
         readonly CharacterController controller;
         readonly Transform yawTransform;
         readonly float crouchCamHeight;
@@ -21,18 +23,22 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
         CancellationTokenSource crouchCancellationTokenSource;
 
         public CrouchHandler(
+            IMovementInput movementInput,
             CharacterController controller,
             Transform yawTransform,
             PlayerMovementConfig movementConfig,
             PlayerCollisionData collisionData,
-            PlayerMovementData movementData
+            PlayerMovementData movementData,
+            IPlayerCollision collision
         )
         {
+            this.movementInput = movementInput;
             this.controller = controller;
             this.yawTransform = yawTransform;
             this.movementConfig = movementConfig;
             this.collisionData = collisionData;
             this.movementData = movementData;
+            this.collision = collision;
 
             initCamHeight = yawTransform.localPosition.y;
 
@@ -46,10 +52,12 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
 
         public void HandleCrouch(float deltaTime)
         {
-            if (!InputManager.CrouchPressed)
-                return;
+            var canCrouch =
+                movementInput.CrouchPressed()
+                && !movementData.IsCrouching
+                && !collision.RoofCheckHandler();
 
-            if (movementData.IsCrouching && collisionData.HasRoofed)
+            if (!canCrouch)
                 return;
 
             // Cancel previous crouch animation
@@ -78,23 +86,24 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
         {
             movementData.IsDuringCrouchAnimation = true;
 
+            // Pre-calculate target values
+            var wasCrouching = movementData.IsCrouching;
+            movementData.IsCrouching = !wasCrouching;
+
+            var targetHeight = wasCrouching ? collisionData.InitHeight : crouchHeight;
+            var targetCenter = wasCrouching ? collisionData.InitCenter : crouchCenter;
+            var targetCamHeight = wasCrouching ? initCamHeight : crouchCamHeight;
+
+            movementData.CurrentStateHeight = wasCrouching ? initCamHeight : crouchCamHeight;
+
+            // Cache initial values
+            var initialHeight = controller.height;
+            var initialCenter = controller.center;
+            var initialCamPos = yawTransform.localPosition;
+            var initialCamHeight = initialCamPos.y;
+
             var percent = 0f;
             var speed = 1f / movementConfig.CrouchTransitionDuration;
-
-            var currentHeight = controller.height;
-            var currentCenter = controller.center;
-
-            var desiredHeight = movementData.IsCrouching ? collisionData.InitHeight : crouchHeight;
-            var desiredCenter = movementData.IsCrouching ? collisionData.InitCenter : crouchCenter;
-
-            var camPos = yawTransform.localPosition;
-            var camCurrentHeight = camPos.y;
-            var camDesiredHeight = movementData.IsCrouching ? initCamHeight : crouchCamHeight;
-
-            movementData.IsCrouching = !movementData.IsCrouching;
-            movementData.CurrentStateHeight = movementData.IsCrouching
-                ? crouchCamHeight
-                : initCamHeight;
 
             while (percent < 1f)
             {
@@ -103,11 +112,13 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
                 percent += deltaTime * speed;
                 var smoothPercent = movementConfig.CrouchTransitionCurve.Evaluate(percent);
 
-                controller.height = Mathf.Lerp(currentHeight, desiredHeight, smoothPercent);
-                controller.center = Vector3.Lerp(currentCenter, desiredCenter, smoothPercent);
+                // Apply interpolation
+                controller.height = Mathf.Lerp(initialHeight, targetHeight, smoothPercent);
+                controller.center = Vector3.Lerp(initialCenter, targetCenter, smoothPercent);
 
-                camPos.y = Mathf.Lerp(camCurrentHeight, camDesiredHeight, smoothPercent);
-                yawTransform.localPosition = camPos;
+                // Reuse vector to avoid allocation
+                initialCamPos.y = Mathf.Lerp(initialCamHeight, targetCamHeight, smoothPercent);
+                yawTransform.localPosition = initialCamPos;
 
                 await UniTask.NextFrame(PlayerLoopTiming.Update, cancellationToken);
             }

@@ -4,25 +4,29 @@ using Cysharp.Threading.Tasks;
 using GameToolkit.Runtime.Application.Input;
 using GameToolkit.Runtime.Utils.Helpers;
 using Unity.Cinemachine;
+using UnityEngine;
 
 namespace GameToolkit.Runtime.Game.Behaviours.Player
 {
     public class CameraZoom
     {
+        readonly IMovementInput movementInput;
         readonly CinemachineCamera cam;
         readonly PlayerCameraConfig cameraConfig;
         readonly PlayerCameraData cameraData;
         readonly float initFOV;
+        readonly CancellationTokenSource fovCancellationTokenSource;
+        readonly CancellationTokenSource runFovCancellationTokenSource;
         bool running;
-        CancellationTokenSource fovCancellationTokenSource;
-        CancellationTokenSource runFovCancellationTokenSource;
 
         public CameraZoom(
+            IMovementInput movementInput,
             CinemachineCamera cam,
             PlayerCameraConfig cameraConfig,
             PlayerCameraData cameraData
         )
         {
+            this.movementInput = movementInput;
             this.cam = cam;
             this.cameraConfig = cameraConfig;
             this.cameraData = cameraData;
@@ -32,11 +36,12 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
 
         public void HandleAimFOV(float deltaTime)
         {
-            if (InputManager.AimPressed || InputManager.AimReleased)
+            if (movementInput.AimPressed() || movementInput.AimReleased())
                 _ = ChangeFOV(deltaTime);
-
-            //Logging.Log($"HandleAimFOV: true");
         }
+
+        public void HandleRunFOV(bool returning, float deltaTime) =>
+            _ = ChangeRunFOV(returning, deltaTime);
 
         async UniTaskVoid ChangeFOV(float deltaTime)
         {
@@ -46,96 +51,111 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
                 return;
             }
 
-            // Cancel previous FOV tasks
-            fovCancellationTokenSource?.Cancel();
-            fovCancellationTokenSource = new CancellationTokenSource();
+            await ExecuteFOVChangeAsync(
+                fovCancellationTokenSource,
+                () => runFovCancellationTokenSource?.Cancel(),
+                ct => ChangeFOVAsync(deltaTime, ct)
+            );
+        }
 
-            // Also cancel run FOV if it's running
-            runFovCancellationTokenSource?.Cancel();
+        async UniTaskVoid ChangeRunFOV(bool returning, float deltaTime) =>
+            await ExecuteFOVChangeAsync(
+                runFovCancellationTokenSource,
+                () => fovCancellationTokenSource?.Cancel(),
+                ct => ChangeRunFOVAsync(returning, deltaTime, ct)
+            );
+
+        async UniTask ExecuteFOVChangeAsync(
+            CancellationTokenSource source,
+            Action cancelOther,
+            Func<CancellationToken, UniTask> fovTask
+        )
+        {
+            source?.Cancel();
+            source = new CancellationTokenSource();
+            cancelOther();
 
             try
             {
-                await ChangeFOVAsync(deltaTime, fovCancellationTokenSource.Token);
+                await fovTask(source.Token);
             }
             catch (OperationCanceledException)
             {
-                // Task was cancelled, this is expected
+                // Expected when cancelled
             }
         }
 
-        public void HandleRunFOV(bool returning, float deltaTime)
+        async UniTask ChangeFOVAsync(float deltaTime, CancellationToken cancellationToken)
         {
-            _ = ChangeRunFOV(returning, deltaTime);
-
-            //Logging.Log($"HandleRunFOV: true");
-        }
-
-        async UniTaskVoid ChangeRunFOV(bool returning, float deltaTime)
-        {
-            // Cancel previous run FOV tasks
-            runFovCancellationTokenSource?.Cancel();
-            runFovCancellationTokenSource = new CancellationTokenSource();
-
-            // Also cancel regular FOV if it's running
-            fovCancellationTokenSource?.Cancel();
-
-            try
-            {
-                await ChangeRunFOVAsync(returning, deltaTime, runFovCancellationTokenSource.Token);
-            }
-            catch (OperationCanceledException)
-            {
-                // Task was cancelled, this is expected
-            }
-        }
-
-        async UniTask ChangeFOVAsync(float deltaTime, CancellationToken cancellationToken = default)
-        {
-            var percent = 0f;
-            var speed = 1f / cameraConfig.ZoomTransitionDuration;
-
             var currentFOV = cam.Lens.FieldOfView;
             var targetFOV = cameraData.IsZooming ? initFOV : cameraConfig.ZoomFOV;
-
             cameraData.IsZooming = !cameraData.IsZooming;
 
-            while (percent < 1f)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-
-                percent += deltaTime * speed;
-                var smoothPercent = cameraConfig.ZoomCurve.Evaluate(percent);
-                cam.Lens.FieldOfView = Mathfs.Eerp(currentFOV, targetFOV, smoothPercent);
-                await UniTask.NextFrame(PlayerLoopTiming.Update, cancellationToken);
-            }
+            await AnimateFOV(
+                currentFOV,
+                targetFOV,
+                cameraConfig.ZoomTransitionDuration,
+                cameraConfig.ZoomCurve,
+                deltaTime,
+                cancellationToken
+            );
         }
 
         async UniTask ChangeRunFOVAsync(
             bool returning,
             float deltaTime,
-            CancellationToken cancellationToken = default
+            CancellationToken cancellationToken
         )
         {
-            var percent = 0f;
+            var currentFOV = cam.Lens.FieldOfView;
+            var targetFOV = returning ? initFOV : cameraConfig.RunFOV;
             var duration = returning
                 ? cameraConfig.RunReturnTransitionDuration
                 : cameraConfig.RunTransitionDuration;
-            var speed = 1f / duration;
-
-            var currentFOV = cam.Lens.FieldOfView;
-            var targetFOV = returning ? initFOV : cameraConfig.RunFOV;
 
             running = !returning;
+
+            await AnimateFOV(
+                currentFOV,
+                targetFOV,
+                duration,
+                cameraConfig.RunCurve,
+                deltaTime,
+                cancellationToken
+            );
+        }
+
+        async UniTask AnimateFOV(
+            float currentFOV,
+            float targetFOV,
+            float duration,
+            AnimationCurve curve,
+            float deltaTime,
+            CancellationToken cancellationToken
+        )
+        {
+            if (duration <= 0f)
+            {
+                cam.Lens.FieldOfView = targetFOV;
+                return;
+            }
+
+            var percent = 0f;
+            var speed = 1f / duration;
 
             while (percent < 1f)
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
                 percent += deltaTime * speed;
-                var smoothPercent = cameraConfig.RunCurve.Evaluate(percent);
+                var smoothPercent = curve.Evaluate(percent);
                 cam.Lens.FieldOfView = Mathfs.Eerp(currentFOV, targetFOV, smoothPercent);
+
                 await UniTask.NextFrame(PlayerLoopTiming.Update, cancellationToken);
             }
+
+            // Ensure final value is set exactly
+            cam.Lens.FieldOfView = targetFOV;
         }
     }
 }

@@ -7,6 +7,7 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
         readonly CharacterController controller;
         readonly PlayerCollisionConfig collisionConfig;
         readonly PlayerCollisionData collisionData;
+        readonly RaycastHit[] groundHits = new RaycastHit[1];
 
         public GroundCheck(
             CharacterController controller,
@@ -21,14 +22,21 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
 
         public void CheckGround()
         {
-            var hitGround = Physics.SphereCast(
-                controller.transform.position + controller.center,
+            var sphereOrigin = controller.transform.position + controller.center;
+            var rayLength = collisionData.FinalRayLength;
+
+            var hitCount = Physics.SphereCastNonAlloc(
+                sphereOrigin,
                 collisionConfig.RaySphereRadius,
                 Vector3.down,
-                out var hitInfo,
-                collisionData.FinalRayLength,
-                collisionConfig.GroundLayer
+                groundHits,
+                rayLength,
+                collisionConfig.GroundLayer,
+                QueryTriggerInteraction.Ignore
             );
+
+            var hitGround = hitCount > 0;
+            var hitInfo = hitGround ? groundHits[0] : default;
 
             collisionData.OnGrounded = hitGround;
             collisionData.CastHit = hitInfo;

@@ -6,12 +6,16 @@ namespace GameToolkit.Runtime.Application.States
 {
     public class PauseState : IState
     {
+        readonly IInputServices inputServices;
+
+        public PauseState(IInputServices inputServices) => this.inputServices = inputServices;
+
         public void OnEnter()
         {
             Logging.Log("Enter in PauseState State");
             GameSystem.SetCursor(false);
             GameSystem.SetTimeScale(0f);
-            InputManager.EnableUIInput();
+            inputServices.EnableUIInput();
         }
     }
 }

@@ -13,25 +13,45 @@ MonoBehaviour:
   m_Name: QuickAccessManager
   m_EditorClassIdentifier: CustomToolbar::OpalStudio.CustomToolbar.Editor.ToolbarElements.QuickAccess.Data.QuickAccessManager
   items:
-  - displayName: Game Initiator
-    scenePath: Assets/Scenes/Game Initiator.unity
-  - displayName: Game Initiator
-    scenePath: Assets/Scenes/Game Initiator.unity
-  - displayName: NuGet
+  - displayName: Yaw
+    scenePath: DontDestroyOnLoad
+  - displayName: Camera
+    scenePath: DontDestroyOnLoad
+  - displayName: Player(Clone)
+    scenePath: DontDestroyOnLoad
+  - displayName: Player
+    scenePath: Assets/Prefabs/Gameplay/Player.prefab
+  - displayName: Data
+    scenePath: Assets/Prefabs/Gameplay/Player.prefab
+  - displayName: Collision
+    scenePath: Assets/Prefabs/Gameplay/Player.prefab
+  - displayName: Camera
+    scenePath: Assets/Prefabs/Gameplay/Player.prefab
+  - displayName: Yaw
+    scenePath: Assets/Prefabs/Gameplay/Player.prefab
+  - displayName: Pitch
+    scenePath: Assets/Prefabs/Gameplay/Player.prefab
+  - displayName: Movement
+    scenePath: Assets/Prefabs/Gameplay/Player.prefab
+  - displayName: Player
     scenePath: 
-  - displayName: packages
-    scenePath: 
-  - displayName: InputSystem_Actions
-    scenePath: 
-  - displayName: InputManager
-    scenePath: 
-  - displayName: Input
-    scenePath: 
-  - displayName: Input
-    scenePath: 
-  - displayName: Runtime
-    scenePath: 
-  - displayName: Sound Library
-    scenePath: 
-  - displayName: Player Head Bob Data
-    scenePath: 
+  - displayName: Yaw
+    scenePath: DontDestroyOnLoad
+  - displayName: Camera
+    scenePath: DontDestroyOnLoad
+  - displayName: Player(Clone)
+    scenePath: DontDestroyOnLoad
+  - displayName: Movement
+    scenePath: DontDestroyOnLoad
+  - displayName: Data
+    scenePath: DontDestroyOnLoad
+  - displayName: Collision
+    scenePath: DontDestroyOnLoad
+  - displayName: Pitch
+    scenePath: DontDestroyOnLoad
+  - displayName: Virtual Camera
+    scenePath: DontDestroyOnLoad
+  - displayName: Sound
+    scenePath: Assets/Prefabs/Gameplay/Player.prefab
+  - displayName: Movement
+    scenePath: Assets/Prefabs/Gameplay/Player.prefab

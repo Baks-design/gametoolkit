@@ -1,6 +1,7 @@
 using Alchemy.Inspector;
 using GameToolkit.Runtime.Application.Input;
 using GameToolkit.Runtime.Utils.Tools.EventBus;
+using GameToolkit.Runtime.Utils.Tools.ServicesLocator;
 using UnityEngine;
 using static UnityEngine.InputSystem.InputAction;
 
@@ -10,26 +11,31 @@ namespace GameToolkit.Runtime.UI
     {
         [SerializeField, AssetsOnly, Required]
         GameObject pauseScreen;
+        IMovementInput movementInput;
+        IUIInput uIInput;
 
         void OnEnable()
         {
-            InputManager.inputActions.Player.OpenPauseScreen.performed += Show;
-            InputManager.inputActions.UI.ClosePauseScreen.performed += Hide;
+            if (ServiceLocator.Global.TryGet(out movementInput))
+                movementInput.OpenMenuPressed().performed += Show;
+
+            if (ServiceLocator.Global.Get(out uIInput))
+                uIInput.CloseMenuPressed().performed += Hide;
         }
 
         void OnDisable()
         {
-            InputManager.inputActions.Player.OpenPauseScreen.performed -= Show;
-            InputManager.inputActions.UI.ClosePauseScreen.performed -= Hide;
+            movementInput.OpenMenuPressed().performed -= Show;
+            uIInput.CloseMenuPressed().performed -= Hide;
         }
 
-        public void Show(CallbackContext context)
+        void Show(CallbackContext context)
         {
             EventBus<PauseScreenEvent>.Raise(new PauseScreenEvent { HasOpened = true });
             pauseScreen.SetActive(true);
         }
 
-        public void Hide(CallbackContext context)
+        void Hide(CallbackContext context)
         {
             EventBus<PauseScreenEvent>.Raise(new PauseScreenEvent { HasOpened = false });
             pauseScreen.SetActive(false);

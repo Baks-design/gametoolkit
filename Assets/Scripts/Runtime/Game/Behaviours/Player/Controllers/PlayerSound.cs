@@ -1,12 +1,11 @@
 using Alchemy.Inspector;
 using GameToolkit.Runtime.Game.Systems.Sound;
-using GameToolkit.Runtime.Game.Systems.Update;
 using GameToolkit.Runtime.Utils.Tools.ServicesLocator;
 using UnityEngine;
 
 namespace GameToolkit.Runtime.Game.Behaviours.Player
 {
-    public class PlayerSoundController : MonoBehaviour, IUpdatable
+    public class PlayerSound : MonoBehaviour, IPlayerSound
     {
         [SerializeField, Required]
         CharacterController controller;
@@ -17,13 +16,12 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
         [SerializeField, InlineEditor]
         SoundLibraryObject soundLibrary;
 
-        [SerializeField, ReadOnly]
+        [SerializeField, HideInInspector]
         PlayerMovementData movementData;
 
-        [SerializeField, ReadOnly]
+        [SerializeField, HideInInspector]
         PlayerCollisionData collisionData;
 
-        IUpdateServices updateServices;
         ISoundServices soundServices;
         SoundBuilder soundBuilder;
         float footstepTimer;
@@ -37,24 +35,11 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
 
         void OnEnable()
         {
-            if (ServiceLocator.Global.TryGet(out updateServices))
-                updateServices.Register(this);
-
             if (ServiceLocator.Global.TryGet(out soundServices))
                 soundBuilder = soundServices.CreateSoundBuilder();
         }
 
-        void OnDisable() => updateServices?.Unregister(this);
-
-        public void ProcessUpdate(float deltaTime)
-        {
-            UpdateFootsteps(deltaTime);
-            UpdateLanding();
-            UpdateSwimming(deltaTime);
-            UpdateClimbing(deltaTime);
-        }
-
-        void UpdateFootsteps(float deltaTime)
+        public void UpdateFootsteps(float deltaTime)
         {
             if (
                 !collisionData.OnGrounded
@@ -88,7 +73,7 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
                 .WithPosition(controller.transform.position)
                 .Play(soundLibrary.FootstepClip);
 
-        void UpdateLanding()
+        public void UpdateLanding()
         {
             var isGrounded = collisionData.OnGrounded;
 
@@ -120,7 +105,7 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
                 .Play(soundLibrary.LandingClip);
         }
 
-        void UpdateSwimming(float deltaTime)
+        public void UpdateSwimming(float deltaTime)
         {
             var isSwimming = movementData.IsSwimming;
 
@@ -155,7 +140,7 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
                 .WithPosition(controller.transform.position)
                 .Play(soundLibrary.SwimmingClip);
 
-        void UpdateClimbing(float deltaTime)
+        public void UpdateClimbing(float deltaTime)
         {
             var isClimbing = movementData.IsClimbing;
 

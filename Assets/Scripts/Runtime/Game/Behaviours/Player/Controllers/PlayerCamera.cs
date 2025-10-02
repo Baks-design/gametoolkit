@@ -1,12 +1,12 @@
 using Alchemy.Inspector;
-using GameToolkit.Runtime.Game.Systems.Update;
+using GameToolkit.Runtime.Application.Input;
 using GameToolkit.Runtime.Utils.Tools.ServicesLocator;
 using Unity.Cinemachine;
 using UnityEngine;
 
 namespace GameToolkit.Runtime.Game.Behaviours.Player
 {
-    public class PlayerCameraController : MonoBehaviour, ILateUpdatable
+    public class PlayerCamera : MonoBehaviour, IPlayerCamera
     {
         [SerializeField, Required]
         Transform pitchTransform;
@@ -30,11 +30,18 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
         CameraSwaying cameraSwaying;
         CameraRotation cameraRotation;
         CameraBreathing cameraBreathing;
-        ILateUpdateServices lateUpdateServices;
+        IMovementInput movementInput;
 
-        void Awake()
+        void OnEnable() => ServiceLocator.Global.Get(out movementInput);
+
+        void Start()
         {
-            cameraRotation = new CameraRotation(yawTransform, pitchTransform, cameraConfig);
+            cameraRotation = new CameraRotation(
+                movementInput,
+                yawTransform,
+                pitchTransform,
+                cameraConfig
+            );
             cameraBreathing = new CameraBreathing(
                 cam.transform,
                 cameraConfig,
@@ -43,28 +50,19 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
                 cameraData
             );
             cameraSwaying = new CameraSwaying(cam.transform, cameraConfig);
-            cameraZoom = new CameraZoom(cam, cameraConfig, cameraData);
+            cameraZoom = new CameraZoom(movementInput, cam, cameraConfig, cameraData);
         }
 
-        void OnEnable()
-        {
-            if (ServiceLocator.Global.TryGet(out lateUpdateServices))
-                lateUpdateServices.Register(this);
-        }
+        public void BreathingHandler(float deltaTime) => cameraBreathing.UpdateBreathing(deltaTime);
 
-        void OnDisable() => lateUpdateServices?.Unregister(this);
+        public void RotationHandler(float deltaTime) => cameraRotation.RotationHandler(deltaTime);
 
-        public void ProcessLateUpdate(float deltaTime)
-        {
-            cameraRotation.RotationHandler(deltaTime);
-            cameraBreathing.UpdateBreathing(deltaTime);
-            cameraZoom.HandleAimFOV(deltaTime);
-        }
-
-        public void HandleSway(Vector3 inputVector, float rawXInput, float deltaTime) =>
+        public void SwayHandler(Vector3 inputVector, float rawXInput, float deltaTime) =>
             cameraSwaying.SwayPlayer(inputVector, rawXInput, deltaTime);
 
-        public void ChangeRunFOV(bool returning, float deltaTime) =>
+        public void AimHandler(float deltaTime) => cameraZoom.HandleAimFOV(deltaTime);
+
+        public void RunFOVHandler(bool returning, float deltaTime) =>
             cameraZoom.HandleRunFOV(returning, deltaTime);
     }
 }

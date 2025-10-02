@@ -1,11 +1,11 @@
 using Alchemy.Inspector;
-using GameToolkit.Runtime.Game.Systems.Update;
+using GameToolkit.Runtime.Application.Input;
 using GameToolkit.Runtime.Utils.Tools.ServicesLocator;
 using UnityEngine;
 
 namespace GameToolkit.Runtime.Game.Behaviours.Player
 {
-    public class PlayerCollisionController : MonoBehaviour, IUpdatable
+    public class PlayerCollisionController : MonoBehaviour, IPlayerCollision
     {
         [SerializeField, Required]
         CharacterController controller;
@@ -16,14 +16,18 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
         [SerializeField, ReadOnly]
         PlayerCollisionData collisionData;
 
-        IUpdateServices updateServices;
+        [SerializeField, HideInInspector]
+        PlayerMovementData movementData;
+
         GroundCheck groundCheck;
         ObstacleCheck obstacleCheck;
         RoofCheck roofCheck;
         CharacterPush characterPush;
-        readonly PlayerMovementData movementData = new();
+        IMovementInput movementInput;
 
-        void Awake()
+        void OnEnable() => ServiceLocator.Global.Get(out movementInput);
+
+        void Start()
         {
             AdjustComponents();
             InitalizationClasses();
@@ -46,6 +50,7 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
         {
             groundCheck = new GroundCheck(controller, collisionConfig, collisionData);
             obstacleCheck = new ObstacleCheck(
+                movementInput,
                 controller,
                 collisionConfig,
                 movementData,
@@ -55,22 +60,12 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
             characterPush = new CharacterPush(controller, collisionConfig);
         }
 
-        void OnEnable()
-        {
-            if (ServiceLocator.Global.TryGet(out updateServices))
-                updateServices.Register(this);
-        }
-
-        void OnDisable() => updateServices?.Unregister(this);
-
-        public void ProcessUpdate(float deltaTime)
-        {
-            groundCheck.CheckGround();
-            obstacleCheck.CheckObstacle();
-            roofCheck.CheckRoof();
-            collisionData.PreviouslyGrounded = collisionData.OnGrounded;
-        }
-
         void OnControllerColliderHit(ControllerColliderHit hit) => characterPush.PushBody(hit);
+
+        public void GroundCheckHandler() => groundCheck.CheckGround();
+
+        public void ObstacleCheckHandler() => obstacleCheck.CheckObstacle();
+
+        public bool RoofCheckHandler() => roofCheck.CheckRoof();
     }
 }

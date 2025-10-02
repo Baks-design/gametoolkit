@@ -218,8 +218,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameToolkit.Runtime.Behaviours.Player.PlayerMovementController
   yawTransform: {fileID: 7469491795264069964}
   controller: {fileID: 2166393501622899287}
-  cameraController: {fileID: 3984641321365205063}
-  soundController: {fileID: 7184927629246242024}
+  playerCamera: {fileID: 3984641321365205063}
+  playerSound: {fileID: 7184927629246242024}
   movementConfig:
     GravityMultiplier: 2.5
     StickToGroundForce: 1
@@ -506,6 +506,40 @@ MonoBehaviour:
     ClimbingInterval: 0.6
     ClimbingVolume: 0.5
   soundLibrary: {fileID: 11400000, guid: 9e505778dd80cc74babeb16af718497c, type: 2}
+  movementData:
+    FinalMoveVelocity: {x: 0, y: 0, z: 0}
+    FinalMoveDirection: {x: 0, y: 0, z: 0}
+    FinalOffset: {x: 0, y: 0, z: 0}
+    CurrentVelocity: {x: 0, y: 0, z: 0}
+    SmoothFinalMoveDir: {x: 0, y: 0, z: 0}
+    SmoothInputVector: {x: 0, y: 0}
+    IsMoving: 0
+    IsWalking: 0
+    IsRunning: 0
+    IsCrouching: 0
+    IsClimbing: 0
+    IsSwimming: 0
+    Resetted: 0
+    IsDuringRunAnimation: 0
+    IsDuringCrouchAnimation: 0
+    InAirTimer: 0
+    CurrentStateHeight: 0
+    CurrentSpeed: 0
+    VerticalVelocity: 0
+  collisionData:
+    InitCenter: {x: 0, y: 0, z: 0}
+    GroundedNormal: {x: 0, y: 0, z: 0}
+    ObstructedNormal: {x: 0, y: 0, z: 0}
+    OnGrounded: 0
+    PreviouslyGrounded: 0
+    HasObstructed: 0
+    HasRoofed: 0
+    OnUnderwater: 0
+    OnAirborne: 0
+    OnClimbing: 0
+    InitHeight: 0
+    FinalRayLength: 0
+    RoofRaySphereRadius: 0
 --- !u!1 &5494003559039039089
 GameObject:
   m_ObjectHideFlags: 0
@@ -698,6 +732,8 @@ GameObject:
   m_Component:
   - component: {fileID: 7225105510741475586}
   - component: {fileID: 2166393501622899287}
+  - component: {fileID: 1541259823547762628}
+  - component: {fileID: 1632506570185269473}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -751,6 +787,45 @@ CharacterController:
   m_SkinWidth: 0.01
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0.91, z: 0}
+--- !u!114 &1541259823547762628
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8425183318071612769}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d63c2b81746d8242b221c8700be0a59, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: GameToolkit.Player::GameToolkit.Runtime.Game.Behaviours.Player.PlayerController
+  collisionData:
+    InitCenter: {x: 0, y: 0, z: 0}
+    GroundedNormal: {x: 0, y: 0, z: 0}
+    ObstructedNormal: {x: 0, y: 0, z: 0}
+    OnGrounded: 0
+    PreviouslyGrounded: 0
+    HasObstructed: 0
+    HasRoofed: 0
+    OnUnderwater: 0
+    OnAirborne: 0
+    OnClimbing: 0
+    InitHeight: 0
+    FinalRayLength: 0
+    RoofRaySphereRadius: 0
+--- !u!114 &1632506570185269473
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8425183318071612769}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: edbe3f4cbb059ea4ca174a5ea7d42ae9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: GameToolkit.Player::GameToolkit.Runtime.Game.Behaviours.Player.PlayerHealth
+  maxHealth: 100
 --- !u!1 &9042488268511448855
 GameObject:
   m_ObjectHideFlags: 0
@@ -797,3 +872,77 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameToolkit.Runtime.Behaviours.Player.PlayerAnimationController
   animator: {fileID: 3186841403853273047}
+  movementData:
+    FinalMoveVelocity: {x: 0, y: 0, z: 0}
+    FinalMoveDirection: {x: 0, y: 0, z: 0}
+    FinalOffset: {x: 0, y: 0, z: 0}
+    CurrentVelocity: {x: 0, y: 0, z: 0}
+    SmoothFinalMoveDir: {x: 0, y: 0, z: 0}
+    SmoothInputVector: {x: 0, y: 0}
+    IsMoving: 0
+    IsWalking: 0
+    IsRunning: 0
+    IsCrouching: 0
+    IsClimbing: 0
+    IsSwimming: 0
+    Resetted: 0
+    IsDuringRunAnimation: 0
+    IsDuringCrouchAnimation: 0
+    InAirTimer: 0
+    CurrentStateHeight: 0
+    CurrentSpeed: 0
+    VerticalVelocity: 0
+  movementConfig:
+    GravityMultiplier: 2.5
+    StickToGroundForce: 1
+    WalkSpeed: 3
+    MoveBackwardsSpeedPercent: 0.5
+    MoveSideSpeedPercent: 0.7
+    CanRunThreshold: 0.7
+    RunSpeed: 6
+    RunTransitionCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    JumpHeight: 6
+    CrouchSpeed: 1
+    CrouchPercent: 0.6
+    CrouchTransitionDuration: 0.5
+    CrouchTransitionCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    LowLandAmount: 0.1
+    HighLandAmount: 0.4
+    LandTimer: 0.5
+    LandDuration: 0.5
+    LandCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    SmoothInputSpeed: 10
+    SmoothRotateSpeed: 10
+    SmoothVelocitySpeed: 3
+    SmoothFinalDirectionSpeed: 10
+    SmoothHeadBobSpeed: 5
+    MovementSmoothing: 0.1
+  collisionData:
+    InitCenter: {x: 0, y: 0, z: 0}
+    GroundedNormal: {x: 0, y: 0, z: 0}
+    ObstructedNormal: {x: 0, y: 0, z: 0}
+    OnGrounded: 0
+    PreviouslyGrounded: 0
+    HasObstructed: 0
+    HasRoofed: 0
+    OnUnderwater: 0
+    OnAirborne: 0
+    OnClimbing: 0
+    InitHeight: 0
+    FinalRayLength: 0
+    RoofRaySphereRadius: 0

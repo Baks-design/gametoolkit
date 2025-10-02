@@ -1,3 +1,4 @@
+using GameToolkit.Runtime.Utils.Helpers;
 using UnityEngine;
 
 namespace GameToolkit.Runtime.Game.Behaviours.Player
@@ -6,10 +7,10 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
     {
         readonly PlayerCameraConfig cameraConfig;
         readonly Transform camTransform;
+        bool differentDirection;
         float scrollSpeed;
         float xAmountThisFrame;
         float xAmountPreviousFrame;
-        bool differentDirection;
 
         public CameraSwaying(Transform camTransform, PlayerCameraConfig cameraConfig)
         {
@@ -19,47 +20,43 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
 
         public void SwayPlayer(Vector3 inputVector, float rawXInput, float deltaTime)
         {
-            var xAmount = inputVector.x;
-
             xAmountThisFrame = rawXInput;
 
-            if (rawXInput != 0f) // if we have some input
+            if (rawXInput != 0f) //HasInput
             {
-                // if our previous dir is not equal to current one and the previous one was not idle
-                if (xAmountThisFrame != xAmountPreviousFrame && xAmountPreviousFrame != 0f)
-                    differentDirection = true;
+                // Check if direction changed (and previous wasn't idle)
+                differentDirection = (
+                    xAmountThisFrame != xAmountPreviousFrame && xAmountPreviousFrame != 0f
+                );
 
-                // then we multiplier our scroll so when changing direction it will sway to the other direction faster
                 var speedMultiplier = differentDirection
                     ? cameraConfig.ChangeDirectionMultiplier
                     : 1f;
-                scrollSpeed += xAmount * cameraConfig.SwaySpeed * deltaTime * speedMultiplier;
+                scrollSpeed += inputVector.x * cameraConfig.SwaySpeed * deltaTime * speedMultiplier;
             }
-            else // if we are not moving so there is no input
+            else
             {
-                if (xAmountThisFrame == xAmountPreviousFrame) // check if our previous dir equals current dir
-                    differentDirection = false; // if yes we want to reset this bool so basically it can be used correctly once we move again
+                // Reset direction flag if we've been idle for consecutive frames
+                if (xAmountThisFrame == xAmountPreviousFrame)
+                    differentDirection = false;
 
                 scrollSpeed = Mathf.Lerp(scrollSpeed, 0f, deltaTime * cameraConfig.ReturnSpeed);
             }
 
             scrollSpeed = Mathf.Clamp(scrollSpeed, -1f, 1f);
 
-            float swayFinalAmount;
+            // Calculate sway amount
+            var curveValue = cameraConfig.SwayCurve.Evaluate(Mathf.Abs(scrollSpeed));
+            var swayFinalAmount = curveValue * -cameraConfig.SwayAmount;
             if (scrollSpeed < 0f)
-                swayFinalAmount =
-                    -cameraConfig.SwayCurve.Evaluate(scrollSpeed) * -cameraConfig.SwayAmount;
-            else
-                swayFinalAmount =
-                    cameraConfig.SwayCurve.Evaluate(scrollSpeed) * -cameraConfig.SwayAmount;
+                swayFinalAmount = -swayFinalAmount;
 
-            Vector3 swayVector;
-            swayVector.z = swayFinalAmount;
-
+            // Apply sway to Z rotation only
+            var currentEuler = camTransform.localEulerAngles;
             camTransform.localEulerAngles = new Vector3(
-                camTransform.localEulerAngles.x,
-                camTransform.localEulerAngles.y,
-                swayVector.z
+                currentEuler.x,
+                currentEuler.y,
+                swayFinalAmount
             );
 
             xAmountPreviousFrame = xAmountThisFrame;

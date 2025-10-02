@@ -30,35 +30,18 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
         {
             movementData.Resetted = false;
 
-            float amplitudeMultiplier;
-            float frequencyMultiplier;
-            float additionalMultiplier; // when moving backwards or to sides
+            // Calculate multipliers in a single pass
+            (var amplitudeMultiplier, var frequencyMultiplier) = CalculateMovementMultipliers(
+                running,
+                crouching
+            );
+            var additionalMultiplier = CalculateDirectionMultiplier(input);
 
-            amplitudeMultiplier = running ? data.runAmplitudeMultiplier : 1f;
-            amplitudeMultiplier = crouching ? data.crouchAmplitudeMultiplier : amplitudeMultiplier;
-
-            frequencyMultiplier = running ? data.runFrequencyMultiplier : 1f;
-            frequencyMultiplier = crouching ? data.crouchFrequencyMultiplier : frequencyMultiplier;
-
-            additionalMultiplier = input.y == -1f ? data.MoveBackwardsFrequencyMultiplier : 1f;
-            additionalMultiplier =
-                input.x != 0f && input.y == 0f
-                    ? data.MoveSideFrequencyMultiplier
-                    : additionalMultiplier;
-
-            // you can also multiply this by additionalMultiplier but it looks unnatural a bit;
+            // Update scroll values
             xScroll += deltaTime * data.xFrequency * frequencyMultiplier;
 
-            float xValue;
-            float yValue;
-
-            xValue = data.xCurve.Evaluate(xScroll);
-            yValue = data.yCurve.Evaluate(yScroll);
-
-            movementData.FinalOffset.x =
-                xValue * data.xAmplitude * amplitudeMultiplier * additionalMultiplier;
-            movementData.FinalOffset.y =
-                yValue * data.yAmplitude * amplitudeMultiplier * additionalMultiplier;
+            // Evaluate curves and calculate final offset
+            CalculateHeadBobOffset(amplitudeMultiplier, additionalMultiplier);
         }
 
         public void ResetHeadBob()
@@ -66,6 +49,54 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
             movementData.Resetted = true;
             xScroll = yScroll = 0f;
             movementData.FinalOffset = Vector3.zero;
+        }
+
+        (float amplitude, float frequency) CalculateMovementMultipliers(
+            bool running,
+            bool crouching
+        )
+        {
+            var amplitude = 1f;
+            var frequency = 1f;
+
+            if (running)
+            {
+                amplitude = data.runAmplitudeMultiplier;
+                frequency = data.runFrequencyMultiplier;
+            }
+
+            if (crouching)
+            {
+                amplitude = data.crouchAmplitudeMultiplier;
+                frequency = data.crouchFrequencyMultiplier;
+            }
+
+            return (amplitude, frequency);
+        }
+
+        float CalculateDirectionMultiplier(Vector2 input)
+        {
+            // Moving backwards
+            if (input.y < -0.1f) // Using threshold for analog input
+                return data.MoveBackwardsFrequencyMultiplier;
+
+            // Pure sideways movement
+            if (Mathf.Abs(input.x) > 0.1f && Mathf.Abs(input.y) < 0.1f)
+                return data.MoveSideFrequencyMultiplier;
+
+            return 1f;
+        }
+
+        void CalculateHeadBobOffset(float amplitudeMultiplier, float additionalMultiplier)
+        {
+            var xValue = data.xCurve.Evaluate(xScroll);
+            var yValue = data.yCurve.Evaluate(yScroll);
+
+            movementData.FinalOffset = new Vector3(
+                xValue * data.xAmplitude * amplitudeMultiplier * additionalMultiplier,
+                yValue * data.yAmplitude * amplitudeMultiplier * additionalMultiplier,
+                0f
+            );
         }
     }
 }
