@@ -12,7 +12,7 @@ namespace GameToolkit.Runtime.Utils.Tools.StatesMachine
 
         public void FixedUpdate(float deltaTime) => currentNode.State?.FixedUpdate(deltaTime);
 
-        public void Update(float deltaTime)
+        public void Update(float deltaTime, float time)
         {
             var transition = GetTransition();
             if (transition != null)
@@ -23,7 +23,7 @@ namespace GameToolkit.Runtime.Utils.Tools.StatesMachine
                 ResetActionPredicateFlags(anyTransitions);
             }
 
-            currentNode.State?.Update(deltaTime);
+            currentNode.State?.Update(deltaTime, time);
         }
 
         void ChangeState(IState state)

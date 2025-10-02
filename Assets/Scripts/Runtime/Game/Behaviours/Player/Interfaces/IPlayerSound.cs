@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace GameToolkit.Runtime.Game.Behaviours.Player
 {
     public interface IPlayerSound
@@ -6,7 +8,7 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
         void UpdateLanding();
         void UpdateSwimming(float deltaTime);
         void UpdateClimbing(float deltaTime);
-        void PlayJumpSound();
-        void PlayDamageSound();
+        void UpdateJumping();
+        void UpdateDamaging();
     }
 }

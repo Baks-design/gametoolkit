@@ -37,12 +37,8 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
 
         public void OnEnter() => Logging.Log("Enter in Airborne State");
 
-        public void FixedUpdate(float deltaTime) { }
-
         public void Update(float deltaTime)
         {
-            Logging.Log($"Current State: On Airborne State");
-
             camHandler.RotateTowardsCamera(deltaTime);
 
             collision.GroundCheckHandler();
@@ -61,7 +57,7 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
 
             collisionData.PreviouslyGrounded = collisionData.OnGrounded;
 
-            animation.UpdateFalling();
+            animation.UpdateJump();
         }
 
         public void LateUpdate(float deltaTime)

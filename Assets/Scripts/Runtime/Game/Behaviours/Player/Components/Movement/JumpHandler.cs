@@ -9,67 +9,58 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
         readonly PlayerCollisionData collisionData;
         readonly PlayerMovementData movementData;
         readonly PlayerMovementConfig movementConfig;
-        readonly PlayerSound soundController;
         float lastGroundedTime;
         float lastJumpPressTime;
-        bool jumpWasPressed;
 
         public JumpHandler(
             IMovementInput movementInput,
             PlayerCollisionData collisionData,
             PlayerMovementData movementData,
-            PlayerMovementConfig movementConfig,
-            PlayerSound soundController
+            PlayerMovementConfig movementConfig
         )
         {
             this.movementInput = movementInput;
             this.collisionData = collisionData;
             this.movementData = movementData;
             this.movementConfig = movementConfig;
-            this.soundController = soundController;
         }
 
-        public void UpdateJumpBuffer()
+        public void UpdateJumpBuffer(float time)
         {
-            // Coyote time: allow jumping shortly after leaving ground
-            if (collisionData.OnGrounded)
-                lastGroundedTime = Time.time;
-
-            // Jump buffering: store jump input for a short time
+            lastGroundedTime = time;
             if (movementInput.JumpPressed())
-            {
-                lastJumpPressTime = Time.time;
-                jumpWasPressed = true;
-            }
+                lastJumpPressTime = time;
         }
 
-        public void HandleJump()
+        public void HandleJump(float time)
         {
-            var hasCoyoteTime = Time.time - lastGroundedTime <= movementConfig.CoyoteTime;
-            var hasJumpBuffer = Time.time - lastJumpPressTime <= movementConfig.JumpBufferTime;
+            var hasCoyoteTime = time - lastGroundedTime <= movementConfig.CoyoteTime;
+            var hasJumpBuffer = time - lastJumpPressTime <= movementConfig.JumpBufferTime;
             var canJump =
                 (collisionData.OnGrounded || hasCoyoteTime)
                 && hasJumpBuffer
                 && !movementData.IsCrouching;
-
             if (!canJump)
                 return;
 
             ExecuteJump();
-            lastJumpPressTime = 0f; // Consume the buffered jump
-            jumpWasPressed = false;
+            lastJumpPressTime = 0f;
         }
 
         void ExecuteJump()
         {
-            // Calculate proper jump velocity using physics: v = sqrt(2 * g * h)
             movementData.FinalMoveVelocity.y = Mathf.Sqrt(
                 movementConfig.JumpHeight * -2f * Physics.gravity.y
             );
-            collisionData.PreviouslyGrounded = true;
-            collisionData.OnGrounded = false;
 
-            soundController.PlayJumpSound();
+            collisionData.PreviouslyGrounded = true;
+            movementData.IsJumping = true;
+        }
+
+        public void ResetJump()
+        {
+            if (movementData.FinalMoveVelocity.y <= 0.1f || collisionData.OnGrounded)
+                movementData.IsJumping = false;
         }
     }
 }

@@ -50,8 +50,5 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
         public float SmoothVelocitySpeed = 3f;
         public float SmoothFinalDirectionSpeed = 10f;
         public float SmoothHeadBobSpeed = 5f;
-
-        [Header("Animation Settings")]
-        public float MovementSmoothing = 0.1f;
     }
 }

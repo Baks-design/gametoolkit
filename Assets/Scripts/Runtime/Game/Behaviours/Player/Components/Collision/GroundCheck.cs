@@ -24,7 +24,6 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
         {
             var sphereOrigin = controller.transform.position + controller.center;
             var rayLength = collisionData.FinalRayLength;
-
             var hitCount = Physics.SphereCastNonAlloc(
                 sphereOrigin,
                 collisionConfig.RaySphereRadius,
@@ -34,7 +33,6 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
                 collisionConfig.GroundLayer,
                 QueryTriggerInteraction.Ignore
             );
-
             var hitGround = hitCount > 0;
             var hitInfo = hitGround ? groundHits[0] : default;
 

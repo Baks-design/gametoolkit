@@ -1,5 +1,6 @@
 using Alchemy.Inspector;
 using GameToolkit.Runtime.Application.Input;
+using GameToolkit.Runtime.Utils.Helpers;
 using GameToolkit.Runtime.Utils.Tools.ServicesLocator;
 using UnityEngine;
 
@@ -21,11 +22,17 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
         [SerializeField, Required]
         CharacterController controller;
 
-        [SerializeField, Required]
-        PlayerCamera playerCamera;
+        [SerializeField]
+        InterfaceReference<IPlayerCamera> playerCamera;
 
-        [SerializeField, Required]
-        PlayerSound playerSound;
+        [SerializeField]
+        InterfaceReference<IPlayerSound> playerSound;
+
+        [SerializeField]
+        InterfaceReference<IPlayerCollision> collision;
+
+        [SerializeField]
+        InterfaceReference<IPlayerAnimation> playerAnimation;
 
         [SerializeField]
         PlayerMovementConfig movementConfig;
@@ -35,7 +42,6 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
 
         [SerializeField, ReadOnly]
         PlayerMovementData movementData;
-
         VelocityHandler velocity;
         CameraHandler cam;
         CrouchHandler crouch;
@@ -45,16 +51,11 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
         HeadBobHandler headBob;
         RunnningHandler runnning;
         IMovementInput movementInput;
-        IPlayerCollision collision;
-
-        void OnEnable()
-        {
-            ServiceLocator.Global.Get(out movementInput);
-            ServiceLocator.Global.Get(out collision);
-        }
 
         void Start()
         {
+            ServiceLocator.Global.Get(out movementInput);
+
             var collisionData = new PlayerCollisionData();
             direction = new DirectionHandler(
                 movementInput,
@@ -63,14 +64,15 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
                 collisionData,
                 movementData
             );
-            jump = new JumpHandler(
-                movementInput,
+            jump = new JumpHandler(movementInput, collisionData, movementData, movementConfig);
+            landing = new LandingHandler(
+                yawTransform,
                 collisionData,
                 movementData,
                 movementConfig,
-                playerSound
+                playerSound.Value,
+                playerAnimation.Value
             );
-            landing = new LandingHandler(yawTransform, collisionData, movementData, movementConfig);
             headBob = new HeadBobHandler(headBobConfig, movementData, movementConfig);
             runnning = new RunnningHandler(movementInput, controller, movementConfig, movementData);
             velocity = new VelocityHandler(
@@ -87,7 +89,7 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
                 collisionData,
                 headBob,
                 movementData,
-                playerCamera,
+                playerCamera.Value,
                 yawTransform,
                 runnning
             );
@@ -98,7 +100,7 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
                 movementConfig,
                 collisionData,
                 movementData,
-                collision
+                collision.Value
             );
         }
 
@@ -126,10 +128,10 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
         #endregion
 
         #region IJumpHandler
-        public void HandleJump()
+        public void HandleJump(float time)
         {
-            jump.UpdateJumpBuffer();
-            jump.HandleJump();
+            jump.UpdateJumpBuffer(time);
+            jump.HandleJump(time);
         }
         #endregion
 

@@ -35,21 +35,15 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
 
         public void CalculateMovementDirectionOnGrounded()
         {
-            // Cache the smooth input vector to avoid multiple property accesses
             var smoothInput = movementData.SmoothInputVector;
-            // Calculate world space direction
             var desiredDir = CalculateWorldDirection(smoothInput);
-            // Apply slope handling if grounded
             movementData.FinalMoveDirection = FlattenVectorOnSlopes(desiredDir);
         }
 
         public void CalculateMovementDirectionOnAir()
         {
-            // Cache the smooth input vector to avoid multiple property accesses
             var smoothInput = movementData.SmoothInputVector;
-            // Calculate world space direction
             var desiredDir = CalculateWorldDirection(smoothInput);
-            // Apply slope handling if grounded
             movementData.FinalMoveDirection = desiredDir;
         }
 
@@ -64,11 +58,9 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
         {
             var zDir = controller.transform.forward * input.y;
             var xDir = controller.transform.right * input.x;
-
             var desiredDir = xDir + zDir;
             desiredDir.y = 0f;
-
-            return desiredDir.normalized; // Always normalize for consistent speed
+            return desiredDir.normalized;
         }
 
         Vector3 FlattenVectorOnSlopes(Vector3 vector) =>

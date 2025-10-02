@@ -32,12 +32,8 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
 
         public void CalculateSpeed()
         {
-            // Start with base speed based on movement state
             var baseSpeed = CalculateBaseSpeed();
-            // Apply movement direction modifiers
             movementData.CurrentSpeed = ApplyDirectionModifiers(baseSpeed);
-
-            // Handle no movement case
             if (!movementInput.HasMovement())
                 movementData.CurrentSpeed = 0f;
         }
@@ -49,7 +45,6 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
                 movementData.CurrentSpeed,
                 deltaTime * movementConfig.SmoothVelocitySpeed
             );
-
             finalSmoothCurrentSpeed =
                 movementData.IsRunning && runningHandler.CanRun()
                     ? CalculateRunTransitionSpeed()
@@ -74,7 +69,7 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
             var targetVelocity = finalSmoothCurrentSpeed * movementData.SmoothFinalMoveDir;
             movementData.FinalMoveVelocity = new Vector3(
                 targetVelocity.x,
-                movementData.FinalMoveVelocity.y + targetVelocity.y, // Maintain gravity with Y movement
+                movementData.FinalMoveVelocity.y + targetVelocity.y,
                 targetVelocity.z
             );
         }
@@ -84,7 +79,7 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
             var targetVelocity = finalSmoothCurrentSpeed * movementData.SmoothFinalMoveDir;
             movementData.FinalMoveVelocity = new Vector3(
                 targetVelocity.x,
-                movementData.FinalMoveVelocity.y, // Preserve existing Y velocity (gravity)
+                movementData.FinalMoveVelocity.y,
                 targetVelocity.z
             );
         }
@@ -99,25 +94,18 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
         {
             if (movementData.IsCrouching)
                 return movementConfig.CrouchSpeed;
-
             if (movementData.IsRunning && runningHandler.CanRun())
                 return movementConfig.RunSpeed;
-
             return movementConfig.WalkSpeed;
         }
 
         float ApplyDirectionModifiers(float baseSpeed)
         {
             var input = movementInput.GetMovement();
-
-            // Moving backwards
             if (input.y < -0.1f)
                 return baseSpeed * movementConfig.MoveBackwardsSpeedPercent;
-
-            // Pure sideways movement
             if (Mathf.Abs(input.x) > 0.1f && Mathf.Abs(input.y) < 0.1f)
                 return baseSpeed * movementConfig.MoveSideSpeedPercent;
-
             return baseSpeed;
         }
 
@@ -128,7 +116,6 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
                 movementConfig.RunSpeed,
                 smoothCurrentSpeed
             );
-
             return movementConfig.RunTransitionCurve.Evaluate(walkRunPercent)
                     * (movementConfig.RunSpeed - movementConfig.WalkSpeed)
                 + movementConfig.WalkSpeed;
@@ -138,7 +125,6 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
         {
             var velocity = controller.velocity;
             var horizontalSpeed = new Vector3(velocity.x, 0f, velocity.z).magnitude;
-
             movementData.VerticalVelocity = velocity.y;
             movementData.IsMoving = horizontalSpeed > 0.1f;
             movementData.IsWalking = movementData.IsMoving && !movementData.IsRunning;

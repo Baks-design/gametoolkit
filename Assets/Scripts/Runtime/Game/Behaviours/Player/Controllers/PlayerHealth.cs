@@ -3,40 +3,83 @@ using UnityEngine;
 
 namespace GameToolkit.Runtime.Game.Behaviours.Player
 {
-    public class PlayerHealth : MonoBehaviour, IDamageable, IHealable, IDeathable
+    public class PlayerHealth : MonoBehaviour, IHealthChangeable, IDeathable
     {
         [SerializeField]
-        int maxHealth = 100;
-        int currentHealth;
+        int initialMaxHealth = 100;
+        PlayerStatus status;
 
-        public event Action<int> OnHealthDecreased;
-        public event Action<int> OnHealthIncreased;
-        public event Action OnDeath;
+        public event Action<PlayerStatusData> OnHealthChanged;
+        public event Action<int, int> OnHealthAmountChanged;
+        public event Action<PlayerStatusData> OnDeathStatus;
 
-        void Start() => currentHealth = maxHealth;
+        void Awake()
+        {
+            var initialStatus = new PlayerStatusData
+            {
+                MaxHealth = initialMaxHealth,
+                CurrentHealth = initialMaxHealth
+            };
+            status = new PlayerStatus(initialStatus);
+            status.UpdateStatus(_ => initialStatus);
+        }
+
+        void OnEnable()
+        {
+            status.OnStatusChanged += HandleStatusChanged;
+            OnHealthChanged += HandleHealthChanged;
+            OnDeathStatus += HandleDeath;
+        }
+
+        void OnDisable()
+        {
+            status.OnStatusChanged -= HandleStatusChanged;
+            OnHealthChanged -= HandleHealthChanged;
+            OnDeathStatus -= HandleDeath;
+        }
+
+        void HandleStatusChanged(PlayerStatusData newStatus, PlayerStatusData previousStatus)
+        {
+            if (newStatus.CurrentHealth == previousStatus.CurrentHealth)
+                return;
+
+            OnHealthChanged?.Invoke(newStatus);
+            OnHealthAmountChanged?.Invoke(newStatus.CurrentHealth, newStatus.MaxHealth);
+
+            if (!newStatus.IsAlive && previousStatus.IsAlive)
+            {
+                OnDeathStatus?.Invoke(newStatus);
+                Die();
+            }
+        }
+
+        void HandleHealthChanged(PlayerStatusData status) { }
+
+        void HandleDeath(PlayerStatusData status) { }
 
         public void TakeDamage(int damage)
         {
-            OnHealthDecreased?.Invoke(damage);
-            currentHealth -= damage;
-            currentHealth = Mathf.Max(0, currentHealth);
+            if (!status.CurrentStatus.IsAlive)
+                return;
+
+            status.UpdateStatus(status => status.WithDamage(damage));
         }
 
-        public void TakeHeal(int cure)
+        public void TakeHeal(int healAmount)
         {
-            OnHealthIncreased?.Invoke(cure);
-            currentHealth += cure;
-            currentHealth = Mathf.Max(0, currentHealth);
-            if (currentHealth > 0)
-                Die();
+            if (!status.CurrentStatus.IsAlive)
+                return;
+
+            status.UpdateStatus(status => status.WithHealing(healAmount));
         }
 
         public void Die()
         {
-            OnDeath?.Invoke();
-            currentHealth -= maxHealth;
-            currentHealth = Mathf.Max(0, currentHealth);
             gameObject.SetActive(false);
+
+            status.UpdateStatus(status => status with { CurrentHealth = 0 });
         }
+
+        public void FullHeal() => status.UpdateStatus(status => status.WithFullHeal());
     }
 }

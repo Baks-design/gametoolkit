@@ -26,7 +26,6 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
             );
 
             collisionData.HasRoofed = hitRoof;
-
             return hitRoof;
         }
     }

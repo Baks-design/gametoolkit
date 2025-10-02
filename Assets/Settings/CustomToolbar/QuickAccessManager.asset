@@ -13,12 +13,6 @@ MonoBehaviour:
   m_Name: QuickAccessManager
   m_EditorClassIdentifier: CustomToolbar::OpalStudio.CustomToolbar.Editor.ToolbarElements.QuickAccess.Data.QuickAccessManager
   items:
-  - displayName: Yaw
-    scenePath: DontDestroyOnLoad
-  - displayName: Camera
-    scenePath: DontDestroyOnLoad
-  - displayName: Player(Clone)
-    scenePath: DontDestroyOnLoad
   - displayName: Player
     scenePath: Assets/Prefabs/Gameplay/Player.prefab
   - displayName: Data
@@ -27,31 +21,23 @@ MonoBehaviour:
     scenePath: Assets/Prefabs/Gameplay/Player.prefab
   - displayName: Camera
     scenePath: Assets/Prefabs/Gameplay/Player.prefab
-  - displayName: Yaw
-    scenePath: Assets/Prefabs/Gameplay/Player.prefab
-  - displayName: Pitch
-    scenePath: Assets/Prefabs/Gameplay/Player.prefab
   - displayName: Movement
     scenePath: Assets/Prefabs/Gameplay/Player.prefab
-  - displayName: Player
-    scenePath: 
-  - displayName: Yaw
-    scenePath: DontDestroyOnLoad
-  - displayName: Camera
-    scenePath: DontDestroyOnLoad
-  - displayName: Player(Clone)
-    scenePath: DontDestroyOnLoad
-  - displayName: Movement
-    scenePath: DontDestroyOnLoad
   - displayName: Data
-    scenePath: DontDestroyOnLoad
+    scenePath: Assets/Prefabs/Gameplay/Player.prefab
   - displayName: Collision
-    scenePath: DontDestroyOnLoad
-  - displayName: Pitch
-    scenePath: DontDestroyOnLoad
-  - displayName: Virtual Camera
-    scenePath: DontDestroyOnLoad
+    scenePath: Assets/Prefabs/Gameplay/Player.prefab
+  - displayName: Camera
+    scenePath: Assets/Prefabs/Gameplay/Player.prefab
   - displayName: Sound
     scenePath: Assets/Prefabs/Gameplay/Player.prefab
+  - displayName: Animation
+    scenePath: Assets/Prefabs/Gameplay/Player.prefab
   - displayName: Movement
+    scenePath: Assets/Prefabs/Gameplay/Player.prefab
+  - displayName: Sound
+    scenePath: Assets/Prefabs/Gameplay/Player.prefab
+  - displayName: Animation
+    scenePath: Assets/Prefabs/Gameplay/Player.prefab
+  - displayName: Camera
     scenePath: Assets/Prefabs/Gameplay/Player.prefab

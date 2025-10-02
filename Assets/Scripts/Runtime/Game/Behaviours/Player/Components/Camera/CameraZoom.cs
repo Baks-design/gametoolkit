@@ -79,18 +79,15 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
             {
                 await fovTask(source.Token);
             }
-            catch (OperationCanceledException)
-            {
-                // Expected when cancelled
-            }
+            catch (OperationCanceledException) { }
         }
 
         async UniTask ChangeFOVAsync(float deltaTime, CancellationToken cancellationToken)
         {
-            var currentFOV = cam.Lens.FieldOfView;
-            var targetFOV = cameraData.IsZooming ? initFOV : cameraConfig.ZoomFOV;
             cameraData.IsZooming = !cameraData.IsZooming;
 
+            var currentFOV = cam.Lens.FieldOfView;
+            var targetFOV = cameraData.IsZooming ? initFOV : cameraConfig.ZoomFOV;
             await AnimateFOV(
                 currentFOV,
                 targetFOV,
@@ -107,14 +104,13 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
             CancellationToken cancellationToken
         )
         {
+            running = !returning;
+
             var currentFOV = cam.Lens.FieldOfView;
             var targetFOV = returning ? initFOV : cameraConfig.RunFOV;
             var duration = returning
                 ? cameraConfig.RunReturnTransitionDuration
                 : cameraConfig.RunTransitionDuration;
-
-            running = !returning;
-
             await AnimateFOV(
                 currentFOV,
                 targetFOV,
@@ -142,7 +138,6 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
 
             var percent = 0f;
             var speed = 1f / duration;
-
             while (percent < 1f)
             {
                 cancellationToken.ThrowIfCancellationRequested();
@@ -154,7 +149,6 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
                 await UniTask.NextFrame(PlayerLoopTiming.Update, cancellationToken);
             }
 
-            // Ensure final value is set exactly
             cam.Lens.FieldOfView = targetFOV;
         }
     }

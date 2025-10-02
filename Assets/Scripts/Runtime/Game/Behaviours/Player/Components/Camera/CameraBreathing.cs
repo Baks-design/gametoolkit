@@ -40,7 +40,6 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
             var useX = cameraConfig.X;
             var useY = cameraConfig.Y;
             var useZ = cameraConfig.Z;
-
             switch (perlinNoiseConfig.TransformTarget)
             {
                 case TransformTarget.Position:
@@ -83,19 +82,16 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
         {
             var currentPos = cameraTransform.localPosition;
             var currentRot = cameraTransform.localEulerAngles;
-
             var newPos = new Vector3(
                 useX ? noise.x : currentPos.x,
                 useY ? noise.y : currentPos.y,
                 useZ ? noise.z : currentPos.z
             );
-
             var newRot = new Vector3(
                 useX ? noise.x : currentRot.x,
                 useY ? noise.y : currentRot.y,
                 useZ ? noise.z : currentRot.z
             );
-
             cameraTransform.localPosition = newPos;
             cameraTransform.localEulerAngles = newRot;
         }

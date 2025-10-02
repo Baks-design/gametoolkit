@@ -41,8 +41,8 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
                 collisionConfig.ObstacleLayers,
                 QueryTriggerInteraction.Ignore
             );
-
             var hitWall = hitCount > 0;
+
             collisionData.HasObstructed = hitWall;
             collisionData.ObstructedNormal = hitWall ? obstacleHits[0].normal : Vector3.zero;
         }

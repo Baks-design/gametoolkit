@@ -38,7 +38,6 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
 
             var normalizedDir = movementData.SmoothFinalMoveDir.normalized;
             var dot = Vector3.Dot(controller.transform.forward, normalizedDir);
-
             return dot >= movementConfig.CanRunThreshold;
         }
     }

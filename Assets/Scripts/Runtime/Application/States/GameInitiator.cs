@@ -88,11 +88,11 @@ namespace GameToolkit.Runtime.Application.States
             eventSystem = Instantiate(eventSystem);
             loadingScreen = Instantiate(loadingScreen);
             sceneLoaderManager = Instantiate(sceneLoaderManager);
-            persistenceManager = Instantiate(persistenceManager);
             stateManager = Instantiate(stateManager);
             updateManager = Instantiate(updateManager);
             fixedUpdateManager = Instantiate(fixedUpdateManager);
             lateUpdateManager = Instantiate(lateUpdateManager);
+            persistenceManager = Instantiate(persistenceManager);
             soundManager = Instantiate(soundManager);
             musicManager = Instantiate(musicManager);
             cullingManager = Instantiate(cullingManager);
@@ -103,15 +103,15 @@ namespace GameToolkit.Runtime.Application.States
             ServiceLocator.Global.Register<IInputServices>(inputManager);
             ServiceLocator.Global.Register<IMovementInput>(inputManager);
             ServiceLocator.Global.Register<IUIInput>(inputManager);
-            ServiceLocator.Global.Register<ISceneLoaderServices>(sceneLoaderManager);
-            ServiceLocator.Global.Register<IPersistenceServices>(persistenceManager);
-            ServiceLocator.Global.Register<IStateServices>(stateManager);
-            ServiceLocator.Global.Register<ISoundServices>(soundManager);
-            ServiceLocator.Global.Register<IMusicServices>(musicManager);
-            ServiceLocator.Global.Register<ICullingServices>(cullingManager);
             ServiceLocator.Global.Register<IUpdateServices>(updateManager);
             ServiceLocator.Global.Register<IFixedUpdateServices>(fixedUpdateManager);
             ServiceLocator.Global.Register<ILateUpdateServices>(lateUpdateManager);
+            ServiceLocator.Global.Register<ISceneLoaderServices>(sceneLoaderManager);
+            ServiceLocator.Global.Register<IStateServices>(stateManager);
+            ServiceLocator.Global.Register<IPersistenceServices>(persistenceManager);
+            ServiceLocator.Global.Register<ISoundServices>(soundManager);
+            ServiceLocator.Global.Register<IMusicServices>(musicManager);
+            ServiceLocator.Global.Register<ICullingServices>(cullingManager);
         }
 
         async UniTask InitializeObjects()
@@ -155,3 +155,6 @@ namespace GameToolkit.Runtime.Application.States
         }
     }
 }
+
+//TODO: Add Dependency Injection
+//TODO: Remove Monobehaviours from Application Layer

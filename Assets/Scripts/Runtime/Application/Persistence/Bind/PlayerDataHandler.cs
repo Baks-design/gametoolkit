@@ -32,7 +32,7 @@ namespace GameToolkit.Runtime.Application.Persistence
                 updateServices.Register(this);
         }
 
-        public void ProcessUpdate(float deltaTime)
+        public void ProcessUpdate(float deltaTime, float time)
         {
             data.position = controller.transform.position;
             data.rotation = controller.transform.rotation;

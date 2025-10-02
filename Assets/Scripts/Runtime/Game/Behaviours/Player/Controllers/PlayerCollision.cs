@@ -1,3 +1,4 @@
+using System;
 using Alchemy.Inspector;
 using GameToolkit.Runtime.Application.Input;
 using GameToolkit.Runtime.Utils.Tools.ServicesLocator;
@@ -5,7 +6,8 @@ using UnityEngine;
 
 namespace GameToolkit.Runtime.Game.Behaviours.Player
 {
-    public class PlayerCollisionController : MonoBehaviour, IPlayerCollision
+    [Serializable]
+    public class PlayerCollision : MonoBehaviour, IPlayerCollision
     {
         [SerializeField, Required]
         CharacterController controller;

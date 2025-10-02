@@ -1,3 +1,4 @@
+using System;
 using Alchemy.Inspector;
 using GameToolkit.Runtime.Application.Input;
 using GameToolkit.Runtime.Utils.Tools.ServicesLocator;
@@ -6,6 +7,7 @@ using UnityEngine;
 
 namespace GameToolkit.Runtime.Game.Behaviours.Player
 {
+    [Serializable]
     public class PlayerCamera : MonoBehaviour, IPlayerCamera
     {
         [SerializeField, Required]

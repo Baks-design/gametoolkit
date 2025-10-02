@@ -72,7 +72,7 @@ namespace GameToolkit.Runtime.Game.Systems.Culling
             updateServices?.Unregister(this);
         }
 
-        public void ProcessUpdate(float deltaTime)
+        public void ProcessUpdate(float deltaTime, float time)
         {
             tPos += deltaTime;
             if (tPos < updateInterval)

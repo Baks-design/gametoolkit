@@ -218,8 +218,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameToolkit.Runtime.Behaviours.Player.PlayerMovementController
   yawTransform: {fileID: 7469491795264069964}
   controller: {fileID: 2166393501622899287}
-  playerCamera: {fileID: 3984641321365205063}
-  playerSound: {fileID: 7184927629246242024}
+  playerCamera:
+    target: {fileID: 3984641321365205063}
+  playerSound:
+    target: {fileID: 7184927629246242024}
+  collision:
+    target: {fileID: 8384694570993825910}
+  playerAnimation:
+    target: {fileID: 8348823329799764046}
   movementConfig:
     GravityMultiplier: 2.5
     StickToGroundForce: 1
@@ -253,6 +259,8 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
     JumpHeight: 12
+    CoyoteTime: 0.1
+    JumpBufferTime: 0.1
     CrouchSpeed: 1
     CrouchPercent: 0.6
     CrouchTransitionDuration: 0.5
@@ -322,7 +330,6 @@ MonoBehaviour:
     SmoothVelocitySpeed: 3
     SmoothFinalDirectionSpeed: 10
     SmoothHeadBobSpeed: 5
-    MovementSmoothing: 0.1
   headBobConfig: {fileID: 11400000, guid: 894c1592ed99e1842a949d3b141f3489, type: 2}
   movementData:
     FinalMoveVelocity: {x: 0, y: 0, z: 0}
@@ -337,6 +344,7 @@ MonoBehaviour:
     IsCrouching: 0
     IsClimbing: 0
     IsSwimming: 0
+    IsJumping: 0
     Resetted: 0
     IsDuringRunAnimation: 0
     IsDuringCrouchAnimation: 0
@@ -344,6 +352,7 @@ MonoBehaviour:
     CurrentStateHeight: 0
     CurrentSpeed: 0
     VerticalVelocity: 0
+    InitCamHeight: 0
 --- !u!1 &4632029916826643094
 GameObject:
   m_ObjectHideFlags: 0
@@ -451,6 +460,28 @@ MonoBehaviour:
     InitHeight: 0
     FinalRayLength: 0
     RoofRaySphereRadius: 0
+  movementData:
+    FinalMoveVelocity: {x: 0, y: 0, z: 0}
+    FinalMoveDirection: {x: 0, y: 0, z: 0}
+    FinalOffset: {x: 0, y: 0, z: 0}
+    CurrentVelocity: {x: 0, y: 0, z: 0}
+    SmoothFinalMoveDir: {x: 0, y: 0, z: 0}
+    SmoothInputVector: {x: 0, y: 0}
+    IsMoving: 0
+    IsWalking: 0
+    IsRunning: 0
+    IsCrouching: 0
+    IsClimbing: 0
+    IsSwimming: 0
+    IsJumping: 0
+    Resetted: 0
+    IsDuringRunAnimation: 0
+    IsDuringCrouchAnimation: 0
+    InAirTimer: 0
+    CurrentStateHeight: 0
+    CurrentSpeed: 0
+    VerticalVelocity: 0
+    InitCamHeight: 0
 --- !u!1 &5069262752107801011
 GameObject:
   m_ObjectHideFlags: 0
@@ -519,6 +550,7 @@ MonoBehaviour:
     IsCrouching: 0
     IsClimbing: 0
     IsSwimming: 0
+    IsJumping: 0
     Resetted: 0
     IsDuringRunAnimation: 0
     IsDuringCrouchAnimation: 0
@@ -526,6 +558,7 @@ MonoBehaviour:
     CurrentStateHeight: 0
     CurrentSpeed: 0
     VerticalVelocity: 0
+    InitCamHeight: 0
   collisionData:
     InitCenter: {x: 0, y: 0, z: 0}
     GroundedNormal: {x: 0, y: 0, z: 0}
@@ -825,7 +858,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: edbe3f4cbb059ea4ca174a5ea7d42ae9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: GameToolkit.Player::GameToolkit.Runtime.Game.Behaviours.Player.PlayerHealth
-  maxHealth: 100
+  initialMaxHealth: 100
 --- !u!1 &9042488268511448855
 GameObject:
   m_ObjectHideFlags: 0
@@ -842,7 +875,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &456643529499698464
 Transform:
   m_ObjectHideFlags: 0
@@ -885,6 +918,7 @@ MonoBehaviour:
     IsCrouching: 0
     IsClimbing: 0
     IsSwimming: 0
+    IsJumping: 0
     Resetted: 0
     IsDuringRunAnimation: 0
     IsDuringCrouchAnimation: 0
@@ -892,46 +926,7 @@ MonoBehaviour:
     CurrentStateHeight: 0
     CurrentSpeed: 0
     VerticalVelocity: 0
-  movementConfig:
-    GravityMultiplier: 2.5
-    StickToGroundForce: 1
-    WalkSpeed: 3
-    MoveBackwardsSpeedPercent: 0.5
-    MoveSideSpeedPercent: 0.7
-    CanRunThreshold: 0.7
-    RunSpeed: 6
-    RunTransitionCurve:
-      serializedVersion: 2
-      m_Curve: []
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    JumpHeight: 6
-    CrouchSpeed: 1
-    CrouchPercent: 0.6
-    CrouchTransitionDuration: 0.5
-    CrouchTransitionCurve:
-      serializedVersion: 2
-      m_Curve: []
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    LowLandAmount: 0.1
-    HighLandAmount: 0.4
-    LandTimer: 0.5
-    LandDuration: 0.5
-    LandCurve:
-      serializedVersion: 2
-      m_Curve: []
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    SmoothInputSpeed: 10
-    SmoothRotateSpeed: 10
-    SmoothVelocitySpeed: 3
-    SmoothFinalDirectionSpeed: 10
-    SmoothHeadBobSpeed: 5
-    MovementSmoothing: 0.1
+    InitCamHeight: 0
   collisionData:
     InitCenter: {x: 0, y: 0, z: 0}
     GroundedNormal: {x: 0, y: 0, z: 0}

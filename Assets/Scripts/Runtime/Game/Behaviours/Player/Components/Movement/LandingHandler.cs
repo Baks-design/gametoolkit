@@ -11,19 +11,25 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
         readonly PlayerCollisionData collisionData;
         readonly PlayerMovementData movementData;
         readonly PlayerMovementConfig movementConfig;
+        readonly IPlayerSound sound;
+        readonly IPlayerAnimation animation;
         CancellationTokenSource landingCancellationTokenSource;
 
         public LandingHandler(
             Transform yawTransform,
             PlayerCollisionData collisionData,
             PlayerMovementData movementData,
-            PlayerMovementConfig movementConfig
+            PlayerMovementConfig movementConfig,
+            IPlayerSound sound,
+            IPlayerAnimation animation
         )
         {
             this.yawTransform = yawTransform;
             this.collisionData = collisionData;
             this.movementData = movementData;
             this.movementConfig = movementConfig;
+            this.sound = sound;
+            this.animation = animation;
         }
 
         public void HandleLanding(float deltaTime)
@@ -31,7 +37,6 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
             if (collisionData.PreviouslyGrounded)
                 return;
 
-            // Cancel previous landing if still active
             landingCancellationTokenSource?.Cancel();
             landingCancellationTokenSource = new CancellationTokenSource();
 
@@ -47,21 +52,15 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
             {
                 await LandingAsync(deltaTime, cancellationToken);
             }
-            catch (OperationCanceledException)
-            {
-                // Expected when landing is cancelled
-            }
+            catch (OperationCanceledException) { }
         }
 
         async UniTask LandingAsync(float deltaTime, CancellationToken cancellationToken = default)
         {
             var percent = 0f;
             var speed = 1f / movementConfig.LandDuration;
-
-            // Cache initial values
             var localPos = yawTransform.localPosition;
             var initialHeight = localPos.y;
-            var landAmount = CalculateLandAmount();
 
             while (percent < 1f)
             {
@@ -69,9 +68,7 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
 
                 percent += deltaTime * speed;
                 var curveValue = movementConfig.LandCurve.Evaluate(percent);
-                var desiredOffset = curveValue * landAmount;
-
-                // Update position efficiently
+                var desiredOffset = curveValue * CalculateLandAmount();
                 localPos.y = initialHeight + desiredOffset;
                 yawTransform.localPosition = localPos;
 

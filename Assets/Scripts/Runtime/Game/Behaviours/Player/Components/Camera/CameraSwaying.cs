@@ -22,9 +22,8 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
         {
             xAmountThisFrame = rawXInput;
 
-            if (rawXInput != 0f) //HasInput
+            if (rawXInput != 0f)
             {
-                // Check if direction changed (and previous wasn't idle)
                 differentDirection = (
                     xAmountThisFrame != xAmountPreviousFrame && xAmountPreviousFrame != 0f
                 );
@@ -36,7 +35,6 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
             }
             else
             {
-                // Reset direction flag if we've been idle for consecutive frames
                 if (xAmountThisFrame == xAmountPreviousFrame)
                     differentDirection = false;
 
@@ -45,13 +43,11 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
 
             scrollSpeed = Mathf.Clamp(scrollSpeed, -1f, 1f);
 
-            // Calculate sway amount
             var curveValue = cameraConfig.SwayCurve.Evaluate(Mathf.Abs(scrollSpeed));
             var swayFinalAmount = curveValue * -cameraConfig.SwayAmount;
             if (scrollSpeed < 0f)
                 swayFinalAmount = -swayFinalAmount;
 
-            // Apply sway to Z rotation only
             var currentEuler = camTransform.localEulerAngles;
             camTransform.localEulerAngles = new Vector3(
                 currentEuler.x,

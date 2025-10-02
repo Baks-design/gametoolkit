@@ -1,8 +1,10 @@
+using System;
 using Alchemy.Inspector;
 using UnityEngine;
 
 namespace GameToolkit.Runtime.Game.Behaviours.Player
 {
+    [Serializable]
     public class PlayerAnimation : MonoBehaviour, IPlayerAnimation
     {
         [SerializeField, Required]
@@ -12,16 +14,12 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
         PlayerMovementData movementData;
 
         [SerializeField, HideInInspector]
-        PlayerMovementConfig movementConfig;
-
-        [SerializeField, HideInInspector]
         PlayerCollisionData collisionData;
 
         float currentSpeed;
         bool wasGrounded;
         bool wasSwimming;
         bool wasClimbing;
-
         readonly int SpeedId = Animator.StringToHash("_Speed");
         readonly int IsGroundedId = Animator.StringToHash("_IsGrounded");
         readonly int IsJumpingId = Animator.StringToHash("_IsJumping");
@@ -41,16 +39,8 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
         public void UpdateMoving()
         {
             var targetSpeed = movementData.IsMoving ? movementData.CurrentSpeed : 0f;
-            currentSpeed = Mathf.Lerp(currentSpeed, targetSpeed, movementConfig.MovementSmoothing);
+            currentSpeed = Mathf.Lerp(currentSpeed, targetSpeed, 0.1f);
             animator.SetFloat(SpeedId, currentSpeed);
-        }
-
-        public void UpdateFalling()
-        {
-            var isGrounded = collisionData.OnGrounded;
-            var verticalVelocity = movementData.VerticalVelocity;
-            var isFalling = !isGrounded && verticalVelocity < 0f;
-            animator.SetBool(IsFallingId, isFalling);
         }
 
         public void UpdateJump()

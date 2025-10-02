@@ -4,7 +4,7 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
 {
     public interface IDeathable
     {
-        event Action OnDeath;
+        event Action<PlayerStatusData> OnDeathStatus;
 
         void Die();
     }

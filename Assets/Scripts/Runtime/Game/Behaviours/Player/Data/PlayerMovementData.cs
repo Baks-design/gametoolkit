@@ -18,6 +18,7 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
         public bool IsCrouching;
         public bool IsClimbing;
         public bool IsSwimming;
+        public bool IsJumping;
         public bool Resetted;
         public bool IsDuringRunAnimation;
         public bool IsDuringCrouchAnimation;
@@ -25,5 +26,6 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
         public float CurrentStateHeight;
         public float CurrentSpeed;
         public float VerticalVelocity;
+        public float InitCamHeight;
     }
 }

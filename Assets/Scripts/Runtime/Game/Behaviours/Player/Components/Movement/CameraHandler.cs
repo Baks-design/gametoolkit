@@ -10,7 +10,7 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
         readonly PlayerMovementConfig movementConfig;
         readonly PlayerCollisionData collisionData;
         readonly PlayerMovementData movementData;
-        readonly PlayerCamera cameraController;
+        readonly IPlayerCamera cameraController;
         readonly Transform yawTransform;
         readonly HeadBobHandler headBobHandler;
         readonly RunnningHandler runnningHandler;
@@ -22,7 +22,7 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
             PlayerCollisionData collisionData,
             HeadBobHandler headBobHandler,
             PlayerMovementData movementData,
-            PlayerCamera cameraController,
+            IPlayerCamera cameraController,
             Transform yawTransform,
             RunnningHandler runnningHandler
         )
@@ -36,6 +36,9 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
             this.cameraController = cameraController;
             this.yawTransform = yawTransform;
             this.runnningHandler = runnningHandler;
+
+            movementData.InitCamHeight = yawTransform.localPosition.y;
+            movementData.CurrentStateHeight = movementData.InitCamHeight;
         }
 
         public void RotateTowardsCamera(float deltaTime) =>
@@ -49,7 +52,6 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
         {
             var shouldBob = movementInput.HasMovement() && !collisionData.HasObstructed;
             var canBob = shouldBob && !movementData.IsDuringCrouchAnimation;
-
             if (canBob)
             {
                 var canRun = movementData.IsRunning && runnningHandler.CanRun();
@@ -85,19 +87,16 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
                 movementInput.HasMovement()
                 && !collisionData.HasObstructed
                 && runnningHandler.CanRun();
-
             var shouldStartRun =
                 canStartRun
                 && (
                     movementInput.SprintPressed()
                     || (movementData.IsRunning && !movementData.IsDuringRunAnimation)
                 );
-
             var shouldStopRun =
                 movementInput.SprintReleased()
                 || !movementInput.HasMovement()
                 || collisionData.HasObstructed;
-
             if (shouldStartRun && !movementData.IsDuringRunAnimation)
             {
                 movementData.IsDuringRunAnimation = true;
@@ -110,7 +109,6 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
             }
         }
 
-        // Helper methods
         void UpdateHeadPosition(float deltaTime, Vector3 targetPosition)
         {
             if (movementData.IsDuringCrouchAnimation)
@@ -125,8 +123,10 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
 
         void ResetHeadBobState()
         {
-            if (!movementData.Resetted)
-                headBobHandler.ResetHeadBob();
+            if (movementData.Resetted)
+                return;
+
+            headBobHandler.ResetHeadBob();
         }
     }
 }

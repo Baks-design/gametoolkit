@@ -49,12 +49,8 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
 
         public void OnEnter() => Logging.Log("Enter in Grounded State");
 
-        public void FixedUpdate(float deltaTime) { }
-
-        public void Update(float deltaTime)
+        public void Update(float deltaTime, float time)
         {
-            Logging.Log($"Current State: On Grounded State");
-
             camHandler.RotateTowardsCamera(deltaTime);
 
             collision.GroundCheckHandler();
@@ -68,24 +64,25 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
             velocity.CalculateSpeed();
             velocity.CalculateFinalGroundedAcceleration();
 
-            //land.HandleLanding(deltaTime);
             run.HandleRun();
             crouch.HandleCrouch(deltaTime);
+            //land.HandleLanding(deltaTime); TODO: Fix
             camHandler.HandleHeadBob(deltaTime);
             camHandler.HandleRunFOV(deltaTime);
             camHandler.HandleCameraSway(deltaTime);
 
             velocity.ApplyGravityOnGrounded();
-            jump.HandleJump();
+            jump.HandleJump(time);
             velocity.ApplyMove(deltaTime);
 
             collisionData.PreviouslyGrounded = collisionData.OnGrounded;
 
-            // animation.UpdateMoving();
-            // animation.UpdateCrouch();
-            // animation.UpdateJump();
+            animation.UpdateMoving();
+            animation.UpdateCrouch();
+            animation.UpdateJump();
 
             sound.UpdateFootsteps(deltaTime);
+            sound.UpdateJumping();
             sound.UpdateLanding();
         }
 

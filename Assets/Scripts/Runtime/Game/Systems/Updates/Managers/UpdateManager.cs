@@ -16,7 +16,7 @@ namespace GameToolkit.Runtime.Game.Systems.Update
         void Update()
         {
             for (currentIndex = updatableObjects.Count - 1; currentIndex >= 0; currentIndex--)
-                updatableObjects[currentIndex].ProcessUpdate(Time.deltaTime);
+                updatableObjects[currentIndex].ProcessUpdate(Time.deltaTime, Time.time);
 
             updatableObjects.AddRange(pendingObjects);
             pendingObjects.Clear();

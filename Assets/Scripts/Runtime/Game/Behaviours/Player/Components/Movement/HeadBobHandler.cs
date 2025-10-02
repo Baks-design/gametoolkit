@@ -20,7 +20,6 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
 
             data.MoveBackwardsFrequencyMultiplier = movementConfig.MoveBackwardsSpeedPercent;
             data.MoveSideFrequencyMultiplier = movementConfig.MoveSideSpeedPercent;
-
             movementData.Resetted = false;
             movementData.FinalOffset = Vector3.zero;
             xScroll = yScroll = 0f;
@@ -30,17 +29,12 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
         {
             movementData.Resetted = false;
 
-            // Calculate multipliers in a single pass
             (var amplitudeMultiplier, var frequencyMultiplier) = CalculateMovementMultipliers(
                 running,
                 crouching
             );
             var additionalMultiplier = CalculateDirectionMultiplier(input);
-
-            // Update scroll values
             xScroll += deltaTime * data.xFrequency * frequencyMultiplier;
-
-            // Evaluate curves and calculate final offset
             CalculateHeadBobOffset(amplitudeMultiplier, additionalMultiplier);
         }
 
@@ -58,32 +52,25 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
         {
             var amplitude = 1f;
             var frequency = 1f;
-
             if (running)
             {
                 amplitude = data.runAmplitudeMultiplier;
                 frequency = data.runFrequencyMultiplier;
             }
-
             if (crouching)
             {
                 amplitude = data.crouchAmplitudeMultiplier;
                 frequency = data.crouchFrequencyMultiplier;
             }
-
             return (amplitude, frequency);
         }
 
         float CalculateDirectionMultiplier(Vector2 input)
         {
-            // Moving backwards
-            if (input.y < -0.1f) // Using threshold for analog input
+            if (input.y < -0.1f)
                 return data.MoveBackwardsFrequencyMultiplier;
-
-            // Pure sideways movement
             if (Mathf.Abs(input.x) > 0.1f && Mathf.Abs(input.y) < 0.1f)
                 return data.MoveSideFrequencyMultiplier;
-
             return 1f;
         }
 
@@ -91,7 +78,6 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
         {
             var xValue = data.xCurve.Evaluate(xScroll);
             var yValue = data.yCurve.Evaluate(yScroll);
-
             movementData.FinalOffset = new Vector3(
                 xValue * data.xAmplitude * amplitudeMultiplier * additionalMultiplier,
                 yValue * data.yAmplitude * amplitudeMultiplier * additionalMultiplier,

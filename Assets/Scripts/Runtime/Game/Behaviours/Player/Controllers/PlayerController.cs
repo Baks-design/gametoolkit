@@ -9,6 +9,7 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
     {
         [SerializeField, HideInInspector]
         PlayerCollisionData collisionData;
+
         IFixedUpdateServices fixedUpdateServices;
         IUpdateServices updateServices;
         ILateUpdateServices lateUpdateServices;
@@ -98,8 +99,12 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
 
         public void ProcessFixedUpdate(float deltaTime) => stateMachine.FixedUpdate(deltaTime);
 
-        public void ProcessUpdate(float deltaTime) => stateMachine.Update(deltaTime);
+        public void ProcessUpdate(float deltaTime, float time) =>
+            stateMachine.Update(deltaTime, time);
 
         public void ProcessLateUpdate(float deltaTime) => stateMachine.LateUpdate(deltaTime);
     }
 }
+
+
+///TODO: Add search for Interfaces

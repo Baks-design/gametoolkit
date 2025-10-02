@@ -85,7 +85,7 @@ namespace GameToolkit.Runtime.Game.Systems.Sound
             fading = 0.001f;
         }
 
-        public void ProcessUpdate(float deltaTime)
+        public void ProcessUpdate(float deltaTime, float time)
         {
             HandleCrossFade(deltaTime);
 
