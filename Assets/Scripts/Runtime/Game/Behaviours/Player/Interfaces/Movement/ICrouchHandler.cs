@@ -1,7 +1,7 @@
 namespace GameToolkit.Runtime.Game.Behaviours.Player
 {
-    public interface ICrouchHandler
+    public interface ICrouchingHandler
     {
-        void HandleCrouch(float deltaTime);
+        void HandleCrouching(float deltaTime);
     }
 }

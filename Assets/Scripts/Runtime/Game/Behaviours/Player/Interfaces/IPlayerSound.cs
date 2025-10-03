@@ -1,5 +1,3 @@
-using UnityEngine;
-
 namespace GameToolkit.Runtime.Game.Behaviours.Player
 {
     public interface IPlayerSound

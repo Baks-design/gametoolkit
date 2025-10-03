@@ -6,57 +6,63 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
     public class PlayerAirborneState : IState
     {
         readonly PlayerCollisionData collisionData;
-        readonly IPlayerSound sound;
         readonly IPlayerAnimation animation;
         readonly IPlayerCamera camera;
         readonly IPlayerCollision collision;
         readonly ICameraHandler camHandler;
         readonly IVelocityHandler velocity;
         readonly IDirectionHandler direction;
+        private readonly IJumpingHandler jumping;
 
         public PlayerAirborneState(
             PlayerCollisionData collisionData,
-            IPlayerSound sound,
             IPlayerAnimation animation,
             IPlayerCamera camera,
             IPlayerCollision collision,
             ICameraHandler camHandler,
             IVelocityHandler velocity,
-            IDirectionHandler direction
+            IDirectionHandler direction,
+            IJumpingHandler jumping
         )
         {
             this.collisionData = collisionData;
-            this.sound = sound;
             this.animation = animation;
             this.camera = camera;
             this.collision = collision;
             this.camHandler = camHandler;
             this.velocity = velocity;
             this.direction = direction;
+            this.jumping = jumping;
         }
 
         public void OnEnter() => Logging.Log("Enter in Airborne State");
 
-        public void Update(float deltaTime)
+        public void Update(float deltaTime, float time)
         {
+            // 1. Input and orientation first
             camHandler.RotateTowardsCamera(deltaTime);
+            direction.SmoothInput(deltaTime);
 
+            // 2. State checks
             collision.GroundCheckHandler();
             collision.ObstacleCheckHandler();
 
-            direction.SmoothInput(deltaTime);
-            velocity.SmoothSpeed(deltaTime);
-            direction.SmoothDirection(deltaTime);
-
+            // 3. Movement calculations for airborne
+            jumping.UpdateJumpBuffer(time);
             direction.CalculateMovementAirborneDirection();
+            direction.SmoothDirection(deltaTime);
             velocity.CalculateSpeed();
-            velocity.CalculateFinalAirborneAcceleration();
+            velocity.SmoothSpeed(deltaTime);
+            velocity.CalculateFinalAcceleration();
 
+            // 4. Physics - gravity first, then movement
             velocity.ApplyGravityOnAirborne(deltaTime);
             velocity.ApplyMove(deltaTime);
 
+            // 5. Update collision data IMMEDIATELY after physics
             collisionData.PreviouslyGrounded = collisionData.OnGrounded;
 
+            // 6. Animations (after all physics and state changes)
             animation.UpdateJump();
         }
 

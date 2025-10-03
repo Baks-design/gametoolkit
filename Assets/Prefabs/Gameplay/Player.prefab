@@ -832,6 +832,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d63c2b81746d8242b221c8700be0a59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: GameToolkit.Player::GameToolkit.Runtime.Game.Behaviours.Player.PlayerController
+  sound:
+    target: {fileID: 7184927629246242024}
+  anim:
+    target: {fileID: 8348823329799764046}
+  cam:
+    target: {fileID: 3984641321365205063}
+  coll:
+    target: {fileID: 8384694570993825910}
+  crouch:
+    target: {fileID: 5253022390122192966}
+  camHandler:
+    target: {fileID: 5253022390122192966}
+  velocity:
+    target: {fileID: 5253022390122192966}
+  run:
+    target: {fileID: 5253022390122192966}
+  land:
+    target: {fileID: 5253022390122192966}
+  jump:
+    target: {fileID: 5253022390122192966}
+  direction:
+    target: {fileID: 5253022390122192966}
   collisionData:
     InitCenter: {x: 0, y: 0, z: 0}
     GroundedNormal: {x: 0, y: 0, z: 0}

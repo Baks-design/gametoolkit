@@ -1,4 +1,5 @@
 using GameToolkit.Runtime.Game.Systems.Update;
+using GameToolkit.Runtime.Utils.Helpers;
 using GameToolkit.Runtime.Utils.Tools.ServicesLocator;
 using GameToolkit.Runtime.Utils.Tools.StatesMachine;
 using UnityEngine;
@@ -7,23 +8,45 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
 {
     public class PlayerController : StatefulEntity, IFixedUpdatable, IUpdatable, ILateUpdatable
     {
+        [SerializeField]
+        InterfaceReference<IPlayerSound> sound;
+
+        [SerializeField]
+        InterfaceReference<IPlayerAnimation> anim;
+
+        [SerializeField]
+        InterfaceReference<IPlayerCamera> cam;
+
+        [SerializeField]
+        InterfaceReference<IPlayerCollision> coll;
+
+        [SerializeField]
+        InterfaceReference<ICrouchingHandler> crouch;
+
+        [SerializeField]
+        InterfaceReference<ICameraHandler> camHandler;
+
+        [SerializeField]
+        InterfaceReference<IVelocityHandler> velocity;
+
+        [SerializeField]
+        InterfaceReference<IRunnningHandler> run;
+
+        [SerializeField]
+        InterfaceReference<ILandingHandler> land;
+
+        [SerializeField]
+        InterfaceReference<IJumpingHandler> jump;
+
+        [SerializeField]
+        InterfaceReference<IDirectionHandler> direction;
+
         [SerializeField, HideInInspector]
         PlayerCollisionData collisionData;
 
         IFixedUpdateServices fixedUpdateServices;
         IUpdateServices updateServices;
         ILateUpdateServices lateUpdateServices;
-        IPlayerSound sound;
-        IPlayerAnimation anim;
-        IPlayerCamera cam;
-        IPlayerCollision coll;
-        ICrouchHandler crouch;
-        ICameraHandler camHandler;
-        IVelocityHandler velocity;
-        IRunnningHandler run;
-        ILandingHandler land;
-        IJumpHandler jump;
-        IDirectionHandler direction;
 
         void OnEnable()
         {
@@ -45,50 +68,34 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
         protected override void Start()
         {
             base.Start();
-            GetComponents();
             SetupStateMachine();
-        }
-
-        void GetComponents()
-        {
-            sound = GetComponentInChildren<IPlayerSound>();
-            anim = GetComponentInChildren<IPlayerAnimation>();
-            cam = GetComponentInChildren<IPlayerCamera>();
-            coll = GetComponentInChildren<IPlayerCollision>();
-            crouch = GetComponentInChildren<ICrouchHandler>();
-            camHandler = GetComponentInChildren<ICameraHandler>();
-            velocity = GetComponentInChildren<IVelocityHandler>();
-            run = GetComponentInChildren<IRunnningHandler>();
-            land = GetComponentInChildren<ILandingHandler>();
-            jump = GetComponentInChildren<IJumpHandler>();
-            direction = GetComponentInChildren<IDirectionHandler>();
         }
 
         void SetupStateMachine()
         {
             var groundedState = new PlayerGroundedState(
                 collisionData,
-                sound,
-                anim,
-                cam,
-                coll,
-                crouch,
-                camHandler,
-                velocity,
-                run,
-                land,
-                jump,
-                direction
+                sound.Value,
+                anim.Value,
+                cam.Value,
+                coll.Value,
+                crouch.Value,
+                camHandler.Value,
+                velocity.Value,
+                run.Value,
+                land.Value,
+                jump.Value,
+                direction.Value
             );
             var airborneState = new PlayerAirborneState(
                 collisionData,
-                sound,
-                anim,
-                cam,
-                coll,
-                camHandler,
-                velocity,
-                direction
+                anim.Value,
+                cam.Value,
+                coll.Value,
+                camHandler.Value,
+                velocity.Value,
+                direction.Value,
+                jump.Value
             );
 
             At(groundedState, airborneState, !collisionData.OnGrounded);
@@ -105,6 +112,3 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
         public void ProcessLateUpdate(float deltaTime) => stateMachine.LateUpdate(deltaTime);
     }
 }
-
-
-///TODO: Add search for Interfaces

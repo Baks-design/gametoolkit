@@ -43,6 +43,7 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
                 InitCenter = controller.center,
                 InitHeight = controller.height,
                 OnGrounded = true,
+                OnAirborne = false,
                 PreviouslyGrounded = true,
                 FinalRayLength = collisionConfig.RayLength + controller.center.y
             };
@@ -58,8 +59,8 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
                 movementData,
                 collisionData
             );
-            roofCheck = new RoofCheck(controller, collisionData);
-            characterPush = new CharacterPush(controller, collisionConfig);
+            roofCheck = new RoofCheck(controller, collisionData, collisionConfig);
+            characterPush = new CharacterPush(controller, collisionData, collisionConfig);
         }
 
         void OnControllerColliderHit(ControllerColliderHit hit) => characterPush.PushBody(hit);

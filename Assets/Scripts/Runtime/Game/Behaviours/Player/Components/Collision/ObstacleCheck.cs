@@ -35,11 +35,10 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
             var hitCount = Physics.SphereCastNonAlloc(
                 controller.transform.position + controller.center,
                 collisionConfig.RayObstacleSphereRadius,
-                movementData.FinalMoveDirection.normalized,
+                movementData.FinalMoveDirection,
                 obstacleHits,
                 collisionConfig.RayObstacleLength,
-                collisionConfig.ObstacleLayers,
-                QueryTriggerInteraction.Ignore
+                collisionConfig.ObstacleLayers
             );
             var hitWall = hitCount > 0;
 

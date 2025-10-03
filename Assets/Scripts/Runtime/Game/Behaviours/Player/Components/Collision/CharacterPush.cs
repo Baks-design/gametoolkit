@@ -5,16 +5,24 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
     public class CharacterPush
     {
         readonly CharacterController controller;
+        readonly PlayerCollisionData collisionData;
         readonly PlayerCollisionConfig collisionConfig;
 
-        public CharacterPush(CharacterController controller, PlayerCollisionConfig collisionConfig)
+        public CharacterPush(
+            CharacterController controller,
+            PlayerCollisionData collisionData,
+            PlayerCollisionConfig collisionConfig
+        )
         {
             this.controller = controller;
+            this.collisionData = collisionData;
             this.collisionConfig = collisionConfig;
         }
 
         public void PushBody(ControllerColliderHit hit)
         {
+            collisionData.HasObjectColliding = hit.collider.isTrigger;
+
             if (!collisionConfig.IsPushEnabled || hit.moveDirection.y < -0.3f)
                 return;
 

@@ -52,6 +52,7 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
         {
             var shouldBob = movementInput.HasMovement() && !collisionData.HasObstructed;
             var canBob = shouldBob && !movementData.IsDuringCrouchAnimation;
+
             if (canBob)
             {
                 var canRun = movementData.IsRunning && runnningHandler.CanRun();
@@ -87,16 +88,19 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
                 movementInput.HasMovement()
                 && !collisionData.HasObstructed
                 && runnningHandler.CanRun();
+
             var shouldStartRun =
                 canStartRun
                 && (
                     movementInput.SprintPressed()
                     || (movementData.IsRunning && !movementData.IsDuringRunAnimation)
                 );
+
             var shouldStopRun =
                 movementInput.SprintReleased()
                 || !movementInput.HasMovement()
                 || collisionData.HasObstructed;
+
             if (shouldStartRun && !movementData.IsDuringRunAnimation)
             {
                 movementData.IsDuringRunAnimation = true;

@@ -19,6 +19,6 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
         public bool OnClimbing;
         public float InitHeight;
         public float FinalRayLength;
-        public float RoofRaySphereRadius;
+        public bool HasObjectColliding;
     }
 }

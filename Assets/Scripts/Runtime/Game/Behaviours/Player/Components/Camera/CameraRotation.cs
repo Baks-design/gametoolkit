@@ -56,9 +56,6 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
         {
             yawTransform.eulerAngles = new Vector3(0f, yaw, 0f);
             pitchTransform.localEulerAngles = new Vector3(pitch, 0f, 0f);
-
-            //Logging.Log($"yawTransform.eulerAngles: {yawTransform.eulerAngles}");
-            //Logging.Log($"pitchTransform.localEulerAngles: {pitchTransform.localEulerAngles}");
         }
     }
 }

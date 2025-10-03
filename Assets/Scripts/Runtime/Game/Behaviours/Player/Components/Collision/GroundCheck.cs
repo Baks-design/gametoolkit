@@ -37,6 +37,7 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
             var hitInfo = hitGround ? groundHits[0] : default;
 
             collisionData.OnGrounded = hitGround;
+            collisionData.OnAirborne = !hitGround;
             collisionData.CastHit = hitInfo;
             collisionData.GroundedNormal = hitInfo.normal;
         }

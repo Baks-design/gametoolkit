@@ -93,6 +93,7 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
 
             var speed = 1f / movementConfig.CrouchTransitionDuration;
             var percent = 0f;
+
             while (percent < 1f)
             {
                 cancellationToken.ThrowIfCancellationRequested();

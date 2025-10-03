@@ -8,12 +8,12 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
 {
     public class PlayerMovement
         : MonoBehaviour,
-            ICrouchHandler,
+            ICrouchingHandler,
             ICameraHandler,
             IVelocityHandler,
             IRunnningHandler,
             ILandingHandler,
-            IJumpHandler,
+            IJumpingHandler,
             IDirectionHandler
     {
         [SerializeField, Required]
@@ -38,7 +38,7 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
         PlayerMovementConfig movementConfig;
 
         [SerializeField, InlineEditor]
-        HeadBobData headBobConfig;
+        HeadBobConfig headBobConfig;
 
         [SerializeField, ReadOnly]
         PlayerMovementData movementData;
@@ -64,15 +64,14 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
                 collisionData,
                 movementData
             );
-            jump = new JumpHandler(movementInput, collisionData, movementData, movementConfig);
-            landing = new LandingHandler(
-                yawTransform,
+            jump = new JumpHandler(
+                controller,
+                movementInput,
                 collisionData,
                 movementData,
-                movementConfig,
-                playerSound.Value,
-                playerAnimation.Value
+                movementConfig
             );
+            landing = new LandingHandler(yawTransform, collisionData, movementData, movementConfig);
             headBob = new HeadBobHandler(headBobConfig, movementData, movementConfig);
             runnning = new RunnningHandler(movementInput, controller, movementConfig, movementData);
             velocity = new VelocityHandler(
@@ -114,25 +113,18 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
         public void ApplyGravityOnAirborne(float deltaTime) =>
             velocity.ApplyGravityOnAir(deltaTime);
 
-        public void CalculateFinalAirborneAcceleration() =>
-            velocity.CalculateFinalAccelerationOnAir();
-
-        public void CalculateFinalGroundedAcceleration() =>
-            velocity.CalculateFinalAccelerationOnGrounded();
+        public void CalculateFinalAcceleration() => velocity.CalculateFinalAcceleration();
 
         public void ApplyMove(float deltaTime) => velocity.ApplyMove(deltaTime);
         #endregion
 
         #region ICrouchHandler
-        public void HandleCrouch(float deltaTime) => crouch.HandleCrouch(deltaTime);
+        public void HandleCrouching(float deltaTime) => crouch.HandleCrouch(deltaTime);
         #endregion
 
         #region IJumpHandler
-        public void HandleJump(float time)
-        {
-            jump.UpdateJumpBuffer(time);
-            jump.HandleJump(time);
-        }
+        public void HandleJumping(float time) => jump.HandleJump(time);
+        public void UpdateJumpBuffer(float time) => jump.UpdateJumpBuffer(time);
         #endregion
 
         #region ILandingHandler
@@ -140,7 +132,7 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
         #endregion
 
         #region IRunnningHandler
-        public void HandleRun() => runnning.HandleRun();
+        public void HandleRunning() => runnning.HandleRun();
         #endregion
 
         #region ICameraHandler

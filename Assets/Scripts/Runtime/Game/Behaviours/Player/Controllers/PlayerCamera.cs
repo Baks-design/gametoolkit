@@ -23,7 +23,7 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
         PlayerCameraConfig cameraConfig;
 
         [SerializeField, InlineEditor]
-        PerlinNoiseData perlinNoiseConfig;
+        PerlinNoiseConfig perlinNoiseConfig;
 
         [SerializeField, ReadOnly]
         PlayerCameraData cameraData;

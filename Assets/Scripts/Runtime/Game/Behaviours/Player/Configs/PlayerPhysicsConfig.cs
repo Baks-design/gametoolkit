@@ -42,5 +42,9 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
         public float MaxPushForce = 10f;
         public bool UseForceInsteadOfVelocity = true;
         public ForceMode forceMode = ForceMode.Impulse;
+
+        [Header("Roof Settings")]
+        [Range(0.1f, 1f)]
+        public float RoofRadius = 0.2f;
     }
 }

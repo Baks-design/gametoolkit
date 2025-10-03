@@ -40,6 +40,17 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
             movementData.FinalMoveDirection = FlattenVectorOnSlopes(desiredDir);
         }
 
+        Vector3 CalculateWorldDirection(Vector2 input)
+        {
+            var zDir = controller.transform.forward * input.y;
+            var xDir = controller.transform.right * input.x;
+            var desiredDir = xDir + zDir;
+            return desiredDir.normalized;
+        }
+
+        Vector3 FlattenVectorOnSlopes(Vector3 vector) =>
+            Vector3.ProjectOnPlane(vector, collisionData.GroundedNormal).normalized;
+
         public void CalculateMovementDirectionOnAir()
         {
             var smoothInput = movementData.SmoothInputVector;
@@ -53,17 +64,5 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
                 movementData.FinalMoveDirection,
                 deltaTime * movementConfig.SmoothFinalDirectionSpeed
             );
-
-        Vector3 CalculateWorldDirection(Vector2 input)
-        {
-            var zDir = controller.transform.forward * input.y;
-            var xDir = controller.transform.right * input.x;
-            var desiredDir = xDir + zDir;
-            desiredDir.y = 0f;
-            return desiredDir.normalized;
-        }
-
-        Vector3 FlattenVectorOnSlopes(Vector3 vector) =>
-            Vector3.ProjectOnPlane(vector, collisionData.GroundedNormal).normalized;
     }
 }

@@ -2,8 +2,8 @@ using UnityEngine;
 
 namespace GameToolkit.Runtime.Game.Behaviours.Player
 {
-    [CreateAssetMenu(menuName = "Data/Camera/HeadBobData")]
-    public class HeadBobData : ScriptableObject
+    [CreateAssetMenu(menuName = "Data/Camera/HeadBobConfig")]
+    public class HeadBobConfig : ScriptableObject
     {
         [Header("Curves")]
         public AnimationCurve xCurve;

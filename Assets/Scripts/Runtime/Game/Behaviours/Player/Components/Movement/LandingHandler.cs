@@ -11,25 +11,19 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
         readonly PlayerCollisionData collisionData;
         readonly PlayerMovementData movementData;
         readonly PlayerMovementConfig movementConfig;
-        readonly IPlayerSound sound;
-        readonly IPlayerAnimation animation;
         CancellationTokenSource landingCancellationTokenSource;
 
         public LandingHandler(
             Transform yawTransform,
             PlayerCollisionData collisionData,
             PlayerMovementData movementData,
-            PlayerMovementConfig movementConfig,
-            IPlayerSound sound,
-            IPlayerAnimation animation
+            PlayerMovementConfig movementConfig
         )
         {
             this.yawTransform = yawTransform;
             this.collisionData = collisionData;
             this.movementData = movementData;
             this.movementConfig = movementConfig;
-            this.sound = sound;
-            this.animation = animation;
         }
 
         public void HandleLanding(float deltaTime)

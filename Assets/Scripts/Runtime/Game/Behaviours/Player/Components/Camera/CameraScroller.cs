@@ -3,13 +3,13 @@ using Random = UnityEngine.Random;
 
 namespace GameToolkit.Runtime.Game.Behaviours.Player
 {
-    public class PerlinNoiseScroller
+    public class CameraScroller
     {
-        readonly PerlinNoiseData data;
+        readonly PerlinNoiseConfig data;
         readonly PlayerCameraData cameraData;
         Vector3 noiseOffset;
 
-        public PerlinNoiseScroller(PerlinNoiseData data, PlayerCameraData cameraData)
+        public CameraScroller(PerlinNoiseConfig data, PlayerCameraData cameraData)
         {
             this.data = data;
             this.cameraData = cameraData;

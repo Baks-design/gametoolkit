@@ -6,8 +6,7 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
         void SmoothSpeed(float deltaTime);
         void ApplyGravityOnGrounded();
         void ApplyGravityOnAirborne(float deltaTime);
-        void CalculateFinalGroundedAcceleration();
-        void CalculateFinalAirborneAcceleration();
+        void CalculateFinalAcceleration();
         void ApplyMove(float deltaTime);
     }
 }

@@ -13,31 +13,27 @@ MonoBehaviour:
   m_Name: QuickAccessManager
   m_EditorClassIdentifier: CustomToolbar::OpalStudio.CustomToolbar.Editor.ToolbarElements.QuickAccess.Data.QuickAccessManager
   items:
+  - displayName: Level - Prototype
+    scenePath: Assets/Scenes/Level - Prototype.unity
+  - displayName: Game Initiator
+    scenePath: Assets/Scenes/Game Initiator.unity
+  - displayName: Collision
+    scenePath: DontDestroyOnLoad
+  - displayName: Directional Light
+    scenePath: Assets/Scenes/Level - Prototype.unity
+  - displayName: Cube
+    scenePath: Assets/Scenes/Level - Prototype.unity
+  - displayName: Cube
+    scenePath: Assets/Scenes/Level - Prototype.unity
+  - displayName: Plane
+    scenePath: Assets/Scenes/Level - Prototype.unity
+  - displayName: Cube
+    scenePath: Assets/Scenes/Level - Prototype.unity
+  - displayName: Collision
+    scenePath: Assets/Prefabs/Gameplay/Player.prefab
+  - displayName: Movement
+    scenePath: Assets/Prefabs/Gameplay/Player.prefab
   - displayName: Player
     scenePath: Assets/Prefabs/Gameplay/Player.prefab
-  - displayName: Data
-    scenePath: Assets/Prefabs/Gameplay/Player.prefab
-  - displayName: Collision
-    scenePath: Assets/Prefabs/Gameplay/Player.prefab
-  - displayName: Camera
-    scenePath: Assets/Prefabs/Gameplay/Player.prefab
-  - displayName: Movement
-    scenePath: Assets/Prefabs/Gameplay/Player.prefab
-  - displayName: Data
-    scenePath: Assets/Prefabs/Gameplay/Player.prefab
-  - displayName: Collision
-    scenePath: Assets/Prefabs/Gameplay/Player.prefab
-  - displayName: Camera
-    scenePath: Assets/Prefabs/Gameplay/Player.prefab
-  - displayName: Sound
-    scenePath: Assets/Prefabs/Gameplay/Player.prefab
-  - displayName: Animation
-    scenePath: Assets/Prefabs/Gameplay/Player.prefab
-  - displayName: Movement
-    scenePath: Assets/Prefabs/Gameplay/Player.prefab
-  - displayName: Sound
-    scenePath: Assets/Prefabs/Gameplay/Player.prefab
-  - displayName: Animation
-    scenePath: Assets/Prefabs/Gameplay/Player.prefab
-  - displayName: Camera
-    scenePath: Assets/Prefabs/Gameplay/Player.prefab
+  - displayName: Player
+    scenePath: 

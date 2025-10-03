@@ -1,7 +1,8 @@
 namespace GameToolkit.Runtime.Game.Behaviours.Player
 {
-    public interface IJumpHandler
+    public interface IJumpingHandler
     {
-        void HandleJump(float time);
+        void HandleJumping(float time);
+        void UpdateJumpBuffer(float time);
     }
 }

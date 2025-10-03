@@ -4,22 +4,22 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
 {
     public class HeadBobHandler
     {
-        readonly HeadBobData data;
+        readonly HeadBobConfig config;
         readonly PlayerMovementData movementData;
         float xScroll;
         float yScroll;
 
         public HeadBobHandler(
-            HeadBobData data,
+            HeadBobConfig config,
             PlayerMovementData movementData,
             PlayerMovementConfig movementConfig
         )
         {
-            this.data = data;
+            this.config = config;
             this.movementData = movementData;
 
-            data.MoveBackwardsFrequencyMultiplier = movementConfig.MoveBackwardsSpeedPercent;
-            data.MoveSideFrequencyMultiplier = movementConfig.MoveSideSpeedPercent;
+            config.MoveBackwardsFrequencyMultiplier = movementConfig.MoveBackwardsSpeedPercent;
+            config.MoveSideFrequencyMultiplier = movementConfig.MoveSideSpeedPercent;
             movementData.Resetted = false;
             movementData.FinalOffset = Vector3.zero;
             xScroll = yScroll = 0f;
@@ -34,7 +34,7 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
                 crouching
             );
             var additionalMultiplier = CalculateDirectionMultiplier(input);
-            xScroll += deltaTime * data.xFrequency * frequencyMultiplier;
+            xScroll += deltaTime * config.xFrequency * frequencyMultiplier;
             CalculateHeadBobOffset(amplitudeMultiplier, additionalMultiplier);
         }
 
@@ -54,13 +54,13 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
             var frequency = 1f;
             if (running)
             {
-                amplitude = data.runAmplitudeMultiplier;
-                frequency = data.runFrequencyMultiplier;
+                amplitude = config.runAmplitudeMultiplier;
+                frequency = config.runFrequencyMultiplier;
             }
             if (crouching)
             {
-                amplitude = data.crouchAmplitudeMultiplier;
-                frequency = data.crouchFrequencyMultiplier;
+                amplitude = config.crouchAmplitudeMultiplier;
+                frequency = config.crouchFrequencyMultiplier;
             }
             return (amplitude, frequency);
         }
@@ -68,19 +68,19 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
         float CalculateDirectionMultiplier(Vector2 input)
         {
             if (input.y < -0.1f)
-                return data.MoveBackwardsFrequencyMultiplier;
+                return config.MoveBackwardsFrequencyMultiplier;
             if (Mathf.Abs(input.x) > 0.1f && Mathf.Abs(input.y) < 0.1f)
-                return data.MoveSideFrequencyMultiplier;
+                return config.MoveSideFrequencyMultiplier;
             return 1f;
         }
 
         void CalculateHeadBobOffset(float amplitudeMultiplier, float additionalMultiplier)
         {
-            var xValue = data.xCurve.Evaluate(xScroll);
-            var yValue = data.yCurve.Evaluate(yScroll);
+            var xValue = config.xCurve.Evaluate(xScroll);
+            var yValue = config.yCurve.Evaluate(yScroll);
             movementData.FinalOffset = new Vector3(
-                xValue * data.xAmplitude * amplitudeMultiplier * additionalMultiplier,
-                yValue * data.yAmplitude * amplitudeMultiplier * additionalMultiplier,
+                xValue * config.xAmplitude * amplitudeMultiplier * additionalMultiplier,
+                yValue * config.yAmplitude * amplitudeMultiplier * additionalMultiplier,
                 0f
             );
         }

@@ -10,12 +10,12 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
         readonly IPlayerAnimation animation;
         readonly IPlayerCamera camera;
         readonly IPlayerCollision collision;
-        readonly ICrouchHandler crouch;
+        readonly ICrouchingHandler crouch;
         readonly ICameraHandler camHandler;
         readonly IVelocityHandler velocity;
         readonly IRunnningHandler run;
         readonly ILandingHandler land;
-        readonly IJumpHandler jump;
+        readonly IJumpingHandler jump;
         readonly IDirectionHandler direction;
 
         public PlayerGroundedState(
@@ -24,12 +24,12 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
             IPlayerAnimation animation,
             IPlayerCamera camera,
             IPlayerCollision collision,
-            ICrouchHandler crouch,
+            ICrouchingHandler crouch,
             ICameraHandler camHandler,
             IVelocityHandler velocity,
             IRunnningHandler run,
             ILandingHandler land,
-            IJumpHandler jump,
+            IJumpingHandler jump,
             IDirectionHandler direction
         )
         {
@@ -51,36 +51,45 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
 
         public void Update(float deltaTime, float time)
         {
+            // 1. Input and camera orientation first
             camHandler.RotateTowardsCamera(deltaTime);
+            direction.SmoothInput(deltaTime);
 
+            // 2. State checks
             collision.GroundCheckHandler();
             collision.ObstacleCheckHandler();
 
-            direction.SmoothInput(deltaTime);
-            velocity.SmoothSpeed(deltaTime);
-            direction.SmoothDirection(deltaTime);
-
+            // 3. Movement calculations
             direction.CalculateMovementGroundedDirection();
+            direction.SmoothDirection(deltaTime);
             velocity.CalculateSpeed();
-            velocity.CalculateFinalGroundedAcceleration();
+            velocity.SmoothSpeed(deltaTime);
+            velocity.CalculateFinalAcceleration();
 
-            run.HandleRun();
-            crouch.HandleCrouch(deltaTime);
-            //land.HandleLanding(deltaTime); TODO: Fix
+            // 4. State handlers (running, crouching, jumping)
+            run.HandleRunning();
+            crouch.HandleCrouching(deltaTime);
+            jump.HandleJumping(time);
+
+            // 5. Physics and movement
+            velocity.ApplyGravityOnGrounded();
+            velocity.ApplyMove(deltaTime);
+
+            // 6. Update collision data (do this before animations/sounds)
+            collisionData.PreviouslyGrounded = collisionData.OnGrounded;
+
+            // 7. Camera effects (that depend on movement)
             camHandler.HandleHeadBob(deltaTime);
             camHandler.HandleRunFOV(deltaTime);
             camHandler.HandleCameraSway(deltaTime);
+            land.HandleLanding(deltaTime);
 
-            velocity.ApplyGravityOnGrounded();
-            jump.HandleJump(time);
-            velocity.ApplyMove(deltaTime);
-
-            collisionData.PreviouslyGrounded = collisionData.OnGrounded;
-
+            // 8. Animations (after all state changes)
             animation.UpdateMoving();
             animation.UpdateCrouch();
             animation.UpdateJump();
 
+            // 9. Sounds (after animations/state changes)
             sound.UpdateFootsteps(deltaTime);
             sound.UpdateJumping();
             sound.UpdateLanding();
@@ -89,8 +98,8 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
         public void LateUpdate(float deltaTime)
         {
             camera.BreathingHandler(deltaTime);
-            camera.AimHandler(deltaTime);
             camera.RotationHandler(deltaTime);
+            camera.AimHandler(deltaTime);
         }
     }
 }

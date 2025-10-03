@@ -6,18 +6,24 @@ namespace GameToolkit.Runtime.Game.Behaviours.Player
     {
         readonly CharacterController controller;
         readonly PlayerCollisionData collisionData;
+        readonly PlayerCollisionConfig collisionConfig;
 
-        public RoofCheck(CharacterController controller, PlayerCollisionData collisionData)
+        public RoofCheck(
+            CharacterController controller,
+            PlayerCollisionData collisionData,
+            PlayerCollisionConfig collisionConfig
+        )
         {
             this.controller = controller;
             this.collisionData = collisionData;
+            this.collisionConfig = collisionConfig;
         }
 
         public bool CheckRoof()
         {
             var hitRoof = Physics.SphereCast(
                 controller.transform.position,
-                controller.radius,
+                collisionConfig.RoofRadius,
                 Vector3.up,
                 out _,
                 collisionData.InitHeight,
